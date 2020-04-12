@@ -1,0 +1,5 @@
+rootProject.name='Travelling'
+include ':presentation'
+include ':domain'
+include ':data'
+include ':di'

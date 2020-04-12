@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:weightSum="10"
+    style="@style/LinearLayoutForListItemStyle"
+    tool:ignore="UseCompoundDrawables">
+
+    <ImageView
+        android:id="@+id/ivFlag"
+        style="@style/ImageViewStyle"
+        tool:src="@android:drawable/ic_menu_gallery"
+        android:contentDescription="@string/flag" />
+
+<!--    WebView is used in case of error while downloading image source from the internet. -->
+    <WebView
+        android:id="@+id/wvFlag"
+        style="@style/ImageViewStyle"
+        android:visibility="gone"
+        tool:drawableStart="@android:drawable/ic_menu_gallery"
+        android:contentDescription="@string/flag" />
+
+    <TextView
+        android:id="@+id/tvCountry"
+        style="@style/TextViewStyle"
+        tool:text="@string/country" />
+
+</LinearLayout>

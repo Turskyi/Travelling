@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Travelling</string>
+    <string name="num_of_countries">%1$s countries</string>
+    <string name="delete_country">Delete %1$s ?</string>
+    <string name="deleted">%1$s deleted</string>
+    <string name="yes">YES</string>
+
+    <string name="flag" translatable="false">flag</string>
+    <string name="country" translatable="false">Country</string>
+
+    <plurals name="numberOfCountriesVisited">
+        <item quantity="one">You\'ve been to %d country.</item>
+        <item quantity="few">You\'ve been to %d countries.</item>
+        <item quantity="other">You\'ve been to %d countries.</item>
+    </plurals>
+</resources>

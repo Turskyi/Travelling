@@ -1,0 +1,67 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "0.0.1"
+        versionName "0.0.1"
+        buildConfigField "String", "HOST_URL", "\"${rootProject.HOST_URL}\""
+        buildConfigField "String", "DATABASE_NAME", "\"${rootProject.DATABASE_NAME}\""
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':domain')
+
+    /* network */
+    api "com.squareup.okhttp3:okhttp:4.3.1"
+    api 'com.squareup.retrofit2:retrofit:2.7.1'
+    api 'com.google.code.gson:gson:2.8.6'
+    api 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+    api 'com.squareup.retrofit2:converter-gson:2.7.1'
+    api 'com.auth0:java-jwt:3.8.2'
+
+    /* room */
+    def room_version = "2.2.5"
+    api "androidx.room:room-runtime:$room_version"
+    api "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    /* kotlin */
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-reflect:1.3.71"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5'
+
+    /* koin */
+    api "org.koin:koin-androidx-viewmodel:2.0.1"
+    api "org.koin:koin-core:2.0.1"
+    api "org.koin:koin-androidx-scope:2.0.1"
+
+    /* test */
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}

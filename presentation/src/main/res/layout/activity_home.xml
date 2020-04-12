@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:background="@android:color/black"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".view.ui.HomeActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_app_bar"
+            android:fitsSystemWindows="true"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+                android:id="@+id/toolbarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:statusBarScrim="@android:color/black"
+                app:scrimAnimationDuration="@android:integer/config_longAnimTime"
+                app:contentScrim="@android:color/black"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:toolbarId="@+id/toolbar">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="40dp"
+                    app:layout_collapseMode="pin"
+                    android:focusable="true">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true"
+                        android:elevation="4dp"
+                        android:soundEffectsEnabled="true" />
+                </FrameLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+                </androidx.appcompat.widget.Toolbar>
+
+            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ProgressBar
+            android:id="@+id/pb"
+            style="@style/ProgressBarStyle" />
+
+        <include layout="@layout/content_home" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatBtnSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/offset_16"
+            android:clickable="true"
+            android:drawingCacheQuality="auto"
+            android:fadeScrollbars="true"
+            android:focusable="true"
+            android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
+            android:visibility="gone"
+            app:fabSize="auto"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="bottom|end"
+            app:maxImageSize="48dp"
+            app:srcCompat="@drawable/ic_countries_seen" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatBtnLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/offset_64"
+            android:clickable="true"
+            android:drawingCacheQuality="auto"
+            android:elevation="4dp"
+            android:fadeScrollbars="true"
+            android:focusable="true"
+            android:soundEffectsEnabled="true"
+            android:visibility="gone"
+            android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
+            app:elevation="4dp"
+            app:fabCustomSize="224dp"
+            app:fabSize="auto"
+            app:maxImageSize="192dp"
+            app:rippleColor="@android:color/black"
+            app:srcCompat="@drawable/ic_countries_seen" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
