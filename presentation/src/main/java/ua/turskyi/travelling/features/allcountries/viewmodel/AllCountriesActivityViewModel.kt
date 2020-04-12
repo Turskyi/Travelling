@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
-import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.model.Country
 import ua.turskyi.visitedcountries.utils.MainThreadExecutor
@@ -18,9 +17,9 @@ import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
-    private val _countriesLiveData = MutableLiveData<List<Country>>()
-    val countriesLiveData: MutableLiveData<List<Country>>
-        get() = _countriesLiveData
+    private val _notVisitedCountriesLiveData = MutableLiveData<Int>()
+    val notVisitedCountriesLiveData: MutableLiveData<Int>
+        get() = _notVisitedCountriesLiveData
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
@@ -33,14 +32,14 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         pagedList = _pagedList
         viewModelScope.launch {
             _visibilityLoader.postValue(View.VISIBLE)
-            getCountriesFromDb()
+            getNotVisitedCountriesFromDb()
         }
     }
 
-    private fun getCountriesFromDb() {
+    private fun getNotVisitedCountriesFromDb() {
         viewModelScope.launch {
-            interactor.getModelCountriesFromDb({ countries ->
-                _countriesLiveData.postValue(countries.mapModelListToActualList())
+            interactor.getNotVisitedCountriesNum({ num ->
+                _notVisitedCountriesLiveData.postValue(num)
                 val dataSource = CountriesPositionalDataSource(interactor)
                 val config: PagedList.Config = PagedList.Config.Builder()
                     .setEnablePlaceholders(false)
@@ -61,7 +60,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     fun markAsVisited(country: Country) {
         viewModelScope.launch(Dispatchers.Main) {
             interactor.markAsVisitedCountryModel(country.mapActualToModel()) {
-                //            TODO: What to do if Country did not got to visited?
+                // TODO: What to do if Country did not got to visited?
             }
         }
     }

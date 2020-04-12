@@ -6,12 +6,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_all_countries.*
-import kotlinx.android.synthetic.main.activity_all_countries.toolbar
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.model.Country
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
+import ua.turskyi.travelling.model.Country
 
 class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) {
 
@@ -47,15 +46,15 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
         viewModel.pagedList.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.countriesLiveData.observe(this, Observer { offlineCountries ->
-            updateTitle(offlineCountries)
+        viewModel.notVisitedCountriesLiveData.observe(this, Observer { notVisitedNum ->
+            updateTitle(notVisitedNum)
         })
         viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
             pb.visibility = currentVisibility
         })
     }
 
-    private fun updateTitle(countries: List<Country>) {
-        toolbarTitle.text = getString(R.string.num_of_countries, countries.size.toString())
+    private fun updateTitle(num: Int) {
+        toolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
     }
 }

@@ -1,6 +1,7 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,9 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentCountry = getItem(position) as Country
         holder.tvCountry.text = currentCountry.name
+        if (currentCountry.visited == true) {
+            holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        }
         showPicturesInSVG(currentCountry, holder)
     }
 
