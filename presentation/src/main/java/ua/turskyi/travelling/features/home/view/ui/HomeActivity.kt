@@ -1,5 +1,6 @@
 package ua.turskyi.travelling.features.home.view.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -31,6 +32,7 @@ import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.view.callback.OnVisitedCountryClickListener
 import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
 import ua.turskyi.travelling.features.selfie.view.SelfieActivity
+import ua.turskyi.travelling.features.selfie.view.SelfieActivity.Companion.POSITION
 import ua.turskyi.travelling.model.Country
 import ua.turskyi.travelling.utils.IntFormatter
 import kotlin.coroutines.CoroutineContext
@@ -74,7 +76,13 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     private fun initListeners() {
         adapter.setOnItemClickListener(object :
             OnVisitedCountryClickListener {
-            override fun onItemClick(country: Country) = start<SelfieActivity>()
+            override fun onItemClick(country: Country) {
+                val intent = Intent(this@HomeActivity, SelfieActivity::class.java)
+                val bundle = Bundle()
+                bundle.putInt(POSITION, adapter.itemCount - 1)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
             override fun onItemLongClick(country: Country) = showSnackBar(country)
 
             private fun showSnackBar(country: Country) {

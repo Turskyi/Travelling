@@ -12,13 +12,9 @@ import ua.turskyi.travelling.model.Country
 
 class SelfieActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
     var visitedCount = 0
-    private val _fragmentPosition = MutableLiveData<Int>()
-    val fragmentPosition: MutableLiveData<Int>
-        get() = _fragmentPosition
+
     private val _visitedCountries = MutableLiveData<List<Country>>()
     var visitedCountries: LiveData<List<Country>>
-
-    var fragmentsList:MutableList<SelfieFragment> = mutableListOf()
 
     init {
         visitedCountries = _visitedCountries

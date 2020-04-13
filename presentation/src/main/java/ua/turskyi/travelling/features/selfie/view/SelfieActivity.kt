@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.activity_selfie.*
 import org.koin.android.ext.android.inject
@@ -13,7 +12,11 @@ import ua.turskyi.travelling.features.selfie.view.adapter.ZoomOutPageTransformer
 import ua.turskyi.travelling.features.selfie.view.fragment.SelfieFragment
 import ua.turskyi.travelling.features.selfie.viewmodel.SelfieActivityViewModel
 
-class SelfieActivity : AppCompatActivity( R.layout.activity_selfie) {
+class SelfieActivity: AppCompatActivity( R.layout.activity_selfie) {
+
+    companion object{
+        const val POSITION = "position"
+    }
 
     private val viewModel: SelfieActivityViewModel by inject()
 
@@ -21,15 +24,6 @@ class SelfieActivity : AppCompatActivity( R.layout.activity_selfie) {
         super.onCreate(savedInstanceState)
         initView()
         initListeners()
-        initObservers()
-    }
-
-    private fun initObservers() {
-       viewModel.fragmentPosition.observe(
-           this, Observer { position ->
-               pager.setCurrentItem(position, false)
-           }
-       )
     }
 
     private fun initView() {
@@ -39,6 +33,9 @@ class SelfieActivity : AppCompatActivity( R.layout.activity_selfie) {
         pager.adapter = pagerAdapter
         pager.offscreenPageLimit = 2
         postponeEnterTransition()
+        val getBundle: Bundle? = this.intent.extras
+        val startPosition = getBundle?.getInt(POSITION)
+        startPosition?.let { pager.setCurrentItem(it, true) }
         pager.setPageTransformer(ZoomOutPageTransformer())
     }
 

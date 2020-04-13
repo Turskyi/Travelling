@@ -12,9 +12,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import kotlinx.android.synthetic.main.fragment_selfie.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.selfie.viewmodel.SelfieActivityViewModel
-import ua.turskyi.travelling.model.Country
 
 class SelfieFragment(private val position: Int) : Fragment(R.layout.fragment_selfie) {
 
