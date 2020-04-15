@@ -43,7 +43,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
                     oldItem: Country,
                     newItem: Country
                 ): Boolean {
-                    return oldItem.name == newItem.name
+                    return oldItem.name == newItem.name && oldItem.visited == newItem.visited
                 }
             }
     }
@@ -59,6 +59,9 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
         holder.tvCountry.text = currentCountry.name
         if (currentCountry.visited == true) {
             holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            holder.tvCountry.paintFlags =
+                holder.tvCountry.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
         showPicturesInSVG(currentCountry, holder)
     }
