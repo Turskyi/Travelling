@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.selfie.view.adapter
+package ua.turskyi.travelling.features.flags.view.adapter
 
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2

@@ -27,6 +27,6 @@
         <activity android:name=".features.allcountries.view.ui.AllCountriesActivity"
             android:parentActivityName=".features.home.view.ui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".features.selfie.view.SelfieActivity" />
+        <activity android:name=".features.flags.view.FlagsActivity" />
     </application>
 </manifest>

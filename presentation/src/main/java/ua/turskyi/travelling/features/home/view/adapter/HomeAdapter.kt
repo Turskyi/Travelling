@@ -119,7 +119,7 @@ class HomeAdapter : ListAdapter<Country, HomeAdapter.ViewHolder>(CountriesDiffCa
        val wvFlag: WebView = itemView.wvFlag
         init {
             itemView.setOnLongClickListener(this)
-            itemView.setOnClickListener(this)
+            itemView.ivFlag.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {

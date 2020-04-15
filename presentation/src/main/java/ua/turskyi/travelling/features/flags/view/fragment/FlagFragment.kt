@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.selfie.view.fragment
+package ua.turskyi.travelling.features.flags.view.fragment
 
 import android.graphics.Color
 import android.net.Uri
@@ -12,11 +12,11 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import kotlinx.android.synthetic.main.fragment_selfie.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.selfie.viewmodel.SelfieActivityViewModel
+import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
-class SelfieFragment(private val position: Int) : Fragment(R.layout.fragment_selfie) {
+class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfie) {
 
-    private val viewModel: SelfieActivityViewModel by inject()
+    private val viewModel: FlagsActivityViewModel by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -31,8 +31,8 @@ import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.view.callback.OnVisitedCountryClickListener
 import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
-import ua.turskyi.travelling.features.selfie.view.SelfieActivity
-import ua.turskyi.travelling.features.selfie.view.SelfieActivity.Companion.POSITION
+import ua.turskyi.travelling.features.flags.view.FlagsActivity
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.model.Country
 import ua.turskyi.travelling.utils.IntFormatter
 import kotlin.coroutines.CoroutineContext
@@ -77,7 +77,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         adapter.setOnItemClickListener(object :
             OnVisitedCountryClickListener {
             override fun onItemClick(country: Country) {
-                val intent = Intent(this@HomeActivity, SelfieActivity::class.java)
+                val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
                 bundle.putInt(POSITION, adapter.itemCount - 1)
                 intent.putExtras(bundle)

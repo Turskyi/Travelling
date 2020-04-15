@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.selfie.view
+package ua.turskyi.travelling.features.flags.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,17 +8,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.activity_selfie.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.selfie.view.adapter.ZoomOutPageTransformer
-import ua.turskyi.travelling.features.selfie.view.fragment.SelfieFragment
-import ua.turskyi.travelling.features.selfie.viewmodel.SelfieActivityViewModel
+import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
+import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
+import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
-class SelfieActivity: AppCompatActivity( R.layout.activity_selfie) {
+class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
 
     companion object{
         const val POSITION = "position"
     }
 
-    private val viewModel: SelfieActivityViewModel by inject()
+    private val viewModel: FlagsActivityViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,20 +43,10 @@ class SelfieActivity: AppCompatActivity( R.layout.activity_selfie) {
         toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
-    override fun onBackPressed() {
-        if (pager.currentItem == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed()
-        } else {
-            // Otherwise, select the previous step.
-            pager.currentItem = pager.currentItem - 1
-        }
-    }
     private inner class ScreenSlidePagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
 
         override fun getItemCount(): Int = viewModel.visitedCount
 
-        override fun createFragment(position: Int):  Fragment = SelfieFragment(position)
+        override fun createFragment(position: Int):  Fragment = FlagFragment(position)
     }
 }

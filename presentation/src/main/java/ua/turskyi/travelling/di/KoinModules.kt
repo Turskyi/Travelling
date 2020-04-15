@@ -6,7 +6,7 @@ import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdap
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
-import ua.turskyi.travelling.features.selfie.viewmodel.SelfieActivityViewModel
+import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
 val adaptersModule = module {
     factory { HomeAdapter() }
@@ -16,7 +16,7 @@ val adaptersModule = module {
 val viewModelsModule = module {
     factory { HomeActivityViewModel(get()) }
     factory { AllCountriesActivityViewModel(get()) }
-    factory { SelfieActivityViewModel(get()) }
+    factory { FlagsActivityViewModel(get()) }
 }
 
 val interactorsModule = module {

@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.selfie.viewmodel
+package ua.turskyi.travelling.features.flags.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,10 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
-import ua.turskyi.travelling.features.selfie.view.fragment.SelfieFragment
 import ua.turskyi.travelling.model.Country
 
-class SelfieActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
+class FlagsActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
     var visitedCount = 0
 
     private val _visitedCountries = MutableLiveData<List<Country>>()
