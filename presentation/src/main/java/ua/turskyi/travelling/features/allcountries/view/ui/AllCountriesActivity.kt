@@ -27,6 +27,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
 
     private fun initView() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
+        adapter.submitList(viewModel.pagedList)
         val layoutManager = LinearLayoutManager(this)
         rvAllCountries.adapter = adapter
         rvAllCountries.layoutManager = layoutManager
@@ -43,9 +44,6 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     }
 
     private fun initObservers() {
-        viewModel.pagedList.observe(this, Observer {
-            adapter.submitList(it)
-        })
         viewModel.notVisitedCountriesLiveData.observe(this, Observer { notVisitedNum ->
             updateTitle(notVisitedNum)
         })

@@ -26,7 +26,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         countriesNetSource.getCountryNetList({ countryNetList ->
             GlobalScope.launch {
                 countryNetList?.mapNetListToModelList()?.let { modelList ->
-                    addModelCountriesToDb(modelList)
+                    addModelToDb(modelList)
                 }
                 withContext(Dispatchers.Main) {
                     onSusses()
@@ -77,7 +77,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         }
     }
 
-    override suspend fun addModelCountriesToDb(
+    override suspend fun addModelToDb(
         countries: List<CountryModel>,
         onError: ((Exception) -> Unit?)?
     ){

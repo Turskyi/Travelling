@@ -1,4 +1,4 @@
-package ua.turskyi.data
+package ua.turskyi.data.util
 
 import android.content.Context
 import android.net.ConnectivityManager

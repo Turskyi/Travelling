@@ -1,4 +1,4 @@
-package ua.turskyi.domain
+package ua.turskyi.domain.util
 
 import ua.turskyi.domain.exceptions.*
 import java.net.UnknownHostException

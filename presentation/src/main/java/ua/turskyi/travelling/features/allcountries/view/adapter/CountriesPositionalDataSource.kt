@@ -2,10 +2,7 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 
 import android.util.Log
 import androidx.paging.PositionalDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.model.Country
@@ -26,12 +23,11 @@ internal class CountriesPositionalDataSource(
             interactor.getCountriesByRange(params.requestedLoadSize, 0,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList(), 0)
-                    job.cancel()
                 },
                 {
-                    //TODO: Check if IllegalStateException: callback.onResult/onError already called, cannot call again.
-//                callback.onResult(emptyList(), 0)
+                    callback.onResult(emptyList(), 0)
                 })
+            job.cancel()
         }
     }
 
@@ -40,15 +36,15 @@ internal class CountriesPositionalDataSource(
         callback: LoadRangeCallback<Country>
     ) {
         Log.d("loadRange", "${params.loadSize} \\ ${params.startPosition}")
-        launch {
+        GlobalScope.launch {
             interactor.getCountriesByRange(params.loadSize, params.startPosition,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList())
                 },
                 {
-                    //TODO: Check if IllegalStateException: callback.onResult/onError already called, cannot call again.
-//                callback.onResult(emptyList())
+                    callback.onResult(emptyList())
                 })
         }
+        job.cancel()
     }
 }

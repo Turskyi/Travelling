@@ -25,11 +25,20 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     val visibilityLoader: MutableLiveData<Int>
         get() = _visibilityLoader
 
-    private val _pagedList = MutableLiveData<PagedList<Country>>()
-    val pagedList: MutableLiveData<PagedList<Country>>
+    var pagedList: PagedList<Country>
 
     init {
-        pagedList = _pagedList
+
+        val dataSource = CountriesPositionalDataSource(interactor)
+        val config: PagedList.Config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(20)
+            .build()
+        pagedList = PagedList.Builder(dataSource, config)
+            .setFetchExecutor(Executors.newSingleThreadExecutor())
+            .setNotifyExecutor(MainThreadExecutor())
+            .build()
+
         viewModelScope.launch {
             _visibilityLoader.postValue(View.VISIBLE)
             getNotVisitedCountriesFromDb()
@@ -40,16 +49,6 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         viewModelScope.launch {
             interactor.getNotVisitedCountriesNum({ num ->
                 _notVisitedCountriesLiveData.postValue(num)
-                val dataSource = CountriesPositionalDataSource(interactor)
-                val config: PagedList.Config = PagedList.Config.Builder()
-                    .setEnablePlaceholders(false)
-                    .setPageSize(20)
-                    .build()
-                val pagedList: PagedList<Country> = PagedList.Builder(dataSource, config)
-                    .setFetchExecutor(Executors.newSingleThreadExecutor())
-                    .setNotifyExecutor(MainThreadExecutor())
-                    .build()
-                _pagedList.postValue(pagedList)
                 _visibilityLoader.postValue(GONE)
             }, {
                 _visibilityLoader.postValue(GONE)

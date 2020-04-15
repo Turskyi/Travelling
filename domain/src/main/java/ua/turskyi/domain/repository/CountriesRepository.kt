@@ -13,7 +13,7 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun addModelCountriesToDb(
+    suspend fun addModelToDb(
         countries: List<CountryModel>,
         onError: ((Exception) -> Unit?)? = null
     )
