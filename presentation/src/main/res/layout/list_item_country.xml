@@ -23,4 +23,16 @@
         style="@style/TextViewStyle"
         tool:text="@string/country" />
 
+    <ImageView
+        android:id="@+id/more"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="end|center"
+        android:paddingEnd="@dimen/dp_10"
+        android:paddingStart="@dimen/dp_10"
+        android:visibility="gone"
+        tool:visibility="visible"
+        android:src="@drawable/ic_arrow_expandable_down"
+        android:contentDescription="@string/ic_item_arrow" />
+
 </LinearLayout>

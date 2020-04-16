@@ -3,6 +3,7 @@
 
     <!--region Padding/Margin/Offset-->
     <dimen name="offset_4">4dp</dimen>
+    <dimen name="offset_8">8dp</dimen>
     <dimen name="offset_16">16dp</dimen>
     <dimen name="offset_40">40dp</dimen>
     <dimen name="offset_64">64dp</dimen>
@@ -10,6 +11,7 @@
     <!--endregion-->
 
     <!--region Elevation-->
+    <dimen name="elevation_2">2dp</dimen>
 
     <!--region Typography-->
     <!--https://material.io/develop/android/theming/typography/-->
@@ -24,7 +26,8 @@
     <!-- widths -->
     <dimen name="width_splash_logo">361dp</dimen>
 
-    <!-- margins -->
-
-    <!--endregion-->
+    <!-- radius-->
+    <dimen name="cardview_radius">4dp</dimen>
+    <dimen name="offset_10">10dp</dimen>
+    <dimen name="elevation_4">4dp</dimen>
 </resources>

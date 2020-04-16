@@ -25,15 +25,17 @@ import splitties.activities.start
 import splitties.toast.longToast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
+import ua.turskyi.travelling.decoration.GridSectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
+import ua.turskyi.travelling.extensions.mapActualListToBaseNodeList
+import ua.turskyi.travelling.extensions.mapNodeToActual
 import ua.turskyi.travelling.extensions.spToPix
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
-import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
-import ua.turskyi.travelling.features.home.view.callback.OnVisitedCountryClickListener
-import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
+import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
+import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
 import kotlin.coroutines.CoroutineContext
 
@@ -71,42 +73,47 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         val layoutManager = LinearLayoutManager(this)
         rvVisitedCountries.adapter = this.adapter
         rvVisitedCountries.layoutManager = layoutManager
+        rvVisitedCountries.addItemDecoration(GridSectionAverageGapItemDecoration(10, 10, 20, 15))
     }
 
     private fun initListeners() {
-        adapter.setOnItemClickListener(object :
-            OnVisitedCountryClickListener {
-            override fun onItemClick(country: Country) {
+        adapter.onImageClickListener = {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
                 bundle.putInt(POSITION, adapter.itemCount - 1)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
-            override fun onItemLongClick(country: Country) = showSnackBar(country)
+        adapter.onLongClickListener = {
+            it?.mapNodeToActual()?.let { it1 -> showSnackBar(it1) }
+        }
 
-            private fun showSnackBar(country: Country) {
-                mSnackBar = Snackbar.make(
-                    rvVisitedCountries,
-                    getString(R.string.delete_country, country.name),
-                    Snackbar.LENGTH_LONG
-                ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
-                    removeOnLongClick(country)
-                    longToast(getString(R.string.deleted, country.name))
-                }
-                mSnackBar?.config(applicationContext)
-                mSnackBar?.show()
+        adapter.onTextClickListener = {
+//            TODO: implement dialogue fragment with edit text and geo location
+//             with opportunity to add a city
+        }
+    }
 
-                val snackView = mSnackBar?.view
-                val snackTextView =
-                    snackView?.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-                snackTextView?.setTextColor(Color.RED)
-            }
+    private fun removeOnLongClick(country: Country) {
+        viewModel.removeFromVisited(country)
+    }
 
-            private fun removeOnLongClick(country: Country) {
-                viewModel.removeFromVisited(country)
-            }
-        })
+    private fun showSnackBar(country: Country) {
+        mSnackBar = Snackbar.make(
+            rvVisitedCountries,
+            getString(R.string.delete_country, country.name),
+            Snackbar.LENGTH_LONG
+        ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
+            removeOnLongClick(country)
+            longToast(getString(R.string.deleted, country.name))
+        }
+        mSnackBar?.config(applicationContext)
+        mSnackBar?.show()
+
+        val snackView = mSnackBar?.view
+        val snackTextView =
+            snackView?.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        snackTextView?.setTextColor(Color.RED)
     }
 
     private fun initObservers() {
@@ -124,7 +131,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
                 updateAdapter(visitedCountries)
                 showFloatBtn(visitedCountries)
             })
-        adapter.visibilityLoader.observe(this, Observer { currentVisibility ->
+        viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
             pb.visibility = currentVisibility
         })
     }
@@ -179,7 +186,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun updateAdapter(countries: List<Country>) {
-        adapter.setData(countries)
+        adapter.setList(countries.mapActualListToBaseNodeList())
         toolbarLayout.title = resources.getQuantityString(
             R.plurals.numberOfCountriesVisited,
             countries.size,

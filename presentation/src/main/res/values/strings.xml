@@ -6,6 +6,7 @@
 
     <string name="flag" translatable="false">flag</string>
     <string name="country" translatable="false">Country</string>
+    <string name="ic_item_arrow">arrow</string>
 
     <plurals name="numberOfCountriesRemain">
         <item quantity="one">%d country remains to visit</item>

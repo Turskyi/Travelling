@@ -19,7 +19,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import kotlinx.android.synthetic.main.list_item_country.view.*
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.models.Country
 
 class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHolder>(COUNTRIES_DIFF_CALLBACK) {
 

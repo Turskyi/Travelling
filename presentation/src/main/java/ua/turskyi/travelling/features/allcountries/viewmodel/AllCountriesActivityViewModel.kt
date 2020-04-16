@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.models.Country
 import ua.turskyi.visitedcountries.utils.MainThreadExecutor
 import java.util.concurrent.Executors
 

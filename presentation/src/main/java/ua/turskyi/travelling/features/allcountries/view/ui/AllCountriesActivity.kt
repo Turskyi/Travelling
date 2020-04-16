@@ -10,7 +10,7 @@ import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.models.Country
 
 class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) {
 

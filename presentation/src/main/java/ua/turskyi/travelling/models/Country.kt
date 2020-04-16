@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.model
+package ua.turskyi.travelling.models
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -1,5 +1,6 @@
 package ua.turskyi.travelling.features.home.viewmodel
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,13 +9,17 @@ import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.extensions.mapModelListToActualList
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.isOnline
 
 class HomeActivityViewModel(private val interactor: CountriesInteractor) :
     ViewModel(){
 
     var notVisitedCount = 0
+
+    private val _visibilityLoader = MutableLiveData<Int>()
+    val visibilityLoader: MutableLiveData<Int>
+        get() = _visibilityLoader
 
     private val _visitedCountries = MutableLiveData<List<Country>>()
     var visitedCountries: LiveData<List<Country>>
@@ -27,6 +32,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) :
     var countries: LiveData<List<Country>>
 
     init {
+        _visibilityLoader.postValue(View.VISIBLE)
         visitedCountries = _visitedCountries
         countries = _countries
     }
@@ -60,6 +66,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) :
         viewModelScope.launch {
             interactor.getVisitedModelCountries({ countries ->
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
+                _visibilityLoader.postValue(View.GONE)
             }, {
 //                TODO: What to do if Visited countries was`nt loaded?
             })

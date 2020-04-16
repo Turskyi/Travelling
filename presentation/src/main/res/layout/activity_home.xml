@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                app:title="...loading countries"
                 app:statusBarScrim="@android:color/black"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
                 app:contentScrim="@android:color/black"
@@ -39,8 +40,8 @@
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:orientation="vertical"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="40dp"
+                    android:paddingTop="@dimen/offset_10"
+                    android:paddingBottom="@dimen/offset_40"
                     app:layout_collapseMode="pin"
                     android:focusable="true">
 
@@ -49,7 +50,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:animateLayoutChanges="true"
-                        android:elevation="4dp"
+                        android:elevation="@dimen/elevation_4"
                         android:soundEffectsEnabled="true" />
                 </FrameLayout>
 

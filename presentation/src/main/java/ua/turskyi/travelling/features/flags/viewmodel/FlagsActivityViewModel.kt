@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
-import ua.turskyi.travelling.model.Country
+import ua.turskyi.travelling.models.Country
 
 class FlagsActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
     var visitedCount = 0
