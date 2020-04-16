@@ -12,8 +12,7 @@ import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.isOnline
 
-class HomeActivityViewModel(private val interactor: CountriesInteractor) :
-    ViewModel(){
+class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
 
     var notVisitedCount = 0
 

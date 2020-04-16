@@ -39,15 +39,15 @@ import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
 import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
-import java.util.ArrayList
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class HomeActivity : AppCompatActivity(), CoroutineScope {
 
     private val viewModel by inject<HomeActivityViewModel>()
+    private val adapter by inject<HomeAdapter>()
     private lateinit var binding: ActivityHomeBinding
 
-    private val adapter by inject<HomeAdapter>()
     private var mSnackBar: Snackbar? = null
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -87,13 +87,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
-        adapter.onLongClickListener = {
-            it?.mapNodeToActual()?.let { it1 -> showSnackBar(it1) }
+        adapter.onLongClickListener = { countryNode ->
+            countryNode?.mapNodeToActual()?.let { country -> showSnackBar(country) }
         }
 
         adapter.onTextClickListener = {
-//            TODO: implement dialogue fragment with edit text and geo location
-//             with opportunity to add a city
+            AddCityDialogFragment(it).show(supportFragmentManager, null)
         }
     }
 

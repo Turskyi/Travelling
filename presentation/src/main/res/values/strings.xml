@@ -7,6 +7,9 @@
     <string name="flag" translatable="false">flag</string>
     <string name="country" translatable="false">Country</string>
     <string name="ic_item_arrow">arrow</string>
+    <string name="dialogue_hint_add_a_city">Add a city</string>
+    <string name="dialogue_btn_gps">GPS</string>
+    <string name="btn_save">Save</string>
 
     <plurals name="numberOfCountriesRemain">
         <item quantity="one">%d country remains to visit</item>

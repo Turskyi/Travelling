@@ -108,9 +108,9 @@
             android:visibility="gone"
             android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             app:elevation="@dimen/elevation_4"
-            app:fabCustomSize="@dimen/fab_customSize"
+            app:fabCustomSize="@dimen/siz_fab_custom"
             app:fabSize="auto"
-            app:maxImageSize="@dimen/fab_max_image_size"
+            app:maxImageSize="@dimen/size_fab_max_image"
             app:rippleColor="@android:color/black"
             app:srcCompat="@drawable/ic_countries_seen" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
