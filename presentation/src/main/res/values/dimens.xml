@@ -30,4 +30,6 @@
     <dimen name="cardview_radius">4dp</dimen>
     <dimen name="offset_10">10dp</dimen>
     <dimen name="elevation_4">4dp</dimen>
+    <dimen name="fab_customSize">224dp</dimen>
+    <dimen name="fab_max_image_size">192dp</dimen>
 </resources>

@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.entity.node.BaseNode
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -35,8 +36,10 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
+import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
+import java.util.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class HomeActivity : AppCompatActivity(), CoroutineScope {
@@ -186,7 +189,24 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun updateAdapter(countries: List<Country>) {
-        adapter.setList(countries.mapActualListToBaseNodeList())
+        val countryNodeList = countries.mapActualListToBaseNodeList()
+        for (country in countryNodeList){
+            /* Item Node*/
+            val itemEntity1 = CityNode("Root ${country.title} - city 0")
+            val itemEntity2 = CityNode("Root ${country.title} - city 1")
+            val itemEntity3 = CityNode("Root ${country.title} - city 2")
+            val itemEntity4 = CityNode("Root ${country.title} - city 3")
+            val itemEntity5 = CityNode("Root ${country.title} - city 4")
+            val items: MutableList<BaseNode> = ArrayList()
+            items.add(itemEntity1)
+            items.add(itemEntity2)
+            items.add(itemEntity3)
+            items.add(itemEntity4)
+            items.add(itemEntity5)
+            country.childNode = items
+            country.isExpanded = false
+        }
+        adapter.setList(countryNodeList)
         toolbarLayout.title = resources.getQuantityString(
             R.plurals.numberOfCountriesVisited,
             countries.size,
