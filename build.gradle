@@ -19,22 +19,25 @@ buildscript {
 subprojects {
     afterEvaluate {
         dependencies{
-            /* Room DB */
-            def room_version = "2.2.5"
-            implementation "androidx.room:room-runtime:$room_version"
-            kapt "androidx.room:room-compiler:$room_version"
+            /* Kotlin */
+            implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-            /* Room DB with RX */
-            implementation "androidx.room:room-rxjava2:$room_version"
+            /* koin */
+            implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+            implementation "org.koin:koin-core:$koin_version"
+            implementation "org.koin:koin-androidx-scope:$koin_version"
 
             /* Retrofit2 */
-            def retrofit_version = '2.7.1'
             implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
             implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-            /* Retrofit adapters for RX */
-            implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
-            implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+            /* Room DB */
+            implementation "androidx.room:room-runtime:$room_version"
+            kapt "androidx.room:room-compiler:$room_version"
+
+            /* coroutines  */
+            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
         }
     }
 }

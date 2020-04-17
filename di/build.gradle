@@ -37,9 +37,9 @@ dependencies {
     implementation project(path: ':data')
 
     /* koin */
-    api "org.koin:koin-androidx-viewmodel:2.0.1"
-    api "org.koin:koin-core:2.0.1"
-    api "org.koin:koin-androidx-scope:2.0.1"
+    api "org.koin:koin-androidx-viewmodel:$koin_version"
+    api "org.koin:koin-core:$koin_version"
+    api "org.koin:koin-androidx-scope:$koin_version"
 
     /* test */
     testImplementation 'junit:junit:4.13'
