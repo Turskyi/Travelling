@@ -237,11 +237,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         val countryNodeList = countries.mapActualListToBaseNodeList()
         for (country in countryNodeList){
             /* Item Node*/
-            val itemEntity1 = CityNode("Root ${country.title} - city 0")
-            val itemEntity2 = CityNode("Root ${country.title} - city 1")
-            val itemEntity3 = CityNode("Root ${country.title} - city 2")
-            val itemEntity4 = CityNode("Root ${country.title} - city 3")
-            val itemEntity5 = CityNode("Root ${country.title} - city 4")
+            val itemEntity1 = CityNode("Root ${country.title} - city 0",country.id)
+            val itemEntity2 = CityNode("Root ${country.title} - city 1",country.id)
+            val itemEntity3 = CityNode("Root ${country.title} - city 2",country.id)
+            val itemEntity4 = CityNode("Root ${country.title} - city 3",country.id)
+            val itemEntity5 = CityNode("Root ${country.title} - city 4",country.id)
             val items: MutableList<BaseNode> = ArrayList()
             items.add(itemEntity1)
             items.add(itemEntity2)

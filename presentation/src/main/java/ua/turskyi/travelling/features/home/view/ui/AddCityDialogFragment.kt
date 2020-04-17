@@ -63,7 +63,7 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
 
         buttonSave.setOnClickListener {
             if (editText.text.toString() != "") {
-                countryNode?.let { viewModel.addCityToCountry(it, CityNode(editText.text.toString())) }
+                countryNode?.let { viewModel.addCityToCountry(it, CityNode(editText.text.toString(), countryNode.id)) }
             } else {
                 alertDialog?.cancel()
             }
@@ -91,13 +91,13 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
         var gpsEnabled = false
         var networkEnabled = false
         try {
-            gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)!!
+            gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(DIALOG_LOG, e.message!!)
         }
         try {
-            networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)!!
+            networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(DIALOG_LOG, e.message!!)
