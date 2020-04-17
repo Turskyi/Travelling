@@ -132,6 +132,8 @@ dependencies {
     /* PhotoView */
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
+    implementation "com.google.android.gms:play-services-location:17.0.0"
+
     /* test */
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

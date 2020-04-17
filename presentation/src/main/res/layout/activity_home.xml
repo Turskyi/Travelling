@@ -68,7 +68,9 @@
 
         <ProgressBar
             android:id="@+id/pb"
-            style="@style/ProgressBarStyle" />
+            style="@style/ProgressBarStyle"
+            android:layout_marginTop="@dimen/offset_140"
+            android:elevation="@dimen/elevation_4"/>
 
         <include layout="@layout/content_home" />
 

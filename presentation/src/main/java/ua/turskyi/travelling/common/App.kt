@@ -10,6 +10,7 @@ import ua.turskyi.di.sourcesModule
 import ua.turskyi.travelling.di.adaptersModule
 import ua.turskyi.travelling.di.interactorsModule
 import ua.turskyi.travelling.di.viewModelsModule
+import ua.turskyi.travelling.utils.ContextUtil
 
 class App : Application() {
     override fun onCreate() {
@@ -28,5 +29,6 @@ class App : Application() {
                 )
             )
         }
+        ContextUtil.init(this)
     }
 }

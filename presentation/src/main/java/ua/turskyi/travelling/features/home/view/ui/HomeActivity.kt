@@ -1,11 +1,14 @@
 package ua.turskyi.travelling.features.home.view.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -42,7 +45,12 @@ import ua.turskyi.travelling.utils.IntFormatter
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
+
 class HomeActivity : AppCompatActivity(), CoroutineScope {
+
+    companion object {
+        const val ACCESS_LOCATION = 10001
+    }
 
     private val viewModel by inject<HomeActivityViewModel>()
     private val adapter by inject<HomeAdapter>()
@@ -56,9 +64,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        initView()
+        checkPermission()
         initListeners()
-        initObservers()
     }
 
     override fun onResume() {
@@ -91,8 +98,47 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
             countryNode?.mapNodeToActual()?.let { country -> showSnackBar(country) }
         }
 
-        adapter.onTextClickListener = {
-            AddCityDialogFragment(it).show(supportFragmentManager, null)
+        adapter.onTextClickListener = { countryNode ->
+            AddCityDialogFragment(countryNode).show(supportFragmentManager, null)
+        }
+    }
+
+    private fun checkPermission() {
+        val permissionGranted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        if (permissionGranted != PackageManager.PERMISSION_GRANTED) {
+            requestPermission()
+        } else {
+            initView()
+            initObservers()
+        }
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION).toTypedArray(),
+            ACCESS_LOCATION
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResult: IntArray
+    ) {
+        when (requestCode) {
+            ACCESS_LOCATION -> {
+                if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    initView()
+                    initObservers()
+                } else {
+                    requestPermission()
+                }
+            }
         }
     }
 
