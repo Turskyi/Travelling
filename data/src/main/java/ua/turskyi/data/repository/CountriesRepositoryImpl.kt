@@ -108,11 +108,4 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             onSusses(countriesDbSource.getNumNotVisitedCountries())
         }
     }
-
-    override suspend fun getModelCountriesFromDb(
-        onSusses: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
-    ) {
-        onSusses(countriesDbSource.getAllLocalCountries().mapEntityListToModelList())
-    }
 }

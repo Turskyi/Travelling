@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel" />
+            type="ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

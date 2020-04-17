@@ -15,7 +15,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.home.viewmodel.AddCityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
 import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.CountryNode
 import ua.turskyi.travelling.utils.Tips

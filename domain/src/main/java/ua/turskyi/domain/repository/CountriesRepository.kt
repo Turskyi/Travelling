@@ -8,11 +8,6 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun getModelCountriesFromDb(
-        onSusses: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
-
     suspend fun addModelToDb(
         countries: List<CountryModel>,
         onError: ((Exception) -> Unit?)? = null

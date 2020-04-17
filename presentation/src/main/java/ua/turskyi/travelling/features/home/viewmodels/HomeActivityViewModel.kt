@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.home.viewmodel
+package ua.turskyi.travelling.features.home.viewmodels
 
 import android.view.View
 import androidx.lifecycle.LiveData

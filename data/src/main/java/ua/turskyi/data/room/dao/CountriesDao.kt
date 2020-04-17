@@ -12,9 +12,6 @@ abstract class CountriesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertAllCountries(country: List<CountryEntity>?)
 
-    @Query("SELECT * FROM $TABLE_NAME")
-    abstract suspend fun getAllCountriesFromDb(): List<CountryEntity>
-
     /* using in paging adapters */
     @Query("SELECT * FROM $TABLE_NAME LIMIT :limit OFFSET :offset")
     abstract   fun getCountriesByRange(limit: Int, offset: Int): List<CountryEntity>

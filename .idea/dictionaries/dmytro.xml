@@ -5,6 +5,7 @@
       <w>backstack</w>
       <w>collapsingtoolbar</w>
       <w>constraintlayout</w>
+      <w>coroutines</w>
       <w>interactor</w>
       <w>interactors</w>
       <w>koin</w>

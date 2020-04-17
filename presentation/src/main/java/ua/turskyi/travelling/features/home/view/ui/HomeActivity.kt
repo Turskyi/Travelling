@@ -38,7 +38,7 @@ import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
-import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter

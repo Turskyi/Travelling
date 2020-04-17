@@ -1,12 +1,17 @@
-package ua.turskyi.travelling.features.home.viewmodel
+package ua.turskyi.travelling.features.home.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.CountryNode
 
 class AddCityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
     fun addCityToCountry(countryNode: CountryNode, cityNode: CityNode?){
-        cityNode?.let { countryNode.childNode?.add(it) }
+        viewModelScope.launch {
+            interactor
+        }
+//        cityNode?.let { countryNode.childNode?.add(it) }
     }
 }

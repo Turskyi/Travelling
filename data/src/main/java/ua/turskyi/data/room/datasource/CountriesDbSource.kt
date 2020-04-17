@@ -12,6 +12,4 @@ class CountriesDbSource(private val countriesDao: CountriesDao) {
     fun insert(countryEntity: CountryEntity) = countriesDao.insert(countryEntity)
     fun insertAllCountries(countries: List<CountryEntity>) =
         countriesDao.insertAllCountries(countries)
-
-    suspend fun getAllLocalCountries() = countriesDao.getAllCountriesFromDb()
 }

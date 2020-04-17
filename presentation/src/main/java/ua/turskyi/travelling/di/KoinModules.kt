@@ -6,8 +6,8 @@ import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdap
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
-import ua.turskyi.travelling.features.home.viewmodel.AddCityViewModel
-import ua.turskyi.travelling.features.home.viewmodel.HomeActivityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 
 val adaptersModule = module {
     factory { HomeAdapter() }
