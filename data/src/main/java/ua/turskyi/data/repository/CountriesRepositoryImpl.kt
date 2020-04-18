@@ -12,6 +12,7 @@ import ua.turskyi.data.extensions.mapModelListToEntityList
 import ua.turskyi.data.extensions.mapModelToEntity
 import ua.turskyi.data.extensions.mapNetListToModelList
 import ua.turskyi.data.room.datasource.CountriesDbSource
+import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
 
@@ -26,7 +27,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         countriesNetSource.getCountryNetList({ countryNetList ->
             GlobalScope.launch {
                 countryNetList?.mapNetListToModelList()?.let { modelList ->
-                    addModelToDb(modelList)
+                    addModelsToDb(modelList)
                 }
                 withContext(Dispatchers.Main) {
                     onSusses()
@@ -77,7 +78,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         }
     }
 
-    override suspend fun addModelToDb(
+    override suspend fun addModelsToDb(
         countries: List<CountryModel>,
         onError: ((Exception) -> Unit?)?
     ){
@@ -106,6 +107,15 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     ) {
         GlobalScope.launch {
             onSusses(countriesDbSource.getNumNotVisitedCountries())
+        }
+    }
+
+    override suspend fun insertCity(
+       city: CityModel,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        GlobalScope.launch {
+            countriesDbSource.insertCity(city.mapModelToEntity())
         }
     }
 }

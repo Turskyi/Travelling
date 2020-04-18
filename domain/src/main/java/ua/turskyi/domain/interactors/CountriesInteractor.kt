@@ -2,6 +2,7 @@ package ua.turskyi.domain.interactors
 
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
 
@@ -50,5 +51,12 @@ class CountriesInteractor : KoinComponent {
         onError: ((Exception) -> Unit?)? = null
     ) {
         repository.removeFromVisited(country, onError = onError)
+    }
+
+    suspend fun insertCity(
+        city: CityModel,
+        onError: ((Exception) -> Unit?)? = null
+    ) {
+        repository.insertCity(city, onError = onError)
     }
 }

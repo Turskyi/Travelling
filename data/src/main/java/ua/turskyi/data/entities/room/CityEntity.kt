@@ -9,12 +9,13 @@ import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
 
 @Entity(tableName = TABLE_CITIES , indices = [Index(value = [COLUMN_ID], unique = true)])
 data class CityEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) var id: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) var id: Int?,
     @ColumnInfo(name = COLUMN_NAME) val name: String,
     @ColumnInfo(name = COLUMN_PARENT_ID)  val parentId: Int
 ) {
+    constructor(name: String, parentId: Int) : this(null, name, parentId)
     companion object {
-        const val TABLE_CITIES = "Countries"
+        const val TABLE_CITIES = "Cities"
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
         const val COLUMN_PARENT_ID = "parentId"

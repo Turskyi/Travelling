@@ -76,7 +76,7 @@ val dataProvidersModule = module {
 }
 
 val sourcesModule = module {
-    single { get<Database>().genericDao() }
+    single { get<Database>().countriesDao() }
     single { get<Retrofit>().create(CountriesApi::class.java) }
     single { CountriesDbSource(get()) }
     single { CountriesNetSource(get()) }

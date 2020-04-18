@@ -1,5 +1,6 @@
 package ua.turskyi.domain.repository
 
+import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
@@ -8,7 +9,7 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun addModelToDb(
+    suspend fun addModelsToDb(
         countries: List<CountryModel>,
         onError: ((Exception) -> Unit?)? = null
     )
@@ -37,6 +38,11 @@ interface CountriesRepository {
         limit: Int,
         offset: Int,
         onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
+    suspend fun insertCity(
+        city: CityModel,
         onError: ((Exception) -> Unit?)? = null
     )
 }

@@ -5,20 +5,22 @@ import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ua.turskyi.data.BuildConfig
+import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.room.dao.CountriesDao
 import androidx.room.Database as DB
 
 @DB(
     entities = [
-        CountryEntity::class
+        CountryEntity::class,
+        CityEntity::class
     ],
     version = 1,
     exportSchema = false
 )
 abstract class Database : RoomDatabase() {
 
-    abstract fun genericDao(): CountriesDao
+    abstract fun countriesDao(): CountriesDao
 
     companion object {
         @Volatile
