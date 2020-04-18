@@ -9,6 +9,7 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.CityNode
 
 class CityNodeProvider : BaseNodeProvider() {
+
     override val itemViewType: Int
         get() = 1
 

@@ -1,6 +1,8 @@
 package ua.turskyi.travelling.features.home.view.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.location.*
 import android.os.Bundle
 import android.util.Log
@@ -19,20 +21,23 @@ import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
 import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.CountryNode
 import ua.turskyi.travelling.utils.Tips
+import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widget.LinedEditText
 import java.util.*
 
-class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragment() {
+
+class AddCityDialogFragment(private val countryNode: CountryNode) : DialogFragment(){
+
     companion object {
-        const val DIALOG_LOG = "===="
+        const val DIALOG_LOG = "DIALOG_LOG"
+        const val CITY_LOG = "CITY_LOG"
     }
+
     private val viewModel by inject<AddCityViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
-        locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        initLocationServices()
 
         val builder = context?.let { context ->
             AlertDialog.Builder(
@@ -61,48 +66,59 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
+        initListeners(buttonSave, editText, countryNode, alertDialog, buttonGps)
+        return alertDialog!!
+    }
+
+    private fun initLocationServices() {
+        locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
+    private fun initListeners(
+        buttonSave: Button,
+        editText: LinedEditText,
+        countryNode: CountryNode,
+        alertDialog: AlertDialog?,
+        buttonGps: Button
+    ) {
         buttonSave.setOnClickListener {
             if (editText.text.toString() != "") {
-                countryNode?.let { viewModel.addCityToCountry(it, CityNode(editText.text.toString(), countryNode.id)) }
+                viewModel.addCityToCountry(
+                    CityNode(editText.text.toString(), countryNode.id)
+                )
             } else {
                 alertDialog?.cancel()
             }
+            Log.d(HomeActivity.LOG_UPDATE, "before dismis")
             alertDialog?.dismiss()
         }
 
         buttonGps.setOnClickListener {
             checkIfGpsEnabled(editText)
         }
-        return alertDialog!!
     }
 
     private fun checkIfGpsEnabled(editText: LinedEditText) {
-        val (gpsEnabled, networkEnabled) = checkIfGpsEnabled()
-        if (!gpsEnabled && !networkEnabled) {
+        val gpsEnabled = checkIfGpsEnabled()
+        if (!gpsEnabled) {
             Tips.show(getString(R.string.dialogue_turn_on_gps))
-            Log.d(DIALOG_LOG, "GPS not Enabled")
+        } else if (!isOnline()) {
+            Tips.show(getString(R.string.dialog_turn_no_internet))
         } else {
-            Log.d(DIALOG_LOG, "GPS Enabled")
             addCityTo(editText)
         }
     }
 
-    private fun checkIfGpsEnabled(): Pair<Boolean, Boolean> {
+    private fun checkIfGpsEnabled():Boolean {
         var gpsEnabled = false
-        var networkEnabled = false
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d(DIALOG_LOG, e.message!!)
         }
-        try {
-            networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d(DIALOG_LOG, e.message!!)
-        }
-        return Pair(gpsEnabled, networkEnabled)
+        return gpsEnabled
     }
 
     private fun addCityTo(editText: LinedEditText) {
@@ -111,6 +127,7 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
             if (location != null) {
                 addLastLocation(location, editText)
             } else {
+                Tips.show(getString(R.string.dialog_hold_on))
                 addChangedLocation(editText)
             }
         }
@@ -129,7 +146,6 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
                             )
                         }
                     val cityChanged: String? = addressesChanged?.get(0)?.locality
-                    Log.d(DIALOG_LOG, "location changed $cityChanged")
                     editText.setText(cityChanged)
                 }
 
@@ -159,7 +175,6 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
         location: Location,
         editText: LinedEditText
     ) {
-        Log.d(DIALOG_LOG, "findLastLocationTask is successful and location not null")
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: MutableList<Address>? =
             location.latitude.let { latitude ->
@@ -169,7 +184,13 @@ class AddCityDialogFragment(private val countryNode: CountryNode?) : DialogFragm
                 )
             }
         val cityName: String? = addresses?.get(0)?.locality
-        Log.d(DIALOG_LOG, "last location: $cityName")
         editText.setText(cityName)
+    }
+  override  fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val activity: Activity? = activity
+        if (activity is DialogInterface.OnDismissListener) {
+            (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
+        }
     }
 }

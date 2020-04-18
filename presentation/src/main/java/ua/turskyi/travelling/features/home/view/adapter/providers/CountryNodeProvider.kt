@@ -25,21 +25,21 @@ class CountryNodeProvider : BaseNodeProvider() {
     override val layoutId: Int
         get() = R.layout.list_item_country
 
-    var onImageClickListener: ((data: CountryNode?) -> Unit)? = null
-    var onTextClickListener: ((data: CountryNode?) -> Unit)? = null
-    var onLongLickListener: ((data: CountryNode?) -> Unit)? = null
+    var onImageClickListener: ((data: CountryNode) -> Unit)? = null
+    var onTextClickListener: ((data: CountryNode) -> Unit)? = null
+    var onLongLickListener: ((data: CountryNode) -> Unit)? = null
 
     override fun convert(
         helper: BaseViewHolder,
         item: BaseNode
     ) {
-        val entity: CountryNode? = item as CountryNode?
+        val entity: CountryNode = item as CountryNode
         helper.getView<TextView>(R.id.tvCountry).setOnLongClickListener{
-            onLongLickListener?.invoke(entity)!!
+            onLongLickListener?.invoke(entity)
             true
         }
         showPicturesInSVG(item, helper)
-        helper.setText(R.id.tvCountry, entity?.title)
+        helper.setText(R.id.tvCountry, entity.title)
         helper.getView<ImageView>(R.id.ivFlag).setOnClickListener {
             onImageClickListener?.invoke(entity)
         }
@@ -50,7 +50,6 @@ class CountryNodeProvider : BaseNodeProvider() {
             onTextClickListener?.invoke(entity)
         }
         if (!item.childNode.isNullOrEmpty()) {
-            entity?.let {
                 if (entity.isExpanded) {
                     helper.setImageResource(
                         R.id.more,
@@ -62,7 +61,6 @@ class CountryNodeProvider : BaseNodeProvider() {
                         R.drawable.ic_arrow_expandable_down
                     )
                 }
-            }
             helper.setVisible(R.id.more, true)
         } else {
             helper.setVisible(R.id.more, false)

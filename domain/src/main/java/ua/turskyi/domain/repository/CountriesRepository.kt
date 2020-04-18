@@ -10,7 +10,7 @@ interface CountriesRepository {
     )
 
     suspend fun addModelsToDb(
-        countries: List<CountryModel>,
+        countries: MutableList<CountryModel>,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -21,6 +21,11 @@ interface CountriesRepository {
 
     suspend fun getVisitedModelCountriesFromDb(
         onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
+    suspend fun getCities(
+        onSusses: (MutableList<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -43,6 +48,11 @@ interface CountriesRepository {
 
     suspend fun insertCity(
         city: CityModel,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
+    suspend fun addCityToCountry(
+        country: CountryModel,
         onError: ((Exception) -> Unit?)? = null
     )
 }

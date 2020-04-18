@@ -3,6 +3,7 @@ package ua.turskyi.data.room
 import android.content.Context
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ua.turskyi.data.BuildConfig
 import ua.turskyi.data.entities.room.CityEntity
@@ -18,6 +19,7 @@ import androidx.room.Database as DB
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
     abstract fun countriesDao(): CountriesDao

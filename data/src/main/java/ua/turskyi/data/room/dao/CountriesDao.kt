@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ua.turskyi.data.entities.room.CityEntity
+import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
 import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_NAME
 
@@ -22,6 +23,9 @@ abstract class CountriesDao {
 
     @Query("SELECT * FROM $TABLE_NAME WHERE ${CountryEntity.COLUMN_VISITED} = 1")
    abstract fun getVisitedCountries(): List<CountryEntity>
+
+    @Query("SELECT * FROM $TABLE_CITIES")
+    abstract fun getCities(): MutableList<CityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(country: CountryEntity)

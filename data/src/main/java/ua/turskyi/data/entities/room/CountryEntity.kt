@@ -12,7 +12,8 @@ data class CountryEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) var id: Int,
     @ColumnInfo(name = COLUMN_NAME) val name: String,
     @ColumnInfo(name = COLUMN_FLAG)  val flag: String,
-    @ColumnInfo(name = COLUMN_VISITED) var visited: Boolean?
+    @ColumnInfo(name = COLUMN_VISITED) var visited: Boolean?,
+    @ColumnInfo(name = COLUMN_CITIES) var cities: MutableList<CityEntity>?
 ) {
     companion object {
         const val TABLE_NAME = "Countries"
@@ -20,5 +21,6 @@ data class CountryEntity(
         const val COLUMN_NAME = "name"
         const val COLUMN_FLAG = "flag"
         const val COLUMN_VISITED = "visited"
+        const val COLUMN_CITIES = "cities"
     }
 }

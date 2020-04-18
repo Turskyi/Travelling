@@ -7,4 +7,4 @@ class CountryNode(
     var id: Int,
     var img: String,
     var visited: Boolean?,
-    override var childNode: MutableList<BaseNode>?, val title: String) : BaseExpandNode()
+    override var childNode: MutableList<BaseNode>? = null, val title: String) : BaseExpandNode()

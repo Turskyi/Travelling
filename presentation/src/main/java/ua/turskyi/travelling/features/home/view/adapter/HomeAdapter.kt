@@ -16,19 +16,19 @@ class HomeAdapter : BaseNodeAdapter() {
         addNodeProvider(CityNodeProvider())
     }
 
-    var onImageClickListener: ((data: CountryNode?) -> Unit)? = null
+    var onImageClickListener: ((data: CountryNode) -> Unit)? = null
         set(value) {
             provider.onImageClickListener = value
             field = value
         }
 
-    var onTextClickListener: ((data: CountryNode?) -> Unit)? = null
+    var onTextClickListener: ((data: CountryNode) -> Unit)? = null
         set(value) {
             provider.onTextClickListener = value
             field = value
         }
 
-    var onLongClickListener: ((data: CountryNode?) -> Unit)? = null
+    var onLongClickListener: ((data: CountryNode) -> Unit)? = null
         set(value) {
             provider.onLongLickListener = value
             field = value

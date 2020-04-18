@@ -1,10 +1,12 @@
 package ua.turskyi.travelling.features.home.view.ui
 
 import android.Manifest
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.entity.node.BaseNode
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -31,7 +32,6 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.GridSectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
-import ua.turskyi.travelling.extensions.mapActualListToBaseNodeList
 import ua.turskyi.travelling.extensions.mapNodeToActual
 import ua.turskyi.travelling.extensions.spToPix
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
@@ -39,17 +39,16 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
-import ua.turskyi.travelling.models.CityNode
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.models.CountryNode
 import ua.turskyi.travelling.utils.IntFormatter
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-
-class HomeActivity : AppCompatActivity(), CoroutineScope {
+class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener  {
 
     companion object {
         const val ACCESS_LOCATION = 10001
+        const val LOG_UPDATE = "LOG_UPDATE"
     }
 
     private val viewModel by inject<HomeActivityViewModel>()
@@ -71,6 +70,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     override fun onResume() {
         super.onResume()
         launch {
+            Log.d(LOG_UPDATE, "on Resume")
             viewModel.initList()
         }
     }
@@ -83,7 +83,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         val layoutManager = LinearLayoutManager(this)
         rvVisitedCountries.adapter = this.adapter
         rvVisitedCountries.layoutManager = layoutManager
-        rvVisitedCountries.addItemDecoration(GridSectionAverageGapItemDecoration(10, 10, 20, 15))
+        rvVisitedCountries.addItemDecoration(
+            GridSectionAverageGapItemDecoration(
+                10, 10, 20, 15
+            )
+        )
     }
 
     private fun initListeners() {
@@ -95,7 +99,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
                 startActivity(intent)
             }
         adapter.onLongClickListener = { countryNode ->
-            countryNode?.mapNodeToActual()?.let { country -> showSnackBar(country) }
+            showSnackBar(countryNode.mapNodeToActual())
         }
 
         adapter.onTextClickListener = { countryNode ->
@@ -172,11 +176,13 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
                     viewModel.onNavigatedToAllCountries()
                 }
             })
+        viewModel.visitedCountriesWithCities.observe(this, Observer {
+            updateAdapter(it)
+        })
         viewModel.visitedCountries.observe(
             this,
             Observer { visitedCountries ->
                 initPieChart(visitedCountries)
-                updateAdapter(visitedCountries)
                 showFloatBtn(visitedCountries)
             })
         viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
@@ -233,26 +239,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
         pieChart.invalidate()
     }
 
-    private fun updateAdapter(countries: List<Country>) {
-        val countryNodeList = countries.mapActualListToBaseNodeList()
-        for (countryNode in countryNodeList){
-            val items: MutableList<BaseNode> = mutableListOf()
-
-            /* Item Node*/
-//            val itemEntity1 = CityNode("Root ${countryNode.title} - city 0",countryNode.id)
-//            val itemEntity2 = CityNode("Root ${countryNode.title} - city 1",countryNode.id)
-//            val itemEntity3 = CityNode("Root ${countryNode.title} - city 2",countryNode.id)
-//            val itemEntity4 = CityNode("Root ${countryNode.title} - city 3",countryNode.id)
-//            val itemEntity5 = CityNode("Root ${countryNode.title} - city 4",countryNode.id)
-//            items.add(itemEntity1)
-//            items.add(itemEntity2)
-//            items.add(itemEntity3)
-//            items.add(itemEntity4)
-//            items.add(itemEntity5)
-            countryNode.childNode = items
+    private fun updateAdapter(countries: List<CountryNode>) {
+        for (countryNode in countries) {
             countryNode.isExpanded = false
         }
-        adapter.setList(countryNodeList)
+        adapter.setList(countries)
         toolbarLayout.title = resources.getQuantityString(
             R.plurals.numberOfCountriesVisited,
             countries.size,
@@ -263,5 +254,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+    }
+
+    override fun onDismiss(p0: DialogInterface?) {
+        Log.d(LOG_UPDATE, "on dismiss")
+        launch {
+            viewModel.initList()
+        }
     }
 }

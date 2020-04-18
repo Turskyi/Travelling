@@ -39,6 +39,13 @@ class CountriesInteractor : KoinComponent {
         return repository.getVisitedModelCountriesFromDb(onSusses, onError)
     }
 
+    suspend fun getCities(
+        onSusses: (MutableList<CityModel>) -> Unit,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        return repository.getCities(onSusses, onError)
+    }
+
     suspend fun markAsVisitedCountryModel(
         country: CountryModel,
         onError: ((Exception) -> Unit?)? = null
@@ -51,6 +58,13 @@ class CountriesInteractor : KoinComponent {
         onError: ((Exception) -> Unit?)? = null
     ) {
         repository.removeFromVisited(country, onError = onError)
+    }
+
+    suspend fun addCityToCountry(
+        country: CountryModel,
+        onError: ((Exception) -> Unit?)? = null
+    ) {
+        repository.addCityToCountry(country, onError = onError)
     }
 
     suspend fun insertCity(
