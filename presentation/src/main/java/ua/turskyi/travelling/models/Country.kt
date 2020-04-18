@@ -7,19 +7,23 @@ data class Country(
     var id: Int,
     val name: String,
     val flag: String,
-    var visited: Boolean? = null
+    var visited: Boolean? = null,
+    var cities: MutableList<*>? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Int::class.java.classLoader) as Int,
         parcel.readValue(String::class.java.classLoader) as String,
         parcel.readValue(String::class.java.classLoader) as String,
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean)
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readValue(mutableListOf<CityNode>()::class.java.classLoader) as? MutableList<*>
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeValue(id)
         parcel.writeValue(name)
         parcel.writeValue(flag)
         parcel.writeValue(visited)
+        parcel.writeValue(cities)
     }
 
     override fun describeContents(): Int {

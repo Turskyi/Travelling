@@ -21,9 +21,9 @@ fun Country.mapActualToModel() = CountryModel(
 
 fun CityNode.mapNodeToModel() = CityModel(id = id, name =  name, parentId = parentId)
 
-fun CountryNode.mapNodeToActual() = Country(id, title, img)
+fun CountryNode.mapNodeToActual() = Country(id = id, visited = visited, name = title, flag = img, cities = childNode)
 fun Country.mapActualToBaseNode(childNodes: MutableList<BaseNode>?) =
-    CountryNode(id = id, title = name, img = flag, childNode = childNodes)
+    CountryNode(id = id, title = name, img = flag, childNode = childNodes, visited = visited)
 
 fun List<Country>.mapActualListToBaseNodeList() = this.mapTo(mutableListOf(), { country ->
     country.mapActualToBaseNode(mutableListOf())

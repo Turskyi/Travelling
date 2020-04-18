@@ -235,21 +235,22 @@ class HomeActivity : AppCompatActivity(), CoroutineScope {
 
     private fun updateAdapter(countries: List<Country>) {
         val countryNodeList = countries.mapActualListToBaseNodeList()
-        for (country in countryNodeList){
+        for (countryNode in countryNodeList){
+            val items: MutableList<BaseNode> = mutableListOf()
+
             /* Item Node*/
-            val itemEntity1 = CityNode("Root ${country.title} - city 0",country.id)
-            val itemEntity2 = CityNode("Root ${country.title} - city 1",country.id)
-            val itemEntity3 = CityNode("Root ${country.title} - city 2",country.id)
-            val itemEntity4 = CityNode("Root ${country.title} - city 3",country.id)
-            val itemEntity5 = CityNode("Root ${country.title} - city 4",country.id)
-            val items: MutableList<BaseNode> = ArrayList()
-            items.add(itemEntity1)
-            items.add(itemEntity2)
-            items.add(itemEntity3)
-            items.add(itemEntity4)
-            items.add(itemEntity5)
-            country.childNode = items
-            country.isExpanded = false
+//            val itemEntity1 = CityNode("Root ${countryNode.title} - city 0",countryNode.id)
+//            val itemEntity2 = CityNode("Root ${countryNode.title} - city 1",countryNode.id)
+//            val itemEntity3 = CityNode("Root ${countryNode.title} - city 2",countryNode.id)
+//            val itemEntity4 = CityNode("Root ${countryNode.title} - city 3",countryNode.id)
+//            val itemEntity5 = CityNode("Root ${countryNode.title} - city 4",countryNode.id)
+//            items.add(itemEntity1)
+//            items.add(itemEntity2)
+//            items.add(itemEntity3)
+//            items.add(itemEntity4)
+//            items.add(itemEntity5)
+            countryNode.childNode = items
+            countryNode.isExpanded = false
         }
         adapter.setList(countryNodeList)
         toolbarLayout.title = resources.getQuantityString(
