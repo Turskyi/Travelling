@@ -46,8 +46,10 @@ class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfi
                     }
 
                     override fun onResourceReady() {
-                        imageViewEnlarged.visibility = View.VISIBLE
-                        wvFlag.visibility = View.GONE
+                        imageViewEnlarged?.let {ivFlag ->
+                            ivFlag.visibility = View.VISIBLE
+                            wvFlag.visibility = View.GONE
+                        }
                     }
                 })
                 .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)

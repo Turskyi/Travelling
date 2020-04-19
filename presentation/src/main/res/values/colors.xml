@@ -5,4 +5,6 @@
     <color name="colorBlack">@android:color/black</color>
     <color name="bgDarkDialogue">#37474F</color>
     <color name="lightGrey">#EAEAEA</color>
+    <color name="bgVisitedCountry">#090909</color>
+    <color name="colorBgCity">#1B2432</color>
 </resources>

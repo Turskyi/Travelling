@@ -2,6 +2,7 @@ package ua.turskyi.travelling.features.home.view.adapter.providers
 
 import android.graphics.Color
 import android.net.Uri
+import android.util.TypedValue
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -40,12 +41,15 @@ class CountryNodeProvider : BaseNodeProvider() {
         }
         showPicturesInSVG(item, helper)
         helper.setText(R.id.tvCountry, entity.title)
+        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.ivFlag))
         helper.getView<ImageView>(R.id.ivFlag).setOnClickListener {
             onImageClickListener?.invoke(entity)
         }
+        setSelectableBorderLessFor(helper.getView<WebView>(R.id.wvFlag))
         helper.getView<WebView>(R.id.wvFlag).setOnClickListener {
             onImageClickListener?.invoke(entity)
         }
+        setSelectableBackgroundFor(helper.getView<TextView>(R.id.tvCountry))
         helper.getView<TextView>(R.id.tvCountry).setOnClickListener {
             onTextClickListener?.invoke(entity)
         }
@@ -65,6 +69,21 @@ class CountryNodeProvider : BaseNodeProvider() {
         } else {
             helper.setVisible(R.id.ivMore, false)
         }
+    }
+
+    private fun setSelectableBackgroundFor(it: View) {
+        val outValue = TypedValue()
+        context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
+        it.setBackgroundResource(outValue.resourceId)
+    }
+
+    private fun setSelectableBorderLessFor(it: View) {
+        val outValue = TypedValue()
+        context.theme.resolveAttribute(
+            R.attr.selectableItemBackgroundBorderless, outValue,
+            true
+        )
+        it.setBackgroundResource(outValue.resourceId)
     }
 
     private fun showPicturesInSVG(
@@ -105,8 +124,7 @@ class CountryNodeProvider : BaseNodeProvider() {
         data: BaseNode,
         position: Int
     ) {
-        helper.getView<ImageView>(R.id.ivMore).setOnClickListener {
-            getAdapter()?.expandOrCollapse(position)
-        }
+        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.ivMore))
+        getAdapter()?.expandOrCollapse(position)
     }
 }

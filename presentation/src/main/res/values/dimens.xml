@@ -37,4 +37,6 @@
     <dimen name="siz_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
     <dimen name="offset_140">140dp</dimen>
+    <dimen name="offset_1">1dp</dimen>
+    <dimen name="offset_2">2dp</dimen>
 </resources>

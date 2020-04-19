@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/llCountry"
     android:weightSum="10"
+    android:background="@drawable/bg_round_shape_gray"
     style="@style/LinearLayoutForListItemStyle">
 
     <ImageView

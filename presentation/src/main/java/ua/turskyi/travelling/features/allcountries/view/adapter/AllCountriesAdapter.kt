@@ -3,6 +3,7 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -58,6 +60,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentCountry = getItem(position) as Country
         holder.tvCountry.text = currentCountry.name
+        setSelectableItemBackground(holder)
         if (currentCountry.visited == true) {
             holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         } else {
@@ -65,6 +68,16 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
                 holder.tvCountry.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
         showPicturesInSVG(currentCountry, holder)
+    }
+
+    private fun setSelectableItemBackground(holder: ViewHolder) {
+        val outValue = TypedValue()
+        holder.itemView.context.theme.resolveAttribute(
+            R.attr.selectableItemBackground,
+            outValue,
+            true
+        )
+        holder.llCountry.setBackgroundResource(outValue.resourceId)
     }
 
     private fun showPicturesInSVG(
@@ -105,6 +118,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
         val tvCountry: TextView = itemView.tvCountry
         val ivFlag: ImageView = itemView.ivFlag
         val wvFlag: WebView = itemView.wvFlag
+        val llCountry: LinearLayout = itemView.llCountry
 
         init {
             itemView.setOnClickListener {

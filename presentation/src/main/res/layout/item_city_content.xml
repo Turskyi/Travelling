@@ -10,7 +10,7 @@
     android:animateLayoutChanges="true"
     android:animationCache="true"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="@android:color/transparent"
+    card_view:cardBackgroundColor="@color/colorBgCity"
     card_view:cardCornerRadius="@dimen/radius_cardview"
     card_view:cardElevation="@dimen/elevation_2"
     card_view:cardUseCompatPadding="true">
