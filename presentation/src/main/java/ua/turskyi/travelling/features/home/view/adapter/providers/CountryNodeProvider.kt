@@ -52,18 +52,18 @@ class CountryNodeProvider : BaseNodeProvider() {
         if (!item.childNode.isNullOrEmpty()) {
                 if (entity.isExpanded) {
                     helper.setImageResource(
-                        R.id.more,
+                        R.id.ivMore,
                         R.drawable.ic_arrow_expandable_up
                     )
                 } else {
                     helper.setImageResource(
-                        R.id.more,
+                        R.id.ivMore,
                         R.drawable.ic_arrow_expandable_down
                     )
                 }
-            helper.setVisible(R.id.more, true)
+            helper.setVisible(R.id.ivMore, true)
         } else {
-            helper.setVisible(R.id.more, false)
+            helper.setVisible(R.id.ivMore, false)
         }
     }
 
@@ -105,6 +105,8 @@ class CountryNodeProvider : BaseNodeProvider() {
         data: BaseNode,
         position: Int
     ) {
-        getAdapter()?.expandOrCollapse(position)
+        helper.getView<ImageView>(R.id.ivMore).setOnClickListener {
+            getAdapter()?.expandOrCollapse(position)
+        }
     }
 }

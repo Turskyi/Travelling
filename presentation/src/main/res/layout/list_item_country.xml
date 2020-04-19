@@ -24,7 +24,7 @@
         tool:text="@string/visitedCountry" />
 
     <ImageView
-        android:id="@+id/more"
+        android:id="@+id/ivMore"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="end|center"
