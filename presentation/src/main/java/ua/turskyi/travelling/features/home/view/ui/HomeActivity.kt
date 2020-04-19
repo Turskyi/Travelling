@@ -79,6 +79,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         binding.viewModel = this.viewModel
         binding.lifecycleOwner = this
         setSupportActionBar(toolbar)
+
+        /* remove default text "no chart data available */
+        pieChart.setNoDataText(null)
+
         val layoutManager = LinearLayoutManager(this)
         rvVisitedCountries.adapter = this.adapter
         rvVisitedCountries.layoutManager = layoutManager
@@ -227,9 +231,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
         /* removes color squares */
         pieChart.legend.isEnabled = false
-
-        /* remove default text "no chart data available */
-        pieChart.setNoDataText(null)
 
         /* rotate the pie chart to 45 degrees */
         pieChart.rotationAngle = -10f
