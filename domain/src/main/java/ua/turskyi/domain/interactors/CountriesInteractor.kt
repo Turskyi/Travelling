@@ -60,6 +60,13 @@ class CountriesInteractor : KoinComponent {
         repository.removeFromVisited(country, onError = onError)
     }
 
+    suspend fun removeCity(
+        city: CityModel,
+        onError: ((Exception) -> Unit?)? = null
+    ) {
+        repository.removeCity(city, onError = onError)
+    }
+
     suspend fun insertCity(
         city: CityModel,
         onError: ((Exception) -> Unit?)? = null

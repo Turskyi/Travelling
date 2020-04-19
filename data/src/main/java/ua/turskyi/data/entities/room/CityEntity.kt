@@ -13,7 +13,6 @@ data class CityEntity(
     @ColumnInfo(name = COLUMN_NAME) val name: String,
     @ColumnInfo(name = COLUMN_PARENT_ID)  val parentId: Int
 ) {
-    constructor(name: String, parentId: Int) : this(null, name, parentId)
     companion object {
         const val TABLE_CITIES = "Cities"
         const val COLUMN_ID = "id"

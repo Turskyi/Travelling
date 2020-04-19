@@ -14,5 +14,7 @@ class CountriesDbSource(private val countriesDao: CountriesDao) {
     fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
     fun insertAllCountries(countries: List<CountryEntity>) =
         countriesDao.insertAllCountries(countries)
+
     fun insertCity(cityEntity: CityEntity) = countriesDao.insertCity(cityEntity)
+    fun removeCity(city: CityEntity) = countriesDao.delete(city)
 }

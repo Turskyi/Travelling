@@ -62,6 +62,20 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         }
     }
 
+    override suspend fun removeCity(
+        city: CityModel,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        GlobalScope.launch {
+            try {
+                val cityLocal = city.mapModelToEntity()
+                countriesDbSource.removeCity(cityLocal)
+            } catch (e: java.lang.Exception) {
+                onError?.invoke(e)
+            }
+        }
+    }
+
     override suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,

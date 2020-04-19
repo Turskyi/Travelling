@@ -1,5 +1,6 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,11 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
+import okhttp3.Interceptor.Companion.invoke
 import ua.turskyi.domain.interactors.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapActualToModel
-import ua.turskyi.travelling.extensions.mapModelListToActualList
-import ua.turskyi.travelling.extensions.mapModelListToNodeList
-import ua.turskyi.travelling.extensions.mapModelToBaseNode
+import ua.turskyi.travelling.extensions.*
+import ua.turskyi.travelling.features.home.view.ui.AddCityDialogFragment.Companion.CITY_LOG
+import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.isOnline
@@ -74,6 +75,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     viewModelScope.launch {
                         interactor.getCities({ cities ->
                             for (city in cities) {
+                                Log.d(CITY_LOG, "init ${city.id} ${city.name} ${city.parentId}")
                                 if (country.id == city.parentId) {
                                     cityList.add(city.mapModelToBaseNode())
                                 }
@@ -96,6 +98,14 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
     fun removeFromVisited(country: Country) {
         viewModelScope.launch {
             interactor.removeCountryModelFromVisitedList(country.mapActualToModel())
+            initList()
+        }
+    }
+
+    fun removeCity(city: City) {
+        viewModelScope.launch {
+            Log.d(CITY_LOG, "remove ${city.id} ${city.name} ${city.parentId}")
+            interactor.removeCity(city.mapNodeToModel())
             initList()
         }
     }

@@ -1,9 +1,6 @@
 package ua.turskyi.data.room.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
 import ua.turskyi.data.entities.room.CountryEntity
@@ -32,4 +29,7 @@ abstract class CountriesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun  insertCity(city: CityEntity)
+
+    @Delete
+    abstract fun delete(city: CityEntity)
 }

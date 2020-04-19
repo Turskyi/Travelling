@@ -39,6 +39,7 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
+import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
@@ -102,11 +103,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 startActivity(intent)
             }
         adapter.onLongClickListener = { countryNode ->
-            showSnackBar(countryNode.mapNodeToActual())
+            showSnackBarWithCountry(countryNode.mapNodeToActual())
         }
 
         adapter.onTextClickListener = { countryNode ->
             AddCityDialogFragment(countryNode).show(supportFragmentManager, null)
+        }
+        adapter.onCityLongClickListener = { city ->
+            showSnackBarWithCity(city)
         }
     }
 
@@ -149,19 +153,41 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
-    private fun removeOnLongClick(country: Country) {
+    private fun removeCountryOnLongClick(country: Country) {
         viewModel.removeFromVisited(country)
     }
 
-    private fun showSnackBar(country: Country) {
+    private fun removeCityOnLongClick(city: City) {
+       viewModel.removeCity(city)
+    }
+
+    private fun showSnackBarWithCity(city: City) {
         mSnackBar = Snackbar.make(
             rvVisitedCountries,
-            getString(R.string.delete_country, country.name),
+            getString(R.string.delete_it, city.name),
+            Snackbar.LENGTH_LONG
+        )
+            .setActionTextColor(Color.WHITE)
+            .setAction(getString(R.string.yes)) {
+                removeCityOnLongClick(city)
+                longToast(getString(R.string.deleted, city.name))
+            }
+        decorateSnackbar()
+    }
+
+    private fun showSnackBarWithCountry(country: Country) {
+        mSnackBar = Snackbar.make(
+            rvVisitedCountries,
+            getString(R.string.delete_it, country.name),
             Snackbar.LENGTH_LONG
         ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
-            removeOnLongClick(country)
+            removeCountryOnLongClick(country)
             longToast(getString(R.string.deleted, country.name))
         }
+        decorateSnackbar()
+    }
+
+    private fun decorateSnackbar() {
         mSnackBar?.config(applicationContext)
         mSnackBar?.show()
 

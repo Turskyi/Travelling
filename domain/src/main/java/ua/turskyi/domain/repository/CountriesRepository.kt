@@ -39,6 +39,11 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
+    suspend fun removeCity(
+        city: CityModel,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
     suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,
