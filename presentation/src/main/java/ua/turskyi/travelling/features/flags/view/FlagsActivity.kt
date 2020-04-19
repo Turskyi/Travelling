@@ -1,7 +1,6 @@
 package ua.turskyi.travelling.features.flags.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -12,7 +11,6 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
-import ua.turskyi.travelling.features.home.view.ui.HomeActivity.Companion.LOG_ID
 
 class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
 
@@ -36,7 +34,6 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
         pager.offscreenPageLimit = 4
         pager.setPageTransformer(ZoomOutPageTransformer())
         val getBundle: Bundle? = this.intent.extras
-        Log.d(LOG_ID, "${getBundle?.getInt(POSITION)}")
         val startPosition = getBundle?.getInt(POSITION)
         startPosition?.let { pager.post { pager.setCurrentItem(it, true) } }
         postponeEnterTransition()

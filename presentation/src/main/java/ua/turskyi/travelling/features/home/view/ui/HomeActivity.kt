@@ -101,7 +101,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
                 bundle.putInt(POSITION, adapter.getItemPosition(it))
-            Log.d(LOG_ID, " send ${adapter.getItemPosition(it)}")
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
