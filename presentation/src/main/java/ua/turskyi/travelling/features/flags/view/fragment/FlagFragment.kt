@@ -35,10 +35,7 @@ class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfi
                 .init()
                 .with(activity)
                 .withListener(object : GlideToVectorYouListener {
-                    override fun onLoadFailed() {
-                        showFlagInWebView()
-                    }
-
+                    override fun onLoadFailed() = showFlagInWebView()
                     private fun showFlagInWebView() {
                         imageViewEnlarged.visibility = View.GONE
                         wvFlag.webViewClient = WebViewClient()

@@ -28,7 +28,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     var pagedList: PagedList<Country>
 
     init {
-
+        _visibilityLoader.postValue(View.VISIBLE)
         val dataSource = CountriesPositionalDataSource(interactor)
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -40,7 +40,6 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             .build()
 
         viewModelScope.launch {
-            _visibilityLoader.postValue(View.VISIBLE)
             getNotVisitedCountriesFromDb()
         }
     }

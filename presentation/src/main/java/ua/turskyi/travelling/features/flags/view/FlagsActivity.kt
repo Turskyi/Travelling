@@ -39,14 +39,10 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
         pager.setPageTransformer(ZoomOutPageTransformer())
     }
 
-    private fun initListeners() {
-        toolbar.setNavigationOnClickListener { onBackPressed() }
-    }
-
-    private inner class ScreenSlidePagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
-
+    private fun initListeners() = toolbar.setNavigationOnClickListener { onBackPressed() }
+    private inner class ScreenSlidePagerAdapter(activity: AppCompatActivity) :
+        FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = viewModel.visitedCount
-
         override fun createFragment(position: Int):  Fragment = FlagFragment(position)
     }
 }

@@ -15,13 +15,13 @@
     <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
 
     <plurals name="numberOfCountriesRemain">
-        <item quantity="one">%d visitedCountry remains to visit</item>
-        <item quantity="few">%d visitedCountries remain to visit</item>
-        <item quantity="other">%d visitedCountries remain to visit</item>
+        <item quantity="one">%d country remains to visit</item>
+        <item quantity="few">%d countries remain to visit</item>
+        <item quantity="other">%d countries remain to visit</item>
     </plurals>
     <plurals name="numberOfCountriesVisited">
-        <item quantity="one">You\'ve been to %d visitedCountry</item>
-        <item quantity="few">You\'ve been to %d visitedCountries</item>
-        <item quantity="other">You\'ve been to %d visitedCountries</item>
+        <item quantity="one">You\'ve been to %d country</item>
+        <item quantity="few">You\'ve been to %d countries</item>
+        <item quantity="other">You\'ve been to %d countries</item>
     </plurals>
 </resources>

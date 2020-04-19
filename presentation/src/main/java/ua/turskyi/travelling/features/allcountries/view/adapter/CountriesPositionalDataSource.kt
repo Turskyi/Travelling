@@ -1,6 +1,5 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
-import android.util.Log
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactors.CountriesInteractor
@@ -35,7 +34,6 @@ internal class CountriesPositionalDataSource(
         params: LoadRangeParams,
         callback: LoadRangeCallback<Country>
     ) {
-        Log.d("loadRange", "${params.loadSize} \\ ${params.startPosition}")
         GlobalScope.launch {
             interactor.getCountriesByRange(params.loadSize, params.startPosition,
                 { allCountries ->

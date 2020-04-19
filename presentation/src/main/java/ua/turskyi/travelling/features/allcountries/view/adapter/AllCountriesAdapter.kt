@@ -21,7 +21,8 @@ import kotlinx.android.synthetic.main.list_item_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
-class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHolder>(COUNTRIES_DIFF_CALLBACK) {
+class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHolder>(
+    COUNTRIES_DIFF_CALLBACK) {
 
     var onCountryClickListener: ((country: Country) -> Unit)? = null
 
@@ -76,10 +77,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
             .init()
             .with(holder.itemView.context)
             .withListener(object : GlideToVectorYouListener {
-                override fun onLoadFailed() {
-                    showPicturesInWebView(holder, country)
-                }
-
+                override fun onLoadFailed() = showPicturesInWebView(holder, country)
                 override fun onResourceReady() {
                     holder.ivFlag.visibility = VISIBLE
                     holder.wvFlag.visibility = GONE
