@@ -70,7 +70,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onResume() {
         super.onResume()
         launch {
-            Log.d(LOG_UPDATE, "on Resume")
             viewModel.initList()
         }
     }

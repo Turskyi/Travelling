@@ -85,7 +85,7 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
     ) {
         buttonSave.setOnClickListener {
             if (editText.text.toString() != "") {
-                viewModel.addCityToCountry(
+                viewModel.insert(
                     City(editText.text.toString(), visitedCountry.id)
                 )
             } else {

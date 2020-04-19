@@ -8,7 +8,7 @@ import ua.turskyi.travelling.extensions.mapNodeToModel
 import ua.turskyi.travelling.models.City
 
 class AddCityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
-    fun addCityToCountry(city: City) {
+    fun insert(city: City) {
         viewModelScope.launch {
             interactor.insertCity(city.mapNodeToModel())
         }

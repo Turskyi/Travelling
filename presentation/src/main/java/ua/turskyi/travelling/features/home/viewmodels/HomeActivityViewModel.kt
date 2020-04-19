@@ -47,7 +47,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     getVisitedCountriesFromDB()
                     notVisitedCount = notVisitedCountriesNum
                 }, {
-//                TODO: What to do if notVisited count wasn't loaded?
+                    getVisitedCountriesFromDB()
                 })
             }
         }
@@ -79,7 +79,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                                 }
                             }
                         }, {
-//                TODO: What to do if cities was`nt loaded?
+                            getVisitedCountriesFromDB()
                         })
                     }
                     country.childNode = cityList
@@ -88,7 +88,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
                 _visibilityLoader.postValue(View.GONE)
             }, {
-//                TODO: What to do if Visited countries was`nt loaded?
+                getVisitedCountriesFromDB()
             })
         }
     }
