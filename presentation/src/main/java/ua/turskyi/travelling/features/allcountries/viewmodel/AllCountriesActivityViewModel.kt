@@ -13,6 +13,7 @@ import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.MainThreadExecutor
+import ua.turskyi.travelling.utils.Tips
 import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
@@ -51,6 +52,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 _visibilityLoader.postValue(GONE)
             }, {
                 _visibilityLoader.postValue(GONE)
+                Tips.show("OOPS! COULDN'T LOAD COUNTRIES")
             })
         }
     }
@@ -58,7 +60,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     fun markAsVisited(country: Country) {
         viewModelScope.launch(Dispatchers.Main) {
             interactor.markAsVisitedCountryModel(country.mapActualToModel()) {
-                // TODO: What to do if Country did not got to visited?
+              Tips.show("Oops! Try again :/")
             }
         }
     }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.Tips
 
 class FlagsActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
     var visitedCount = 0
@@ -25,7 +26,7 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
                  visitedCount = countries.size
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
             }, {
-//                TODO: What to do if Visited countries was`nt loaded?
+                Tips.show("OOPS! COULDN'T LOAD FLAGS")
             })
         }
     }

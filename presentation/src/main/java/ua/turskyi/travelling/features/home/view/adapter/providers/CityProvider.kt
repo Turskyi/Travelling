@@ -1,12 +1,14 @@
 package ua.turskyi.travelling.features.home.view.adapter.providers
 
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import splitties.toast.toast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.City
+
 
 class CityProvider : BaseNodeProvider() {
 
@@ -29,8 +31,16 @@ class CityProvider : BaseNodeProvider() {
         data: BaseNode,
         position: Int
     ) {
-//        TODO: implement... sending to map for example
-        toast("section $position")
+        sendToGoogleMapToShow(data)
+    }
+
+    private fun sendToGoogleMapToShow(data: BaseNode) {
+        val entity: City = data as City
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("geo:0,0?q=${entity.name}")
+        )
+        context.startActivity(intent)
     }
 
     override fun onLongClick(

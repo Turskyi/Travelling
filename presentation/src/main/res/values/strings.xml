@@ -13,7 +13,6 @@
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
     <string name="dialog_hold_on">Hold on a moment</string>
     <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
-    <string name="home_could_not_count">COULDN\'T COUNT THE NUMBER OF VISITED COUNTRIES</string>
 
     <plurals name="numberOfCountriesRemain">
         <item quantity="one">%d country remains to visit</item>

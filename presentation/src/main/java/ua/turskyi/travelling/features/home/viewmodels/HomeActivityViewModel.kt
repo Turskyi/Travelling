@@ -15,6 +15,7 @@ import ua.turskyi.travelling.features.home.view.ui.AddCityDialogFragment.Compani
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 
 class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
@@ -81,7 +82,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                                 }
                             }
                         }, {
-                            getVisitedCountriesFromDB()
+                            Tips.show("OOPS! COULDN'T LOAD CITIES")
                         })
                     }
                     country.childNode = cityList
@@ -90,7 +91,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
                 _visibilityLoader.postValue(View.GONE)
             }, {
-                getVisitedCountriesFromDB()
+                Tips.show("OOPS! COULDN'T LOAD VISITED COUNTRIES")
             })
         }
     }
