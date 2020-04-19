@@ -85,12 +85,11 @@
             android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             android:visibility="gone"
             tools:visibility="visible"
-            android:layout_marginEnd="@dimen/offset_40"
             app:fabSize="auto"
             app:elevation="@dimen/elevation_4"
             app:rippleColor="@android:color/black"
             app:useCompatPadding="true"
-            app:layout_anchor="@id/app_bar"
+            app:layout_anchor="@id/pieChart"
             app:layout_anchorGravity="bottom|end"
             app:maxImageSize="48dp"
             app:srcCompat="@drawable/ic_countries_seen" />
