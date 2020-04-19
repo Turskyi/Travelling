@@ -12,7 +12,7 @@ import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.models.Country
-import ua.turskyi.visitedcountries.utils.MainThreadExecutor
+import ua.turskyi.travelling.utils.MainThreadExecutor
 import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {

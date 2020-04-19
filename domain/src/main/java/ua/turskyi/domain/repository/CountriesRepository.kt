@@ -50,9 +50,4 @@ interface CountriesRepository {
         city: CityModel,
         onError: ((Exception) -> Unit?)? = null
     )
-
-    suspend fun addCityToCountry(
-        country: CountryModel,
-        onError: ((Exception) -> Unit?)? = null
-    )
 }

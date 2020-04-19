@@ -16,7 +16,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import kotlinx.android.synthetic.main.list_item_country.view.*
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.models.CountryNode
+import ua.turskyi.travelling.models.VisitedCountry
 
 class CountryNodeProvider : BaseNodeProvider() {
     override val itemViewType: Int
@@ -25,15 +25,15 @@ class CountryNodeProvider : BaseNodeProvider() {
     override val layoutId: Int
         get() = R.layout.list_item_country
 
-    var onImageClickListener: ((data: CountryNode) -> Unit)? = null
-    var onTextClickListener: ((data: CountryNode) -> Unit)? = null
-    var onLongLickListener: ((data: CountryNode) -> Unit)? = null
+    var onImageClickListener: ((data: VisitedCountry) -> Unit)? = null
+    var onTextClickListener: ((data: VisitedCountry) -> Unit)? = null
+    var onLongLickListener: ((data: VisitedCountry) -> Unit)? = null
 
     override fun convert(
         helper: BaseViewHolder,
         item: BaseNode
     ) {
-        val entity: CountryNode = item as CountryNode
+        val entity: VisitedCountry = item as VisitedCountry
         helper.getView<TextView>(R.id.tvCountry).setOnLongClickListener{
             onLongLickListener?.invoke(entity)
             true
@@ -68,16 +68,16 @@ class CountryNodeProvider : BaseNodeProvider() {
     }
 
     private fun showPicturesInSVG(
-        country: CountryNode,
+        visitedCountry: VisitedCountry,
         holder: BaseViewHolder
     ) {
-        val uri: Uri = Uri.parse(country.img)
+        val uri: Uri = Uri.parse(visitedCountry.img)
         GlideToVectorYou
             .init()
             .with(holder.itemView.context)
             .withListener(object : GlideToVectorYouListener {
                 override fun onLoadFailed() {
-                    showPicturesInWebView(holder, country)
+                    showPicturesInWebView(holder, visitedCountry)
                 }
                 override fun onResourceReady() {
                     holder.itemView.ivFlag.visibility = VISIBLE
@@ -89,14 +89,14 @@ class CountryNodeProvider : BaseNodeProvider() {
     }
     private fun showPicturesInWebView(
         holder: BaseViewHolder,
-        country: CountryNode
+        visitedCountry: VisitedCountry
     ) {
         holder.itemView.ivFlag.visibility = GONE
         holder.itemView.wvFlag.webViewClient = WebViewClient()
         holder.itemView.wvFlag.visibility = VISIBLE
         holder.itemView.wvFlag.setBackgroundColor(Color.TRANSPARENT)
         holder.itemView.wvFlag.setInitialScale(8)
-        holder.itemView.wvFlag.loadUrl(country.img)
+        holder.itemView.wvFlag.loadUrl(visitedCountry.img)
     }
 
     override fun onClick(

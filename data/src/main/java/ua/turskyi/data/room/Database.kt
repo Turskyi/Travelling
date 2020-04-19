@@ -34,7 +34,7 @@ abstract class Database : RoomDatabase() {
          * to perform actions on database create or open
          */
         operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: buildDatabase(context).also { instance = it }
+            instance ?: buildDatabase(context).also { database -> instance = database }
         }
 
         private fun buildDatabase(context: Context) = databaseBuilder(

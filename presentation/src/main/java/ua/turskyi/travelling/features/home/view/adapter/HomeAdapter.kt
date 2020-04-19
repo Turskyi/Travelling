@@ -4,8 +4,8 @@ import com.chad.library.adapter.base.BaseNodeAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import ua.turskyi.travelling.features.home.view.adapter.providers.CityNodeProvider
 import ua.turskyi.travelling.features.home.view.adapter.providers.CountryNodeProvider
-import ua.turskyi.travelling.models.CityNode
-import ua.turskyi.travelling.models.CountryNode
+import ua.turskyi.travelling.models.City
+import ua.turskyi.travelling.models.VisitedCountry
 
 class HomeAdapter : BaseNodeAdapter() {
 
@@ -16,19 +16,19 @@ class HomeAdapter : BaseNodeAdapter() {
         addNodeProvider(CityNodeProvider())
     }
 
-    var onImageClickListener: ((data: CountryNode) -> Unit)? = null
+    var onImageClickListener: ((data: VisitedCountry) -> Unit)? = null
         set(value) {
             provider.onImageClickListener = value
             field = value
         }
 
-    var onTextClickListener: ((data: CountryNode) -> Unit)? = null
+    var onTextClickListener: ((data: VisitedCountry) -> Unit)? = null
         set(value) {
             provider.onTextClickListener = value
             field = value
         }
 
-    var onLongClickListener: ((data: CountryNode) -> Unit)? = null
+    var onLongClickListener: ((data: VisitedCountry) -> Unit)? = null
         set(value) {
             provider.onLongLickListener = value
             field = value
@@ -39,8 +39,8 @@ class HomeAdapter : BaseNodeAdapter() {
         position: Int
     ): Int {
         return when (data[position]) {
-            is CountryNode -> 0
-            is CityNode -> 1
+            is VisitedCountry -> 0
+            is City -> 1
             else -> -1
         }
     }

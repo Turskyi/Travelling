@@ -28,7 +28,7 @@ abstract class CountriesDao {
     abstract fun getCities(): MutableList<CityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(country: CountryEntity)
+    abstract fun insertCountry(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun  insertCity(city: CityEntity)

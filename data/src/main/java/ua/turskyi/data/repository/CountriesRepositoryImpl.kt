@@ -1,6 +1,5 @@
 package ua.turskyi.data.repository
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,9 +15,6 @@ import ua.turskyi.domain.repository.CountriesRepository
 
 class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
 
-    companion object {
-        const val CITY_LOG = "CITY_LOG"
-    }
     private val countriesNetSource: CountriesNetSource by inject()
     private val countriesDbSource: CountriesDbSource by inject()
 
@@ -47,7 +43,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         GlobalScope.launch {
             val countryLocal = country.mapModelToEntity()
             countryLocal.visited = true
-            countriesDbSource.insert(countryLocal)
+            countriesDbSource.insertCountry(countryLocal)
         }
     }
 
@@ -59,7 +55,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             try {
                 val countryLocal = country.mapModelToEntity()
                 countryLocal.visited = false
-                countriesDbSource.insert(countryLocal)
+                countriesDbSource.insertCountry(countryLocal)
             } catch (e: java.lang.Exception) {
                 onError?.invoke(e)
             }
@@ -129,21 +125,6 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     ) {
         GlobalScope.launch {
             countriesDbSource.insertCity(city.mapModelToEntity())
-        }
-    }
-
-    override suspend fun addCityToCountry(
-        country: CountryModel,
-        onError: ((Exception) -> Unit?)?
-    ) {
-        GlobalScope.launch {
-            try {
-                val countryLocal = country.mapModelToEntity()
-                Log.d(CITY_LOG, "data.repositoryImpl: ${countryLocal.cities}")
-                countriesDbSource.insert(countryLocal)
-            } catch (e: java.lang.Exception) {
-                onError?.invoke(e)
-            }
         }
     }
 }

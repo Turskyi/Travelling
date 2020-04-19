@@ -18,15 +18,15 @@ import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
-import ua.turskyi.travelling.models.CityNode
-import ua.turskyi.travelling.models.CountryNode
+import ua.turskyi.travelling.models.City
+import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widget.LinedEditText
 import java.util.*
 
 
-class AddCityDialogFragment(private val countryNode: CountryNode) : DialogFragment(){
+class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){
 
     companion object {
         const val DIALOG_LOG = "DIALOG_LOG"
@@ -66,7 +66,7 @@ class AddCityDialogFragment(private val countryNode: CountryNode) : DialogFragme
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
-        initListeners(buttonSave, editText, countryNode, alertDialog, buttonGps)
+        initListeners(buttonSave, editText, visitedCountry, alertDialog, buttonGps)
         return alertDialog!!
     }
 
@@ -79,14 +79,14 @@ class AddCityDialogFragment(private val countryNode: CountryNode) : DialogFragme
     private fun initListeners(
         buttonSave: Button,
         editText: LinedEditText,
-        countryNode: CountryNode,
+        visitedCountry: VisitedCountry,
         alertDialog: AlertDialog?,
         buttonGps: Button
     ) {
         buttonSave.setOnClickListener {
             if (editText.text.toString() != "") {
                 viewModel.addCityToCountry(
-                    CityNode(editText.text.toString(), countryNode.id)
+                    City(editText.text.toString(), visitedCountry.id)
                 )
             } else {
                 alertDialog?.cancel()

@@ -13,7 +13,7 @@ import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.extensions.mapModelListToNodeList
 import ua.turskyi.travelling.extensions.mapModelToBaseNode
 import ua.turskyi.travelling.models.Country
-import ua.turskyi.travelling.models.CountryNode
+import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.isOnline
 
 class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
@@ -27,8 +27,8 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
     private val _visitedCountries = MutableLiveData<List<Country>>()
     var visitedCountries: LiveData<List<Country>>
 
-    private val _visitedCountriesWithCities = MutableLiveData<List<CountryNode>>()
-    var visitedCountriesWithCities: LiveData<List<CountryNode>>
+    private val _visitedCountriesWithCities = MutableLiveData<List<VisitedCountry>>()
+    var visitedCountriesWithCities: LiveData<List<VisitedCountry>>
 
     private val _navigateToAllCountries = MutableLiveData<Boolean>()
     val navigateToAllCountries: LiveData<Boolean>

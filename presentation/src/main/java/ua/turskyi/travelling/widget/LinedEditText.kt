@@ -13,9 +13,8 @@ open class LinedEditText(context: Context, attrs: AttributeSet) : androidx.appco
     init {
         mPaint.style = Paint.Style.STROKE
         mPaint.color = -0x80000000
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mPaint.color = context.getColor(R.color.lightGrey)
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) mPaint.color =
+            context.getColor(R.color.lightGrey)
     }
 
     override fun onDraw(canvas: Canvas) {

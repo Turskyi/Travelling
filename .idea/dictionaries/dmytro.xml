@@ -6,6 +6,7 @@
       <w>collapsingtoolbar</w>
       <w>constraintlayout</w>
       <w>coroutines</w>
+      <w>gson</w>
       <w>interactor</w>
       <w>interactors</w>
       <w>koin</w>
@@ -13,6 +14,7 @@
       <w>thru</w>
       <w>turskyi</w>
       <w>viewmodel</w>
+      <w>viewmodels</w>
       <w>willowtreeapps</w>
     </words>
   </dictionary>

@@ -6,7 +6,7 @@ import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import splitties.toast.toast
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.models.CityNode
+import ua.turskyi.travelling.models.City
 
 class CityNodeProvider : BaseNodeProvider() {
 
@@ -17,7 +17,7 @@ class CityNodeProvider : BaseNodeProvider() {
         get() = R.layout.item_city_content
 
     override fun convert(helper: BaseViewHolder, item: BaseNode) {
-        val entity: CityNode = item as CityNode
+        val entity: City = item as City
         helper.setText(R.id.tv, entity.name)
     }
 

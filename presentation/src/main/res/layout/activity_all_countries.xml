@@ -29,7 +29,7 @@
                 <TextView
                     android:id="@+id/toolbarTitle"
                     style="@style/ToolbarTitleStyle"
-                    tool:text="250 countries remain to visit" />
+                    tool:text="250 visitedCountries remain to visit" />
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

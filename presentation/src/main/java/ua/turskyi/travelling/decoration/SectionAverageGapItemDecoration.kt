@@ -2,7 +2,6 @@ package ua.turskyi.travelling.decoration
 
 import android.graphics.Rect
 import android.util.DisplayMetrics
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +12,7 @@ import com.chad.library.adapter.base.BaseSectionQuickAdapter
 import com.chad.library.adapter.base.entity.SectionEntity
 import java.util.*
 
-class GridSectionAverageGapItemDecoration(
+class SectionAverageGapItemDecoration(
     private val gapHorizontalDp: Int,
     private val gapVerticalDp: Int,
     private val sectionEdgeHPaddingDp: Int,
@@ -45,37 +44,15 @@ class GridSectionAverageGapItemDecoration(
     private val mSectionList: MutableList<Section?> = ArrayList()
     private lateinit var mAdapter: BaseSectionQuickAdapter<*, *>
     private val mDataObserver: AdapterDataObserver = object : AdapterDataObserver() {
-        override fun onChanged() {
+        override fun onChanged() = markSections()
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) = markSections()
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) =
             markSections()
-        }
 
-        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = markSections()
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = markSections()
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) =
             markSections()
-        }
-
-        override fun onItemRangeChanged(
-            positionStart: Int,
-            itemCount: Int,
-            payload: Any?
-        ) {
-            markSections()
-        }
-
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            markSections()
-        }
-
-        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-            markSections()
-        }
-
-        override fun onItemRangeMoved(
-            fromPosition: Int,
-            toPosition: Int,
-            itemCount: Int
-        ) {
-            markSections()
-        }
     }
 
     override fun getItemOffsets(
@@ -88,22 +65,22 @@ class GridSectionAverageGapItemDecoration(
             val layoutManager = parent.layoutManager as GridLayoutManager?
             val adapter: BaseSectionQuickAdapter<*, *>? =
                 parent.adapter as BaseSectionQuickAdapter<*, *>?
-            if (mAdapter !== adapter) {
-                setUpWithAdapter(adapter)
-            }
-            val spanCount = layoutManager!!.spanCount
+            if (mAdapter !== adapter) setUpWithAdapter(adapter)
+            val spanCount = layoutManager?.spanCount
             val position = parent.getChildAdapterPosition(view) - mAdapter.headerLayoutCount
-            val entity = adapter!!.getItem(position)
-            if (entity.isHeader) {
-                /*header*/
-                outRect[0, 0, 0] = 0
-                Log.w("GridAverageGapItem", "pos=" + position + "," + outRect.toShortString())
-                return
+            val entity = adapter?.getItem(position)
+            entity?.let {
+                if (entity.isHeader) {
+                    /*header*/
+                    outRect[0, 0, 0] = 0
+                    return
+                }
             }
-            val section =
-                findSectionLastItemPos(position)
-            if (gapHSizePx < 0 || gapVSizePx < 0) {
-                transformGapDefinition(parent, spanCount)
+            val section = findSectionLastItemPos(position)
+            if (gapHSizePx < 0 || gapVSizePx < 0) spanCount?.let { spanCountNum ->
+                transformGapDefinition(parent,
+                    spanCountNum
+                )
             }
             outRect.top = gapVSizePx
             outRect.bottom = 0
@@ -111,7 +88,7 @@ class GridSectionAverageGapItemDecoration(
             /* visualPos Section */
             val visualPos = position + 1 - section!!.startPos
             when {
-                visualPos % spanCount == 1 -> {
+                visualPos % spanCount!! == 1 -> {
                     outRect.left = sectionEdgeHPaddingPx
                     outRect.right = eachItemHPaddingPx - sectionEdgeHPaddingPx
                 }
@@ -124,17 +101,10 @@ class GridSectionAverageGapItemDecoration(
                     outRect.right = eachItemHPaddingPx - outRect.left
                 }
             }
-            if (visualPos - spanCount <= 0) {
-                outRect.top = sectionEdgeVPaddingPx
-            }
+            if (visualPos - spanCount <= 0) outRect.top = sectionEdgeVPaddingPx
             if (isLastRow(visualPos, spanCount, section.count)) {
                 outRect.bottom = sectionEdgeVPaddingPx
-                Log.w("GridAverageGapItem", "last row pos=$position")
             }
-            Log.w(
-                "GridAverageGapItem",
-                "pos=" + position + ",vPos=" + visualPos + "," + outRect.toShortString()
-            )
         } else {
             super.getItemOffsets(outRect, view, parent, state)
         }
@@ -142,9 +112,7 @@ class GridSectionAverageGapItemDecoration(
 
     private fun setUpWithAdapter(adapter: BaseSectionQuickAdapter<*, *>?) {
         mAdapter.unregisterAdapterDataObserver(mDataObserver)
-        if (adapter != null) {
-            mAdapter = adapter
-        }
+        adapter?.let{ mAdapter = adapter }
         mAdapter.registerAdapterDataObserver(mDataObserver)
         markSections()
     }
@@ -160,22 +128,18 @@ class GridSectionAverageGapItemDecoration(
             sectionEntity = adapter.getItem(i)
             if (sectionEntity.isHeader) {
                 if (i != 0) {
-             /*       section*/
+             /*       section */
                     section.endPos = i - 1
                     mSectionList.add(section)
                 }
-                section =
-                    Section()
+                section = Section()
                 section.startPos = i + 1
             } else {
                 section.endPos = i
             }
             i++
         }
-        if (!mSectionList.contains(section)) {
-            mSectionList.add(section)
-        }
-        Log.w("GridAverageGapItem", "section list=$mSectionList")
+        if (!mSectionList.contains(section)) mSectionList.add(section)
     }
 
     private fun transformGapDefinition(parent: RecyclerView, spanCount: Int) {

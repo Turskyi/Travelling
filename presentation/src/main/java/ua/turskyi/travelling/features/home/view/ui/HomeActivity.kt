@@ -30,7 +30,7 @@ import splitties.activities.start
 import splitties.toast.longToast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
-import ua.turskyi.travelling.decoration.GridSectionAverageGapItemDecoration
+import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
 import ua.turskyi.travelling.extensions.mapNodeToActual
 import ua.turskyi.travelling.extensions.spToPix
@@ -40,7 +40,7 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITIO
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.Country
-import ua.turskyi.travelling.models.CountryNode
+import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
 import kotlin.coroutines.CoroutineContext
 
@@ -84,7 +84,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         rvVisitedCountries.adapter = this.adapter
         rvVisitedCountries.layoutManager = layoutManager
         rvVisitedCountries.addItemDecoration(
-            GridSectionAverageGapItemDecoration(
+            SectionAverageGapItemDecoration(
                 10, 10, 20, 15
             )
         )
@@ -239,15 +239,15 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         pieChart.invalidate()
     }
 
-    private fun updateAdapter(countries: List<CountryNode>) {
-        for (countryNode in countries) {
+    private fun updateAdapter(visitedCountries: List<VisitedCountry>) {
+        for (countryNode in visitedCountries) {
             countryNode.isExpanded = false
         }
-        adapter.setList(countries)
+        adapter.setList(visitedCountries)
         toolbarLayout.title = resources.getQuantityString(
             R.plurals.numberOfCountriesVisited,
-            countries.size,
-            countries.size
+            visitedCountries.size,
+            visitedCountries.size
         )
     }
 

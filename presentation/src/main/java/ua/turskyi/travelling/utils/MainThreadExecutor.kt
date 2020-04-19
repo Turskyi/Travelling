@@ -1,12 +1,11 @@
-package ua.turskyi.visitedcountries.utils
+package ua.turskyi.travelling.utils
 
 import android.os.Handler
-import java.util.concurrent.Executor
 import android.os.Looper
+import java.util.concurrent.Executor
 
 internal class MainThreadExecutor : Executor {
     private val mHandler = Handler(Looper.getMainLooper())
-
     override fun execute(command: Runnable) {
         mHandler.post(command)
     }

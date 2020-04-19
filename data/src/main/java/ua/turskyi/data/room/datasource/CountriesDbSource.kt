@@ -11,7 +11,7 @@ class CountriesDbSource(private val countriesDao: CountriesDao) {
     fun getLocalCountriesByRange(limit: Int, offset: Int) =
         countriesDao.getCountriesByRange(limit, offset)
 
-    fun insert(countryEntity: CountryEntity) = countriesDao.insert(countryEntity)
+    fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
     fun insertAllCountries(countries: List<CountryEntity>) =
         countriesDao.insertAllCountries(countries)
     fun insertCity(cityEntity: CityEntity) = countriesDao.insertCity(cityEntity)
