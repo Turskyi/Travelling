@@ -3,6 +3,7 @@ package ua.turskyi.travelling.features.flags.view.fragment
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_selfie.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
+import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 
 class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfie) {
 
@@ -30,7 +32,7 @@ class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfi
              * @Description Opens the pictureUri in full size
              *  */
             val uri: Uri = Uri.parse(it[position].flag)
-
+            Log.d(HomeActivity.LOG_ID, "flag id ${position}")
             GlideToVectorYou
                 .init()
                 .with(activity)

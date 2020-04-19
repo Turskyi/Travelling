@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +21,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
-import kotlinx.android.synthetic.main.list_item_country.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -53,6 +51,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     companion object {
         const val ACCESS_LOCATION = 10001
         const val LOG_UPDATE = "LOG_UPDATE"
+        const val LOG_ID = "LOG_ID"
     }
 
     private val viewModel by inject<HomeActivityViewModel>()
@@ -101,7 +100,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         adapter.onImageClickListener = {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
-                bundle.putInt(POSITION, adapter.itemCount - 1)
+                bundle.putInt(POSITION, adapter.getItemPosition(it))
+            Log.d(LOG_ID, " send ${adapter.getItemPosition(it)}")
                 intent.putExtras(bundle)
                 startActivity(intent)
             }

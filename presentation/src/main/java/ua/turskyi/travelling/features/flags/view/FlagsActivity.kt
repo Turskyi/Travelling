@@ -1,6 +1,7 @@
 package ua.turskyi.travelling.features.flags.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
+import ua.turskyi.travelling.features.home.view.ui.HomeActivity.Companion.LOG_ID
 
 class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
 
@@ -31,15 +33,17 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
         viewModel.getVisitedCountriesFromDB()
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         pager.adapter = pagerAdapter
-        pager.offscreenPageLimit = 2
-        postponeEnterTransition()
-        val getBundle: Bundle? = this.intent.extras
-        val startPosition = getBundle?.getInt(POSITION)
-        startPosition?.let { pager.setCurrentItem(it, true) }
+        pager.offscreenPageLimit = 4
         pager.setPageTransformer(ZoomOutPageTransformer())
+        val getBundle: Bundle? = this.intent.extras
+        Log.d(LOG_ID, "${getBundle?.getInt(POSITION)}")
+        val startPosition = getBundle?.getInt(POSITION)
+        startPosition?.let { pager.post { pager.setCurrentItem(it, true) } }
+        postponeEnterTransition()
     }
 
     private fun initListeners() = toolbar.setNavigationOnClickListener { onBackPressed() }
+
     private inner class ScreenSlidePagerAdapter(activity: AppCompatActivity) :
         FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = viewModel.visitedCount
