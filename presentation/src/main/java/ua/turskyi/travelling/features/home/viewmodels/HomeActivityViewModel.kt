@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
-import okhttp3.Interceptor.Companion.invoke
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.features.home.view.ui.AddCityDialogFragment.Companion.CITY_LOG
