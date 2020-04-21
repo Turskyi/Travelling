@@ -25,6 +25,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:paddingStart">@dimen/offset_4</item>
         <item name="android:paddingEnd">@dimen/offset_4</item>
+        <item name="android:layoutAnimation">@anim/layout_animation_from_bottom</item>
     </style>
 
     <style name="ProgressBarStyle">
