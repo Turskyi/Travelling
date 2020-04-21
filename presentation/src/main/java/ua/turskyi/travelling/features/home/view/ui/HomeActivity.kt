@@ -279,15 +279,15 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
-
     override fun onDismiss(p0: DialogInterface?) {
         Log.d(LOG_UPDATE, "on dismiss")
         launch {
             viewModel.initList()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

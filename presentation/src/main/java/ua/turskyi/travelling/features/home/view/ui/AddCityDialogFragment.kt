@@ -25,7 +25,6 @@ import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widget.LinedEditText
 import java.util.*
 
-
 class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){
 
     companion object {
