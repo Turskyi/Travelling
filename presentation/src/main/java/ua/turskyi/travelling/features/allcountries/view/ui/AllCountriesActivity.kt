@@ -47,7 +47,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             }
         }
         etSearch.addTextChangedListener {
-            viewModel.searchQuery = it.toString()
+            viewModel.searchQuery = "%${it.toString()}%"
             adapter.submitList(viewModel.pagedList)
         }
 
