@@ -2,8 +2,6 @@ package ua.turskyi.travelling.features.allcountries.view.ui
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
@@ -49,12 +47,8 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             }
         }
         etSearch.addTextChangedListener {
-            val query = it.toString()
-            Handler().postDelayed({
-                if (etSearch.text.toString() == query) {
-                    viewModel.searchQuery = it.toString()
-                }
-            }, 400)
+            viewModel.searchQuery = it.toString()
+            adapter.submitList(viewModel.pagedList)
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
@@ -79,8 +73,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
         toolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
     }
 
-    fun collapseSearch() {
-        viewModel.clearSearch()
+    private fun collapseSearch() {
         rvAllCountries.animate()
             .translationY((-1 * resources.getDimensionPixelSize(R.dimen.offset_20)).toFloat())
         ibSearch.isSelected = false
@@ -104,10 +97,10 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             }
             duration = 400
         }.start()
+        adapter.submitList(viewModel.pagedList)
     }
 
     private fun expandSearch() {
-        viewModel.getFilters()
         rvAllCountries.animate().translationY(0f)
         ibSearch.isSelected = true
         val width = toolbarTitle.width - resources.getDimensionPixelSize(R.dimen.offset_16)

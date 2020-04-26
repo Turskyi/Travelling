@@ -32,38 +32,39 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     var searchQuery = ""
         set(value) {
             field = value
+            pagedList = getCountryList(value)
         }
-
-    var filterTextAll: String? = ""
 
     init {
         _visibilityLoader.postValue(View.VISIBLE)
+        pagedList = getCountryList(searchQuery)
+        viewModelScope.launch {
+            getNotVisitedCountriesNumFromDb()
+        }
+    }
+
+    private fun getCountryList(searchQuery: String): PagedList<Country> {
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(20)
             .build()
         val dataSource = CountriesPositionalDataSource(interactor)
         val filteredDataSource =
-            FilteredPositionalDataSource(name = filterTextAll, interactor = interactor)
-
-        pagedList = if (filterTextAll == null || filterTextAll.equals("") || filterTextAll.equals("%%")) {
-                PagedList.Builder(dataSource, config)
-                    .setFetchExecutor(Executors.newSingleThreadExecutor())
-                    .setNotifyExecutor(MainThreadExecutor())
-                    .build()
-            } else {
-                PagedList.Builder(filteredDataSource, config)
-                    .setFetchExecutor(Executors.newSingleThreadExecutor())
-                    .setNotifyExecutor(MainThreadExecutor())
-                    .build()
-            }
-
-        viewModelScope.launch {
-            getNotVisitedCountriesFromDb()
+            FilteredPositionalDataSource(name = searchQuery, interactor = interactor)
+        return if (searchQuery == "" || searchQuery == "%%") {
+            PagedList.Builder(dataSource, config)
+                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setNotifyExecutor(MainThreadExecutor())
+                .build()
+        } else {
+            PagedList.Builder(filteredDataSource, config)
+                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setNotifyExecutor(MainThreadExecutor())
+                .build()
         }
     }
 
-    private fun getNotVisitedCountriesFromDb() {
+    private fun getNotVisitedCountriesNumFromDb() {
         viewModelScope.launch {
             interactor.getNotVisitedCountriesNum({ num ->
                 _notVisitedCountriesNumLiveData.postValue(num)
@@ -80,14 +81,6 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             interactor.markAsVisitedCountryModel(country.mapActualToModel()) {
               Tips.show("Oops! Try again :/")
             }
-        }
-    }
-
-    fun clearSearch() {
-    }
-
-    fun getFilters() {
-        viewModelScope.launch(Dispatchers.IO) {
         }
     }
 }
