@@ -22,7 +22,7 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
-import ua.turskyi.travelling.widget.LinedEditText
+import ua.turskyi.travelling.widgets.LinedEditText
 import java.util.*
 
 class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){

@@ -14,7 +14,7 @@ import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext
 
 
-internal class CountriesPositionalDataSource(
+internal class FilteredPositionalDataSource(private val name: String?,
     private val interactor: CountriesInteractor
 ) : PositionalDataSource<Country>(), CoroutineScope {
     private var job: Job = Job()
@@ -26,7 +26,7 @@ internal class CountriesPositionalDataSource(
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.getCountriesByRange(params.requestedLoadSize, 0,
+            interactor.loadCountriesByNameAndRange(name, params.requestedLoadSize, 0,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList(), 0)
                 },
@@ -42,7 +42,7 @@ internal class CountriesPositionalDataSource(
         callback: LoadRangeCallback<Country>
     ) {
         GlobalScope.launch {
-            interactor.getCountriesByRange(params.loadSize, params.startPosition,
+            interactor.loadCountriesByNameAndRange(name, params.loadSize, params.startPosition,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList())
                 },

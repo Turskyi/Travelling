@@ -8,7 +8,7 @@
 
     <view
         android:id="@+id/letCity"
-        class="ua.turskyi.travelling.widget.LinedEditText"
+        class="ua.turskyi.travelling.widgets.LinedEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/offset_10"

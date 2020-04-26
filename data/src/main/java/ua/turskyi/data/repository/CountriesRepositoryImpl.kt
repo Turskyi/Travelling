@@ -76,20 +76,6 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         }
     }
 
-    override suspend fun getCountriesByRange(
-        limit: Int,
-        offset: Int,
-        onSusses: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
-    ) {
-        GlobalScope.launch {
-            onSusses(
-                countriesDbSource.getLocalCountriesByRange(limit, offset)
-                    .mapEntityListToModelList()
-            )
-        }
-    }
-
     override suspend fun addModelsToDb(
         countries: MutableList<CountryModel>,
         onError: ((Exception) -> Unit?)?
@@ -139,6 +125,35 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     ) {
         GlobalScope.launch {
             countriesDbSource.insertCity(city.mapModelToEntity())
+        }
+    }
+
+    override suspend fun getCountriesByRange(
+        limit: Int,
+        offset: Int,
+        onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        GlobalScope.launch {
+            onSusses(
+                countriesDbSource.getLocalCountriesByRange(limit, offset)
+                    .mapEntityListToModelList()
+            )
+        }
+    }
+
+    override suspend fun loadCountriesByNameAndRange(
+        name: String?,
+        limit: Int,
+        offset: Int,
+        onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        GlobalScope.launch {
+            onSusses(
+                countriesDbSource.loadCountriesByNameAndRange(name,limit, offset)
+                    .mapEntityListToModelList()
+            )
         }
     }
 }

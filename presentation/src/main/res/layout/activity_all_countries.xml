@@ -31,6 +31,44 @@
                     style="@style/ToolbarTitleStyle"
                     tool:text="250 visitedCountries remain to visit" />
             </androidx.appcompat.widget.Toolbar>
+
+            <ua.turskyi.travelling.widgets.ShadowedLinearLayout
+                android:id="@+id/sllSearch"
+                style="@style/ShadowLayout"
+                app:shadowRadius="@dimen/offset_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:animateLayoutChanges="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:containerElevation="@dimen/elevation_1"
+                app:scaleViewOnElevationChange="true"
+                app:shadowMarginStart="@dimen/offset_8"
+                app:shadowMarginTop="@dimen/offset_8">
+
+                <ImageButton
+                    android:id="@+id/ibSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/offset_8"
+                    android:src="@drawable/ic_search"
+                    android:contentDescription="@string/icon_search" />
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="0dp"
+                    android:inputType="textCapSentences"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="@dimen/offset_8"
+                    android:paddingEnd="@dimen/offset_8"
+                    android:singleLine="true"
+                    android:hint="@string/search_country"
+                    android:labelFor="@+id/ibSearch"
+                    android:autofillHints="country" />
+            </ua.turskyi.travelling.widgets.ShadowedLinearLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
     <ProgressBar
@@ -39,8 +77,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAllCountries"
         style="@style/RecyclerViewStyle"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

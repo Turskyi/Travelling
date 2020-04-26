@@ -1,8 +1,13 @@
 package ua.turskyi.travelling.features.allcountries.view.ui
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.Handler
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_all_countries.*
@@ -11,6 +16,8 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.hideKeyboard
+import ua.turskyi.travelling.utils.showKeyboard
 
 class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) {
 
@@ -34,6 +41,22 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     }
 
     private fun initListeners() {
+        ibSearch.setOnClickListener {
+            if (it.isSelected) {
+                collapseSearch()
+            } else {
+                expandSearch()
+            }
+        }
+        etSearch.addTextChangedListener {
+            val query = it.toString()
+            Handler().postDelayed({
+                if (etSearch.text.toString() == query) {
+                    viewModel.searchQuery = it.toString()
+                }
+            }, 400)
+        }
+
         toolbar.setNavigationOnClickListener { onBackPressed() }
         adapter.onCountryClickListener = ::addToVisited
     }
@@ -54,5 +77,60 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
 
     private fun updateTitle(num: Int) {
         toolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
+    }
+
+    fun collapseSearch() {
+        viewModel.clearSearch()
+        rvAllCountries.animate()
+            .translationY((-1 * resources.getDimensionPixelSize(R.dimen.offset_20)).toFloat())
+        ibSearch.isSelected = false
+        val width =
+            toolbarTitle.width - resources.getDimensionPixelSize(R.dimen.offset_16)
+        hideKeyboard()
+        etSearch.setText("")
+        toolbarTitle.animate().alpha(1f).duration = 200
+        sllSearch.elevate(
+            resources.getDimension(R.dimen.elevation_8),
+            resources.getDimension(R.dimen.elevation_1),
+            100
+        )
+        ValueAnimator.ofInt(
+            width,
+            0
+        ).apply {
+            addUpdateListener {
+                etSearch.layoutParams.width = animatedValue as Int
+                sllSearch.requestLayout()
+            }
+            duration = 400
+        }.start()
+    }
+
+    private fun expandSearch() {
+        viewModel.getFilters()
+        rvAllCountries.animate().translationY(0f)
+        ibSearch.isSelected = true
+        val width = toolbarTitle.width - resources.getDimensionPixelSize(R.dimen.offset_16)
+        toolbarTitle.animate().alpha(0f).duration = 200
+        sllSearch.elevate(
+            resources.getDimension(R.dimen.elevation_1),
+            resources.getDimension(R.dimen.elevation_8),
+            100
+        )
+        ValueAnimator.ofInt(
+            0,
+            width
+        ).apply {
+            addUpdateListener {
+                etSearch.layoutParams.width = animatedValue as Int
+                sllSearch.requestLayout()
+            }
+            doOnEnd {
+                etSearch.requestFocus()
+                etSearch.setText("")
+            }
+            duration = 400
+        }.start()
+        showKeyboard()
     }
 }

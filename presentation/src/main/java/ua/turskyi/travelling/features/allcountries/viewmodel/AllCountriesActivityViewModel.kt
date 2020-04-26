@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
+import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.MainThreadExecutor
 import ua.turskyi.travelling.utils.Tips
@@ -28,18 +29,34 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
     var pagedList: PagedList<Country>
 
+    var searchQuery = ""
+        set(value) {
+            field = value
+        }
+
+    var filterTextAll: String? = ""
+
     init {
         _visibilityLoader.postValue(View.VISIBLE)
-        val dataSource = CountriesPositionalDataSource(interactor)
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(20)
             .build()
+        val dataSource = CountriesPositionalDataSource(interactor)
+        val filteredDataSource =
+            FilteredPositionalDataSource(name = filterTextAll, interactor = interactor)
 
-        pagedList = PagedList.Builder(dataSource, config)
-            .setFetchExecutor(Executors.newSingleThreadExecutor())
-            .setNotifyExecutor(MainThreadExecutor())
-            .build()
+        pagedList = if (filterTextAll == null || filterTextAll.equals("") || filterTextAll.equals("%%")) {
+                PagedList.Builder(dataSource, config)
+                    .setFetchExecutor(Executors.newSingleThreadExecutor())
+                    .setNotifyExecutor(MainThreadExecutor())
+                    .build()
+            } else {
+                PagedList.Builder(filteredDataSource, config)
+                    .setFetchExecutor(Executors.newSingleThreadExecutor())
+                    .setNotifyExecutor(MainThreadExecutor())
+                    .build()
+            }
 
         viewModelScope.launch {
             getNotVisitedCountriesFromDb()
@@ -63,6 +80,14 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             interactor.markAsVisitedCountryModel(country.mapActualToModel()) {
               Tips.show("Oops! Try again :/")
             }
+        }
+    }
+
+    fun clearSearch() {
+    }
+
+    fun getFilters() {
+        viewModelScope.launch(Dispatchers.IO) {
         }
     }
 }

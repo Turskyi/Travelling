@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.widget
+package ua.turskyi.travelling.widgets
 
 import android.content.Context
 import android.graphics.Canvas

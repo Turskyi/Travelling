@@ -5,12 +5,16 @@ import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.room.dao.CountriesDao
 
 class CountriesDbSource(private val countriesDao: CountriesDao) {
+    fun loadAllSearchedCountries() = countriesDao.loadAllSearchedCountries()
+    fun loadCountriesByName(name: String) = countriesDao.loadAllCountriesByName(name)
+
+    fun loadCountriesByNameAndRange(name: String?,limit: Int, offset: Int) = countriesDao.loadAllCountriesByNameAndRange(name,limit,offset)
+
+    fun getLocalCountriesByRange(limit: Int, offset: Int) =
+        countriesDao.getCountriesByRange(limit, offset)
     fun getNumNotVisitedCountries() = countriesDao.getNumNotVisitedCountries()
     fun getVisitedLocalCountriesFromDb() = countriesDao.getVisitedCountries()
     fun getCities() = countriesDao.getCities()
-    fun getLocalCountriesByRange(limit: Int, offset: Int) =
-        countriesDao.getCountriesByRange(limit, offset)
-
     fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
     fun insertAllCountries(countries: List<CountryEntity>) =
         countriesDao.insertAllCountries(countries)

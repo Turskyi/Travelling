@@ -13,6 +13,8 @@
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
     <string name="dialog_hold_on">Hold on a moment</string>
     <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
+    <string name="icon_search">search image</string>
+    <string name="search_country">country</string>
 
     <plurals name="numberOfCountriesRemain">
         <item quantity="one">%d country remains to visit</item>

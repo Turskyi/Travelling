@@ -9,6 +9,16 @@ import ua.turskyi.domain.repository.CountriesRepository
 class CountriesInteractor : KoinComponent {
     private val repository: CountriesRepository by inject()
 
+    suspend fun loadCountriesByNameAndRange(
+        name: String?,
+        limit: Int,
+        offset: Int,
+        onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)?
+    ) {
+        return repository.loadCountriesByNameAndRange(name, limit, offset, onSusses, onError)
+    }
+
     suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,

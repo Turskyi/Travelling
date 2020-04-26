@@ -2,18 +2,28 @@
 <resources>
 
     <!-- region Padding/Margin/Offset -->
+    <dimen name="offset_1">1dp</dimen>
+    <dimen name="offset_2">2dp</dimen>
     <dimen name="offset_4">4dp</dimen>
     <dimen name="offset_8">8dp</dimen>
     <dimen name="offset_10">10dp</dimen>
+    <dimen name="offset_12">12dp</dimen>
     <dimen name="offset_16">16dp</dimen>
+    <dimen name="offset_20">20dp</dimen>
+    <dimen name="offset_26">26dp</dimen>
     <dimen name="offset_40">40dp</dimen>
     <dimen name="offset_64">64dp</dimen>
+    <dimen name="offset_140">140dp</dimen>
 
     <!-- endregion -->
 
     <!-- region Elevation -->
+    <!--region Elevation-->
+    <dimen name="elevation_1">1dp</dimen>
     <dimen name="elevation_2">2dp</dimen>
     <dimen name="elevation_4">4dp</dimen>
+    <dimen name="elevation_8">8dp</dimen>
+    <dimen name="elevation_12">12dp</dimen>
 
     <!--region Typography-->
     <!--https://material.io/develop/android/theming/typography/-->
@@ -36,7 +46,4 @@
     <!-- sizes -->
     <dimen name="siz_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
-    <dimen name="offset_140">140dp</dimen>
-    <dimen name="offset_1">1dp</dimen>
-    <dimen name="offset_2">2dp</dimen>
 </resources>
