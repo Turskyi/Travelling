@@ -9,7 +9,7 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_NAME
 @Dao
 abstract class CountriesDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertAllCountries(country: List<CountryEntity>?)
+    abstract fun insertAllCountries(countries: List<CountryEntity>?)
 
     /* using in paging adapters */
     @Query("SELECT * FROM $TABLE_NAME LIMIT :limit OFFSET :offset")

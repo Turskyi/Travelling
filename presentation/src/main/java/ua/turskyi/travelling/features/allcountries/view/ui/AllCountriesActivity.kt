@@ -44,7 +44,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     }
 
     private fun initObservers() {
-        viewModel.notVisitedCountriesLiveData.observe(this, Observer { notVisitedNum ->
+        viewModel.notVisitedCountriesNumLiveData.observe(this, Observer { notVisitedNum ->
             updateTitle(notVisitedNum)
         })
         viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->

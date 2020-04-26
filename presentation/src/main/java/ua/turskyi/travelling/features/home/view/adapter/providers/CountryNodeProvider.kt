@@ -34,27 +34,27 @@ class CountryNodeProvider : BaseNodeProvider() {
         helper: BaseViewHolder,
         item: BaseNode
     ) {
-        val entity: VisitedCountry = item as VisitedCountry
+        val visitedCountry: VisitedCountry = item as VisitedCountry
         helper.getView<TextView>(R.id.tvCountry).setOnLongClickListener{
-            onLongLickListener?.invoke(entity)
+            onLongLickListener?.invoke(visitedCountry)
             true
         }
         showPicturesInSVG(item, helper)
-        helper.setText(R.id.tvCountry, entity.title)
+        helper.setText(R.id.tvCountry, visitedCountry.title)
         setSelectableBorderLessFor(helper.getView<ImageView>(R.id.ivFlag))
         helper.getView<ImageView>(R.id.ivFlag).setOnClickListener {
-            onImageClickListener?.invoke(entity)
+            onImageClickListener?.invoke(visitedCountry)
         }
         setSelectableBorderLessFor(helper.getView<WebView>(R.id.wvFlag))
         helper.getView<WebView>(R.id.wvFlag).setOnClickListener {
-            onImageClickListener?.invoke(entity)
+            onImageClickListener?.invoke(visitedCountry)
         }
         setSelectableBackgroundFor(helper.getView<TextView>(R.id.tvCountry))
         helper.getView<TextView>(R.id.tvCountry).setOnClickListener {
-            onTextClickListener?.invoke(entity)
+            onTextClickListener?.invoke(visitedCountry)
         }
         if (!item.childNode.isNullOrEmpty()) {
-                if (entity.isExpanded) {
+            if (visitedCountry.isExpanded) {
                     helper.setImageResource(
                         R.id.ivMore,
                         R.drawable.ic_arrow_expandable_up
@@ -77,13 +77,13 @@ class CountryNodeProvider : BaseNodeProvider() {
         it.setBackgroundResource(outValue.resourceId)
     }
 
-    private fun setSelectableBorderLessFor(it: View) {
+    private fun setSelectableBorderLessFor(view: View) {
         val outValue = TypedValue()
         context.theme.resolveAttribute(
             R.attr.selectableItemBackgroundBorderless, outValue,
             true
         )
-        it.setBackgroundResource(outValue.resourceId)
+        view.setBackgroundResource(outValue.resourceId)
     }
 
     private fun showPicturesInSVG(

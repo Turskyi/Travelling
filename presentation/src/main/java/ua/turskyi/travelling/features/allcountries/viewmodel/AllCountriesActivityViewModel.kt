@@ -18,9 +18,9 @@ import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
-    private val _notVisitedCountriesLiveData = MutableLiveData<Int>()
-    val notVisitedCountriesLiveData: MutableLiveData<Int>
-        get() = _notVisitedCountriesLiveData
+    private val _notVisitedCountriesNumLiveData = MutableLiveData<Int>()
+    val notVisitedCountriesNumLiveData: MutableLiveData<Int>
+        get() = _notVisitedCountriesNumLiveData
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
@@ -35,6 +35,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             .setEnablePlaceholders(false)
             .setPageSize(20)
             .build()
+
         pagedList = PagedList.Builder(dataSource, config)
             .setFetchExecutor(Executors.newSingleThreadExecutor())
             .setNotifyExecutor(MainThreadExecutor())
@@ -48,7 +49,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     private fun getNotVisitedCountriesFromDb() {
         viewModelScope.launch {
             interactor.getNotVisitedCountriesNum({ num ->
-                _notVisitedCountriesLiveData.postValue(num)
+                _notVisitedCountriesNumLiveData.postValue(num)
                 _visibilityLoader.postValue(GONE)
             }, {
                 _visibilityLoader.postValue(GONE)

@@ -104,7 +104,6 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
 
     fun removeCity(city: City) {
         viewModelScope.launch {
-            Log.d(CITY_LOG, "remove ${city.id} ${city.name} ${city.parentId}")
             interactor.removeCity(city.mapNodeToModel())
             initList()
         }
