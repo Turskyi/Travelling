@@ -5,14 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.android.synthetic.main.activity_selfie.*
+import kotlinx.android.synthetic.main.activity_flag.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
-class FlagsActivity: AppCompatActivity( R.layout.activity_selfie) {
+class FlagsActivity: AppCompatActivity( R.layout.activity_flag) {
 
     companion object{
         const val POSITION = "position"

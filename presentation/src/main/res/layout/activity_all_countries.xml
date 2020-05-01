@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
@@ -14,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
+            android:paddingBottom="@dimen/offset_8"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:toolbarId="@+id/toolbar">
 
@@ -24,11 +26,13 @@
                 android:layout_width="match_parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ToolbarTitleStyle"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="72dp">
 
                 <TextView
                     android:id="@+id/toolbarTitle"
                     style="@style/ToolbarTitleStyle"
+                    android:fontFamily="casual"
+                    android:layout_marginEnd="@dimen/offset_29"
                     tool:text="250 visitedCountries remain to visit" />
             </androidx.appcompat.widget.Toolbar>
 
@@ -64,6 +68,7 @@
                     android:background="@android:color/transparent"
                     android:paddingStart="@dimen/offset_8"
                     android:paddingEnd="@dimen/offset_8"
+                    android:maxLength="100"
                     android:singleLine="true"
                     android:hint="@string/search_country"
                     android:labelFor="@+id/ibSearch"
@@ -78,5 +83,17 @@
         android:id="@+id/rvAllCountries"
         style="@style/RecyclerViewStyle"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+    <TextView
+        android:id="@+id/tvNoResults"
+        style="@style/TextViewStyle"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:text="@string/all_countries_no_results"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/headline_6" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

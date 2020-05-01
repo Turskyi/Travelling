@@ -15,6 +15,8 @@
     <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
     <string name="icon_search">search image</string>
     <string name="search_country">country</string>
+    <string name="all_countries_no_results">no results</string>
+    <string name="tap_back_button_in_order_to_exit">Click again to exit.</string>
 
     <plurals name="numberOfCountriesRemain">
         <item quantity="one">%d country remains to visit</item>
@@ -22,8 +24,8 @@
         <item quantity="other">%d countries remain to visit</item>
     </plurals>
     <plurals name="numberOfCountriesVisited">
-        <item quantity="one">You\'ve been to %d country</item>
-        <item quantity="few">You\'ve been to %d countries</item>
-        <item quantity="other">You\'ve been to %d countries</item>
+        <item quantity="one">I\'ve been to %d country</item>
+        <item quantity="few">I\'ve been to %d countries</item>
+        <item quantity="other">I\'ve been to %d countries</item>
     </plurals>
 </resources>

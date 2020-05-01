@@ -23,7 +23,7 @@ class HomeAdapter : BaseNodeAdapter() {
             field = value
         }
 
-    var onTextClickListener: ((data: VisitedCountry) -> Unit)? = null
+    var onCountryNameClickListener: ((data: VisitedCountry) -> Unit)? = null
         set(value) {
             countryNodeProvider.onTextClickListener = value
             field = value

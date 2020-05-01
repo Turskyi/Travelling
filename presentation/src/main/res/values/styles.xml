@@ -111,4 +111,9 @@
         <item name="containerElevation">@dimen/elevation_12</item>
         <item name="shadowColor">@android:color/white</item>
     </style>
+
+    <style name="CasualTextAppearance">
+        <item name="android:fontFamily">casual</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

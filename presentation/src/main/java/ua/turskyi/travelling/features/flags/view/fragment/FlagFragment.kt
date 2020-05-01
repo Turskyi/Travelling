@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
-import kotlinx.android.synthetic.main.fragment_selfie.*
+import kotlinx.android.synthetic.main.fragment_flag.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 
-class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_selfie) {
+class FlagFragment(private val position: Int) : Fragment(R.layout.fragment_flag) {
 
     private val viewModel: FlagsActivityViewModel by inject()
 

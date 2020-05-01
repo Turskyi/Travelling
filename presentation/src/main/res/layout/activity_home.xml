@@ -13,11 +13,12 @@
         android:layout_width="match_parent"
         android:background="@android:color/black"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:fitsSystemWindows="true"
         tools:context=".view.ui.HomeActivity">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_app_bar"
             android:fitsSystemWindows="true"
@@ -26,30 +27,34 @@
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/toolbarLayout"
                 android:layout_width="match_parent"
+                app:expandedTitleTextAppearance="@style/CasualTextAppearance"
+                app:collapsedTitleTextAppearance="@style/CasualTextAppearance"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                app:title="...loading countries"
-                app:statusBarScrim="@android:color/black"
-                app:scrimAnimationDuration="@android:integer/config_longAnimTime"
+                android:soundEffectsEnabled="true"
                 app:contentScrim="@android:color/black"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:scrimAnimationDuration="@android:integer/config_longAnimTime"
+                app:statusBarScrim="@android:color/black"
+                app:title="...loading countries"
                 app:toolbarId="@+id/toolbar">
+
                 <FrameLayout
+                    android:id="@+id/flPieChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="true"
+                    android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:orientation="vertical"
                     android:paddingTop="@dimen/offset_10"
                     android:paddingBottom="@dimen/offset_40"
-                    app:layout_collapseMode="pin"
-                    android:focusable="true">
+                    app:layout_collapseMode="pin">
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/pieChart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:animateLayoutChanges="true"
                         android:elevation="@dimen/elevation_4"
                         android:soundEffectsEnabled="true" />
                 </FrameLayout>
@@ -58,9 +63,9 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/offset_64"
+                    android:fontFamily="casual"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay">
-                </androidx.appcompat.widget.Toolbar>
+                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
             </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 

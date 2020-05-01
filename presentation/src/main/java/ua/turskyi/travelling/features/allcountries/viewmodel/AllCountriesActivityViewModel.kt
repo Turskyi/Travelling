@@ -57,7 +57,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         } else {
-            PagedList.Builder(filteredDataSource, config)
+        return    PagedList.Builder(filteredDataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()

@@ -1,23 +1,29 @@
 package ua.turskyi.travelling.features.home.view.ui
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.listener.ChartTouchListener
+import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -28,11 +34,13 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
+import splitties.toast.toast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
 import ua.turskyi.travelling.extensions.mapNodeToActual
+import ua.turskyi.travelling.extensions.mapViewToBitmap
 import ua.turskyi.travelling.extensions.spToPix
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
@@ -43,10 +51,18 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.coroutines.CoroutineContext
+import kotlin.random.Random
 
+/* # milliseconds, desired time passed between two back presses. */
+private const val TIME_INTERVAL = 2000
 
-class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener  {
+class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
+    OnChartGestureListener {
 
     companion object {
         const val ACCESS_LOCATION = 10001
@@ -54,12 +70,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         const val LOG_ID = "LOG_ID"
     }
 
-    private val viewModel by inject<HomeActivityViewModel>()
-    private val adapter by inject<HomeAdapter>()
     private lateinit var binding: ActivityHomeBinding
-
+    private var backPressedTiming: Long = 0
     private var mSnackBar: Snackbar? = null
     private var job: Job = Job()
+    private val viewModel by inject<HomeActivityViewModel>()
+    private val adapter by inject<HomeAdapter>()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -70,10 +86,108 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         initListeners()
     }
 
+    override fun onChartGestureEnd(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {
+    }
+
+    override fun onChartFling(
+        me1: MotionEvent?,
+        me2: MotionEvent?,
+        velocityX: Float,
+        velocityY: Float
+    ) {
+    }
+
+    override fun onChartGestureStart(
+        me: MotionEvent?,
+        lastPerformedGesture: ChartTouchListener.ChartGesture?
+    ) {
+    }
+
+    override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
+    override fun onChartLongPressed(me: MotionEvent?) {}
+    override fun onChartDoubleTapped(me: MotionEvent?) {}
+    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
+    override fun onChartSingleTapped(me: MotionEvent?) {
+        val bitmap = getScreenShot(toolbarLayout)
+        val fileName = "piechart${Random.nextInt(0, 1000)}.jpg"
+        val file = bitmap?.let { storeFileAs(it, fileName) }
+        file?.let { shareImage(file = it) }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResult: IntArray
+    ) {
+        when (requestCode) {
+            ACCESS_LOCATION -> {
+                if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    initView()
+                    initObservers()
+                } else {
+                    requestPermission()
+                }
+            }
+        }
+    }
     override fun onResume() {
         super.onResume()
         launch {
             viewModel.initList()
+        }
+    }
+
+    override fun onDismiss(p0: DialogInterface?) {
+        launch {
+            viewModel.initList()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (backPressedTiming + TIME_INTERVAL > System.currentTimeMillis()) {
+            super.onBackPressed()
+            return
+        } else {
+            Snackbar.make(
+                rvVisitedCountries,
+                resources.getString(R.string.tap_back_button_in_order_to_exit),
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
+        backPressedTiming = System.currentTimeMillis()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
+    private fun shareImage(file: File) {
+        val uri = FileProvider.getUriForFile(
+            this,
+            applicationContext.packageName.toString() + ".provider",
+            file
+        )
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        intent.type = "image/*"
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.putExtra(Intent.EXTRA_SUBJECT, "")
+        intent.putExtra(Intent.EXTRA_TEXT, "")
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        try {
+            startActivity(
+                Intent.createChooser(
+                    intent,
+                    "Share How Many Countries You Have Visited With Your Friends"
+                )
+            )
+        } catch (e: ActivityNotFoundException) {
+            toast("No App Available")
         }
     }
 
@@ -96,7 +210,28 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         )
     }
 
+    private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
+        val dirPath =
+            externalCacheDir?.absolutePath + "/Screenshots"
+        val dir = File(dirPath)
+        if (!dir.exists()) dir.mkdirs()
+        val file = File(dirPath, fileName)
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return file
+    }
+
+    private fun getScreenShot(view: View): Bitmap? {
+        return view.mapViewToBitmap()?.let { Bitmap.createBitmap(it) }
+    }
     private fun initListeners() {
+        pieChart.onChartGestureListener = this
         adapter.onImageClickListener = {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
@@ -108,11 +243,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             showSnackBarWithCountry(countryNode.mapNodeToActual())
         }
 
-        adapter.onTextClickListener = { countryNode ->
+        adapter.onCountryNameClickListener = { countryNode ->
             AddCityDialogFragment(countryNode).show(supportFragmentManager, null)
         }
         adapter.onCityLongClickListener = { city ->
-            showSnackBarWithCity(city)
+            showSnackBarWithThis(city)
         }
     }
 
@@ -137,24 +272,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         )
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResult: IntArray
-    ) {
-        when (requestCode) {
-            ACCESS_LOCATION -> {
-                if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
-                    initView()
-                    initObservers()
-                } else {
-                    requestPermission()
-                }
-            }
-        }
-    }
-
     private fun removeCountryOnLongClick(country: Country) {
         viewModel.removeFromVisited(country)
     }
@@ -163,7 +280,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
        viewModel.removeCity(city)
     }
 
-    private fun showSnackBarWithCity(city: City) {
+    private fun showSnackBarWithThis(city: City) {
         mSnackBar = Snackbar.make(
             rvVisitedCountries,
             getString(R.string.delete_it, city.name),
@@ -263,6 +380,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* rotate the pie chart to 45 degrees */
         pieChart.rotationAngle = -10f
 
+        pieChart.setTouchEnabled(true)
+
         /* updates data in pieChart */
         pieChart.invalidate()
     }
@@ -277,17 +396,5 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             visitedCountries.size,
             visitedCountries.size
         )
-    }
-
-    override fun onDismiss(p0: DialogInterface?) {
-        Log.d(LOG_UPDATE, "on dismiss")
-        launch {
-            viewModel.initList()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
     }
 }
