@@ -14,7 +14,7 @@
         android:contentDescription="@string/flag" />
 
 <!--    WebView is used in case of error while downloading image source from the internet. -->
-    <WebView
+    <ua.turskyi.travelling.widgets.ClickableWebView
         android:id="@+id/wvFlag"
         style="@style/ImageViewStyle"
         android:gravity="center"
