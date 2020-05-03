@@ -7,8 +7,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.net.Uri
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -51,10 +53,8 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
@@ -107,14 +107,27 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
-    override fun onChartLongPressed(me: MotionEvent?) {}
-    override fun onChartDoubleTapped(me: MotionEvent?) {}
-    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
-    override fun onChartSingleTapped(me: MotionEvent?) {
+    override fun onChartLongPressed(me: MotionEvent?) {
         val bitmap = getScreenShot(toolbarLayout)
         val fileName = "piechart${Random.nextInt(0, 1000)}.jpg"
         val file = bitmap?.let { storeFileAs(it, fileName) }
         file?.let { shareImage(file = it) }
+    }
+    override fun onChartDoubleTapped(me: MotionEvent?) {}
+    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
+    override fun onChartSingleTapped(me: MotionEvent?) {
+        when (pieChart.isDrawHoleEnabled) {
+            false -> {
+                pieChart.isDrawHoleEnabled = true
+                pieChart.centerText = generateCenterSpannableText()
+            }
+            true -> {
+                pieChart.centerText = ""
+                pieChart.isDrawHoleEnabled = false
+            }
+        }
+
+
     }
 
     override fun onRequestPermissionsResult(
@@ -357,9 +370,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         pieChartColors.add(
             ContextCompat.getColor(
                 applicationContext,
-                R.color.colorPrimaryDark
+                R.color.colorBrightBlue
             )
         )
+
         val dataSet = PieDataSet(entries, null)
         dataSet.colors = pieChartColors
 
@@ -371,8 +385,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         pieChart.data = data
         pieChart.description.isEnabled = false
 
-        /* remove hole inside */
+        /* remove or enable hole inside */
         pieChart.isDrawHoleEnabled = false
+
+        pieChart.holeRadius = 80F
 
         /* removes color squares */
         pieChart.legend.isEnabled = false
@@ -380,10 +396,22 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* rotate the pie chart to 45 degrees */
         pieChart.rotationAngle = -10f
 
-        pieChart.setTouchEnabled(true)
+        pieChart.setBackgroundResource(R.drawable.gradient_list)
+        val animationDrawable: AnimationDrawable =
+            pieChart.background as AnimationDrawable
+        animationDrawable.setEnterFadeDuration(2000)
+        animationDrawable.setExitFadeDuration(4000)
+        animationDrawable.start()
 
-        /* updates data in pieChart */
+        /* updates data in pieChart every time */
         pieChart.invalidate()
+    }
+
+    private fun generateCenterSpannableText(): SpannableString? {
+        val imageSpan = ImageSpan(this, R.drawable.pic_pie_chart_center)
+        val spannableString = SpannableString(" ")
+        spannableString.setSpan(imageSpan, " ".length - 1, " ".length, 0)
+        return spannableString
     }
 
     private fun updateAdapter(visitedCountries: List<VisitedCountry>) {

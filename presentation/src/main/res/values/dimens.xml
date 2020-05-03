@@ -47,4 +47,5 @@
     <dimen name="siz_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
     <dimen name="offset_29">29dp</dimen>
+    <dimen name="width_gradient">400dp</dimen>
 </resources>
