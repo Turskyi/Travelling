@@ -11,10 +11,10 @@ fun AppCompatActivity.hideKeyboard() {
     /* Finds the currently focused view, so we can grab the correct window token from it. */
     var view = currentFocus
     /* If no view currently does not have a focus, create a new one, just so we can grab a window token from it */
-    if (view == null) {
+    view ?: run {
         view = View(this)
     }
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
+    imm.hideSoftInputFromWindow(view?.windowToken, 0)
 }
 
 fun AppCompatActivity.showKeyboard() {

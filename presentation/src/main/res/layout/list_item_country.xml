@@ -9,6 +9,7 @@
     <ImageView
         android:id="@+id/ivFlag"
         style="@style/ImageViewStyle"
+        tool:visibility="gone"
         tool:src="@android:drawable/ic_menu_gallery"
         android:contentDescription="@string/flag" />
 
@@ -16,7 +17,9 @@
     <WebView
         android:id="@+id/wvFlag"
         style="@style/ImageViewStyle"
+        android:gravity="center"
         android:visibility="gone"
+        tool:visibility="visible"
         tool:drawableStart="@android:drawable/ic_menu_gallery"
         android:contentDescription="@string/flag" />
 

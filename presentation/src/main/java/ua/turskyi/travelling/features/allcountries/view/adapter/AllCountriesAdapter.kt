@@ -109,8 +109,12 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
             webViewClient = WebViewClient()
             visibility = VISIBLE
             setBackgroundColor(Color.TRANSPARENT)
-            setInitialScale(8)
-            loadUrl(country.flag)
+            loadData(
+                "<html><head><style type='text/css'>" +
+                        "body{margin:auto auto;text-align:center;} img{width:30;}" +
+                        " </style></head><body><img src='${country.flag}'/>" +
+                        "</body></html>", "text/html", "UTF-8"
+            )
         }
     }
 

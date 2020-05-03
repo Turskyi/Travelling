@@ -114,8 +114,12 @@ class CountryNodeProvider : BaseNodeProvider() {
         holder.itemView.wvFlag.webViewClient = WebViewClient()
         holder.itemView.wvFlag.visibility = VISIBLE
         holder.itemView.wvFlag.setBackgroundColor(Color.TRANSPARENT)
-        holder.itemView.wvFlag.setInitialScale(8)
-        holder.itemView.wvFlag.loadUrl(visitedCountry.img)
+        holder.itemView.wvFlag.loadData(
+                "<html><head><style type='text/css'>" +
+                        "body{margin:auto auto;text-align:center;} img{width:30;}" +
+                        " </style></head><body><img src='${visitedCountry.img}'/>" +
+                        "</body></html>", "text/html", "UTF-8"
+        )
     }
 
     override fun onClick(
