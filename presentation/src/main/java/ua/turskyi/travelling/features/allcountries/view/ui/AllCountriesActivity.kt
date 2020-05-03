@@ -2,7 +2,6 @@ package ua.turskyi.travelling.features.allcountries.view.ui
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_all_countries.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.extensions.setDynamicVisibility
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
@@ -76,7 +74,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     }
 
     private fun updateTitle(num: Int) {
-        toolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
+        tvToolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
     }
 
     private fun collapseSearch() {
@@ -87,7 +85,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
         hideKeyboard()
         etSearch.setText("")
-        toolbarTitle.animate().alpha(1f).duration = 200
+        tvToolbarTitle.animate().alpha(1f).duration = 200
         sllSearch.elevate(
             resources.getDimension(R.dimen.elevation_8),
             resources.getDimension(R.dimen.elevation_1),
@@ -110,7 +108,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
         rvAllCountries.animate().translationY(0f)
         ibSearch.isSelected = true
         val width = toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
-        toolbarTitle.animate().alpha(0f).duration = 200
+        tvToolbarTitle.animate().alpha(0f).duration = 200
         sllSearch.elevate(
             resources.getDimension(R.dimen.elevation_1),
             resources.getDimension(R.dimen.elevation_8),

@@ -11,7 +11,11 @@
     <WebView
         android:id="@+id/wvFlag"
         style="@style/ImageViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:visibility="gone"
+        tools:visibility="visible"
         tools:drawableStart="@android:drawable/ic_menu_gallery"
         android:contentDescription="@string/flag" />
 </LinearLayout>

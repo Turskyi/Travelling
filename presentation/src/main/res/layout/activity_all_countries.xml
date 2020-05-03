@@ -29,7 +29,7 @@
                 android:layout_height="72dp">
 
                 <TextView
-                    android:id="@+id/toolbarTitle"
+                    android:id="@+id/tvToolbarTitle"
                     style="@style/ToolbarTitleStyle"
                     android:fontFamily="casual"
                     android:layout_marginEnd="@dimen/offset_29"

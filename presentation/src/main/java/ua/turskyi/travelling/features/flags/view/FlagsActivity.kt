@@ -8,11 +8,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.activity_flag.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
+import ua.turskyi.travelling.features.flags.view.fragment.ZoomOutPageTransformer
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
-class FlagsActivity: AppCompatActivity( R.layout.activity_flag) {
+class FlagsActivity: AppCompatActivity( R.layout.activity_flag), FlagFragment.OnFlagFragmentListener {
 
     companion object{
         const val POSITION = "position"
@@ -27,6 +27,10 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_flag) {
     }
 
     private fun initView() {
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         viewModel.getVisitedCountriesFromDB()
         val pagerAdapter = ScreenSlidePagerAdapter(this)
@@ -45,5 +49,9 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_flag) {
         FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = viewModel.visitedCount
         override fun createFragment(position: Int):  Fragment = FlagFragment(position)
+    }
+
+    override fun onChangeToolbarTitle(title: String?) {
+        tvToolbarTitle.text = title
     }
 }

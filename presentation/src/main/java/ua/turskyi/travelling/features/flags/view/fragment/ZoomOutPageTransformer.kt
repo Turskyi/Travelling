@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.flags.view.adapter
+package ua.turskyi.travelling.features.flags.view.fragment
 
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
