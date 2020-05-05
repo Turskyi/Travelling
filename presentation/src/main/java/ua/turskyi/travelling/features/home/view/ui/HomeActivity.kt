@@ -11,6 +11,9 @@ import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ImageSpan
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -37,6 +40,7 @@ import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
 import splitties.toast.toast
+import ua.turskyi.travelling.Constant.GOOGLE_PLAY_ADDRESS
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
@@ -67,7 +71,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     companion object {
         const val ACCESS_LOCATION = 10001
         const val LOG_UPDATE = "LOG_UPDATE"
-        const val LOG_ID = "LOG_ID"
     }
 
     private lateinit var binding: ActivityHomeBinding
@@ -119,7 +122,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         when (pieChart.isDrawHoleEnabled) {
             false -> {
                 pieChart.isDrawHoleEnabled = true
-                pieChart.centerText = generateCenterSpannableText()
+                pieChart.centerText = setCenterPictureViaSpannableString()
             }
             true -> {
                 pieChart.centerText = ""
@@ -189,9 +192,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         intent.action = Intent.ACTION_SEND
         intent.type = "image/*"
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.putExtra(Intent.EXTRA_SUBJECT, "")
-        intent.putExtra(Intent.EXTRA_TEXT, "")
+        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
+        intent.putExtra(Intent.EXTRA_TEXT, GOOGLE_PLAY_ADDRESS)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
+
         try {
             startActivity(
                 Intent.createChooser(
@@ -221,6 +225,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 10, 10, 20, 15
             )
         )
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val width: Int = displayMetrics.widthPixels
+        Log.d(LOG_UPDATE, "width: ${width}")
+        if (width < 1082){
+            toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
+        }
     }
 
     private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
@@ -407,7 +419,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         pieChart.invalidate()
     }
 
-    private fun generateCenterSpannableText(): SpannableString? {
+    private fun setCenterPictureViaSpannableString(): SpannableString? {
         val imageSpan = ImageSpan(this, R.drawable.pic_pie_chart_center)
         val spannableString = SpannableString(" ")
         spannableString.setSpan(imageSpan, " ".length - 1, " ".length, 0)

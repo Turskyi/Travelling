@@ -27,12 +27,14 @@
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/toolbarLayout"
                 android:layout_width="match_parent"
-                app:expandedTitleTextAppearance="@style/CasualTextAppearance"
-                app:collapsedTitleTextAppearance="@style/CasualTextAppearance"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                android:background="@android:color/black"
                 android:soundEffectsEnabled="true"
+                app:collapsedTitleTextAppearance="@style/CasualTextAppearance"
                 app:contentScrim="@android:color/black"
+                app:expandedTitleGravity="bottom|center"
+                app:expandedTitleTextAppearance="@style/CasualTextAppearance"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
                 app:statusBarScrim="@android:color/black"
@@ -43,21 +45,18 @@
                     android:id="@+id/flPieChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:foreground="?attr/selectableItemBackground"
                     android:orientation="vertical"
                     android:paddingTop="@dimen/offset_10"
                     android:paddingBottom="@dimen/offset_40"
                     app:layout_collapseMode="pin">
 
-
-                        <com.github.mikephil.charting.charts.PieChart
-                            android:id="@+id/pieChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:elevation="@dimen/elevation_4"
-                            android:soundEffectsEnabled="true" />
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:elevation="@dimen/elevation_4"
+                        android:soundEffectsEnabled="true" />
 
                 </FrameLayout>
 
@@ -67,7 +66,7 @@
                     android:layout_height="@dimen/offset_64"
                     android:fontFamily="casual"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 

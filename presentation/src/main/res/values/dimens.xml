@@ -11,6 +11,7 @@
     <dimen name="offset_16">16dp</dimen>
     <dimen name="offset_20">20dp</dimen>
     <dimen name="offset_26">26dp</dimen>
+    <dimen name="offset_29">29dp</dimen>
     <dimen name="offset_40">40dp</dimen>
     <dimen name="offset_64">64dp</dimen>
     <dimen name="offset_140">140dp</dimen>
@@ -38,6 +39,7 @@
 
     <!-- widths -->
     <dimen name="width_splash_logo">361dp</dimen>
+    <dimen name="width_gradient">360dp</dimen>
 
     <!-- radius -->
     <dimen name="radius_cardview">4dp</dimen>
@@ -46,6 +48,4 @@
     <!-- sizes -->
     <dimen name="siz_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
-    <dimen name="offset_29">29dp</dimen>
-    <dimen name="width_gradient">400dp</dimen>
 </resources>

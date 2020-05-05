@@ -90,7 +90,6 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
             } else {
                 alertDialog?.cancel()
             }
-            Log.d(HomeActivity.LOG_UPDATE, "before dismis")
             alertDialog?.dismiss()
         }
 
