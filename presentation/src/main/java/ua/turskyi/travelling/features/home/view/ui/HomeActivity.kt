@@ -284,10 +284,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             )
         )
 
+        initGravityForTitle()
+    }
+
+    private fun initGravityForTitle() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width: Int = displayMetrics.widthPixels
-        if (width < 1082){
+        if (width < 1082) {
             toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
         }
     }
