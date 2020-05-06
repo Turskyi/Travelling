@@ -29,4 +29,6 @@
         <item quantity="few">I\'ve been to %d countries</item>
         <item quantity="other">I\'ve been to %d countries</item>
     </plurals>
+
+    <string name="facebook_app_id">2312394202364807</string>
 </resources>

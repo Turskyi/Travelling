@@ -123,7 +123,12 @@ dependencies {
     /* PhotoView */
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
+    /* Location */
     implementation "com.google.android.gms:play-services-location:17.0.0"
+
+    /* Facebook SDK */
+    implementation 'com.facebook.android:facebook-share:5.1.1'
+    implementation 'com.facebook.android:facebook-applinks:5.1.1'
 
     /* test */
     testImplementation 'junit:junit:4.13'

@@ -2,6 +2,7 @@ package ua.turskyi.travelling.features.home.view.ui
 
 import android.Manifest
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,7 +13,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +24,10 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.facebook.share.model.ShareHashtag
+import com.facebook.share.model.ShareMediaContent
+import com.facebook.share.model.SharePhoto
+import com.facebook.share.widget.ShareDialog
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -59,18 +63,17 @@ import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.random.Random
 
 /* # milliseconds, desired time passed between two back presses. */
 private const val TIME_INTERVAL = 2000
-
 class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
     OnChartGestureListener {
 
     companion object {
         const val ACCESS_LOCATION = 10001
-        const val LOG_UPDATE = "LOG_UPDATE"
     }
 
     private lateinit var binding: ActivityHomeBinding
@@ -111,10 +114,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
     override fun onChartLongPressed(me: MotionEvent?) {
-        val bitmap = getScreenShot(toolbarLayout)
-        val fileName = "piechart${Random.nextInt(0, 1000)}.jpg"
-        val file = bitmap?.let { storeFileAs(it, fileName) }
-        file?.let { shareImage(file = it) }
+        if (isFacebookInstalled(this)) {
+            shareViaFacebook()
+        } else {
+            shareImageViaChooser()
+        }
     }
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
@@ -129,8 +133,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 pieChart.isDrawHoleEnabled = false
             }
         }
-
-
     }
 
     override fun onRequestPermissionsResult(
@@ -182,30 +184,86 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         job.cancel()
     }
 
-    private fun shareImage(file: File) {
-        val uri = FileProvider.getUriForFile(
-            this,
-            applicationContext.packageName.toString() + ".provider",
-            file
-        )
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        intent.type = "image/*"
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
-        intent.putExtra(Intent.EXTRA_TEXT, GOOGLE_PLAY_ADDRESS)
-        intent.putExtra(Intent.EXTRA_STREAM, uri)
+    private fun getScreenShot(view: View): Bitmap? {
+        return view.mapViewToBitmap()?.let { Bitmap.createBitmap(it) }
+    }
 
+    private fun shareImageViaChooser() {
+        val fileName =
+            "piechart${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())}.jpg"
+        val bitmap = getScreenShot(toolbarLayout)
+        val file = bitmap?.let { storeFileAs(it, fileName) }
+        val uri = file?.let {
+            FileProvider.getUriForFile(
+                this,
+                applicationContext.packageName.toString() + ".provider",
+                it
+            )
+        }
+
+        val intentImage = Intent()
+        intentImage.action = Intent.ACTION_SEND
+        intentImage.type = "image/*"
+        intentImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intentImage.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
+        intentImage.putExtra(Intent.EXTRA_TEXT, "#travelling_the_world \n $GOOGLE_PLAY_ADDRESS")
+        intentImage.putExtra(Intent.EXTRA_STREAM, uri)
         try {
             startActivity(
                 Intent.createChooser(
-                    intent,
-                    "Share How Many Countries You Have Visited With Your Friends"
+                    intentImage,
+                    "Share How Many Countries You Have Visited"
                 )
             )
         } catch (e: ActivityNotFoundException) {
-            toast("No App Available")
+            toast("No app available to share pie chart")
         }
+    }
+
+    private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
+        val dirPath =
+            externalCacheDir?.absolutePath + "/Screenshots"
+        val dir = File(dirPath)
+        if (!dir.exists()) dir.mkdirs()
+        val file = File(dirPath, fileName)
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return file
+    }
+
+    private fun isFacebookInstalled(context: Context): Boolean {
+        val packageManager: PackageManager = context.packageManager
+        try {
+            packageManager.getPackageInfo("com.facebook.katana", PackageManager.GET_META_DATA)
+        } catch (e: PackageManager.NameNotFoundException) {
+            return false
+        }
+        return true
+    }
+
+    private fun shareViaFacebook() {
+        val webAddress =
+            ShareHashtag.Builder().setHashtag("#travelling_the_world \n $GOOGLE_PLAY_ADDRESS")
+                .build()
+        val bitmap = getScreenShot(toolbarLayout)
+        val sharePhoto = SharePhoto.Builder().setBitmap(bitmap).setCaption(
+            "piechart${SimpleDateFormat(
+                "dd.MM.yyyy",
+                Locale.getDefault()
+            ).format(Date())}"
+        )
+            .build()
+        val mediaContent = ShareMediaContent.Builder()
+            .addMedium(sharePhoto)
+            .setShareHashtag(webAddress)
+            .build()
+        ShareDialog.show(this, mediaContent)
     }
 
     private fun initView() {
@@ -229,32 +287,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width: Int = displayMetrics.widthPixels
-        Log.d(LOG_UPDATE, "width: ${width}")
         if (width < 1082){
             toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
         }
     }
 
-    private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
-        val dirPath =
-            externalCacheDir?.absolutePath + "/Screenshots"
-        val dir = File(dirPath)
-        if (!dir.exists()) dir.mkdirs()
-        val file = File(dirPath, fileName)
-        try {
-            val fileOutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
-            fileOutputStream.flush()
-            fileOutputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return file
-    }
-
-    private fun getScreenShot(view: View): Bitmap? {
-        return view.mapViewToBitmap()?.let { Bitmap.createBitmap(it) }
-    }
     private fun initListeners() {
         pieChart.onChartGestureListener = this
         adapter.onImageClickListener = {

@@ -2,6 +2,7 @@ package ua.turskyi.travelling.common
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.facebook.appevents.AppEventsLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ua.turskyi.di.dataProvidersModule
@@ -30,5 +31,6 @@ class App : Application() {
             )
         }
         ContextUtil.init(this)
+        AppEventsLogger.activateApp(this)
     }
 }
