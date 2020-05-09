@@ -38,10 +38,13 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
 
     override suspend fun updateSelfie(
         id: Int,
-        selfie: String
+        selfie: String,
+        onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
             countriesDbSource.updateSelfie(id, selfie)
+            onSusses(countriesDbSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
         }
     }
 

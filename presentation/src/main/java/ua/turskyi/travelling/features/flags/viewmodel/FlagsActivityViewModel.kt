@@ -19,13 +19,18 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
 
     init {
         visitedCountries = _visitedCountries
+        getVisitedCountriesFromDB()
     }
 
     fun updateSelfie(id: Int, selfie: String){
         viewModelScope.launch(IO) {
-            interactor.updateSelfie(id,selfie)
+            interactor.updateSelfie(id,selfie, {countries ->
+                _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
+            }, {
+                it.printStackTrace()
+                Tips.show("OOPS! COULDN'T UPDATE PICTURE")
+            })
         }
-        getVisitedCountriesFromDB()
     }
 
     fun getVisitedCountriesFromDB() {
@@ -34,6 +39,7 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
                  visitedCount = countries.size
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
             }, {
+                it.printStackTrace()
                 Tips.show("OOPS! COULDN'T LOAD FLAGS")
             })
         }

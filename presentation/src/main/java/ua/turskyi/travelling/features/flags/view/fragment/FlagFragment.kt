@@ -14,6 +14,8 @@ import android.view.View
 import android.view.View.*
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -22,8 +24,8 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import kotlinx.android.synthetic.main.fragment_flag.*
 import org.koin.android.ext.android.inject
-import splitties.toast.toast
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.extensions.observeOnce
 import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
@@ -77,9 +79,8 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                 )
                 val imageId =
                     selectedImageUri?.lastPathSegment?.takeLastWhile { it.isDigit() }?.toInt()
-                viewModel.visitedCountries.observe(
-                    viewLifecycleOwner,
-                    Observer { visitedCountries ->
+                val visitedCountriesObserverForLocalPhotos =
+                    Observer<List<Country>> { visitedCountries ->
                         val contentImg = imageId?.let { contentImgId ->
                             position?.let {
                                 getContentUriFromUri(
@@ -98,18 +99,25 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                                 )
                             }
                         }
-                    })
-            } else {
-                viewModel.visitedCountries.observe(
+                    }
+                viewModel.visitedCountries.observeOnce(
                     viewLifecycleOwner,
-                    Observer { visitedCountries ->
+                    visitedCountriesObserverForLocalPhotos
+                )
+            } else {
+                val visitedCountriesObserverForCloudPhotos =
+                    Observer<List<Country>> { visitedCountries ->
                         position?.let {
                             viewModel.updateSelfie(
                                 visitedCountries[position].id,
                                 selectedImageUri.toString()
                             )
                         }
-                    })
+                    }
+                viewModel.visitedCountries.observeOnce(
+                    viewLifecycleOwner,
+                    visitedCountriesObserverForCloudPhotos
+                )
             }
         } else {
             splitties.toast.toast("did not choose anything")
@@ -139,13 +147,12 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
         return galleryPicture
     }
 
-    private fun addSelfieLongClickListener(): OnLongClickListener =
-        OnLongClickListener {
-            pickThePhoto()
+    private fun addSelfieLongClickListener(): OnLongClickListener = OnLongClickListener {
+        initPhotoPicker()
             return@OnLongClickListener true
         }
 
-    private fun pickThePhoto() {
+    private fun initPhotoPicker() {
         val action: String = Intent.ACTION_OPEN_DOCUMENT
         val intent = Intent(action)
         intent.type = "image/jpeg"
@@ -162,8 +169,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
     }
 
     private fun initObservers() {
-        viewModel.getVisitedCountriesFromDB()
-        viewModel.visitedCountries.observe(viewLifecycleOwner, Observer { countries ->
+        val visitedCountriesObserver = Observer<List<Country>> { countries ->
             val position = this.arguments?.getInt(POSITION)
             position?.let {
                 mListener?.onChangeToolbarTitle(countries[position].name)
@@ -176,7 +182,8 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                     ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
                 }
             }
-        })
+        }
+        viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
     }
 
     private fun showFlagClickListener(countries: List<Country>, position: Int?):
@@ -205,18 +212,18 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                         fingerState =
                             if (fingerState == FINGER_RELEASED) FINGER_TOUCHED else FINGER_UNDEFINED
                     }
-                    MotionEvent.ACTION_UP -> {
-                        when {
-                            fingerState != FINGER_DRAGGING -> {
-                                fingerState = FINGER_RELEASED
-                                /* perform click */
-                                showSelfie(countries, position)
-                                /* return first clickListener */
-                                ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
-                            }
-                            else -> fingerState =
-                                if (fingerState == FINGER_DRAGGING) FINGER_RELEASED else FINGER_UNDEFINED
+                    MotionEvent.ACTION_UP -> when {
+                        fingerState != FINGER_DRAGGING -> {
+                            fingerState = FINGER_RELEASED
+                            /* perform click */
+                            showSelfie(countries, position)
+                            /* return first clickListener */
+                            ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
                         }
+                        else -> fingerState =
+                            if (fingerState == FINGER_DRAGGING) FINGER_RELEASED else {
+                                FINGER_UNDEFINED
+                            }
                     }
                     else -> fingerState = if (motionEvent.action == MotionEvent.ACTION_MOVE) {
                         if (fingerState == FINGER_TOUCHED || fingerState == FINGER_DRAGGING) {

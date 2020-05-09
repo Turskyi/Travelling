@@ -1,13 +1,14 @@
 package ua.turskyi.travelling.features.flags.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_flag.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
-import ua.turskyi.travelling.features.flags.view.fragment.ZoomOutPageTransformer
+import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 
 class FlagsActivity: AppCompatActivity( R.layout.activity_flag), OnFlagFragmentListener {
 
@@ -21,7 +22,10 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_flag), OnFlagFragmentL
         initListeners()
     }
 
-    override fun onChangeToolbarTitle(title: String?) { tvToolbarTitle.text = title }
+    override fun onChangeToolbarTitle(title: String?) {
+        Log.d("POSITION===>", "$title")
+        tvToolbarTitle.text = title
+    }
 
     private fun initView() {
         setSupportActionBar(toolbar)

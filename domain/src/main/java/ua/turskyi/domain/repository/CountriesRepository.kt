@@ -11,7 +11,9 @@ interface CountriesRepository {
 
     suspend fun updateSelfie(
         id: Int,
-        selfie: String
+        selfie: String,
+        onSusses: (List<CountryModel>) -> Unit,
+        onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun addModelsToDb(
