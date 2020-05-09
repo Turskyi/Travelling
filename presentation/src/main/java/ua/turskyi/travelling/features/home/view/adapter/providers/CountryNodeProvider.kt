@@ -15,7 +15,7 @@ import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
-import kotlinx.android.synthetic.main.list_item_country.view.*
+import kotlinx.android.synthetic.main.item_list_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.VisitedCountry
 
@@ -24,7 +24,7 @@ class CountryNodeProvider : BaseNodeProvider() {
         get() = 0
 
     override val layoutId: Int
-        get() = R.layout.list_item_country
+        get() = R.layout.item_list_country
 
     var onImageClickListener: ((data: VisitedCountry) -> Unit)? = null
     var onTextClickListener: ((data: VisitedCountry) -> Unit)? = null

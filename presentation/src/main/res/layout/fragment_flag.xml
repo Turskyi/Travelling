@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/llFlag"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     xmlns:tools="http://schemas.android.com/tools">
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/imageViewEnlarged"
+        android:id="@+id/ivEnlarged"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <WebView
         android:id="@+id/wvFlag"
         style="@style/ImageViewStyle"

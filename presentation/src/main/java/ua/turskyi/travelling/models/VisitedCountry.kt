@@ -7,4 +7,5 @@ class VisitedCountry(
     var id: Int,
     var img: String,
     var visited: Boolean?,
+    var selfie: String?,
     override var childNode: MutableList<BaseNode>? = null, val title: String) : BaseExpandNode()

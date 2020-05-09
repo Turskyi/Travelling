@@ -9,6 +9,11 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
+    suspend fun updateSelfie(
+        id: Int,
+        selfie: String
+    )
+
     suspend fun addModelsToDb(
         countries: MutableList<CountryModel>,
         onError: ((Exception) -> Unit?)? = null

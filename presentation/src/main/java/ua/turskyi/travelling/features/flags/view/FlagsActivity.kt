@@ -3,22 +3,17 @@ package ua.turskyi.travelling.features.flags.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.activity_flag.*
-import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
+import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
 import ua.turskyi.travelling.features.flags.view.fragment.ZoomOutPageTransformer
-import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
-import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
-class FlagsActivity: AppCompatActivity( R.layout.activity_flag), FlagFragment.OnFlagFragmentListener {
+class FlagsActivity: AppCompatActivity( R.layout.activity_flag), OnFlagFragmentListener {
 
     companion object{
         const val POSITION = "position"
     }
-
-    private val viewModel: FlagsActivityViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,13 +21,13 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_flag), FlagFragment.On
         initListeners()
     }
 
-    private fun initView() {
+    override fun onChangeToolbarTitle(title: String?) { tvToolbarTitle.text = title }
 
+    private fun initView() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
-        viewModel.getVisitedCountriesFromDB()
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         pager.adapter = pagerAdapter
         pager.offscreenPageLimit = 4
@@ -44,14 +39,4 @@ class FlagsActivity: AppCompatActivity( R.layout.activity_flag), FlagFragment.On
     }
 
     private fun initListeners() = toolbar.setNavigationOnClickListener { onBackPressed() }
-
-    private inner class ScreenSlidePagerAdapter(activity: AppCompatActivity) :
-        FragmentStateAdapter(activity) {
-        override fun getItemCount(): Int = viewModel.visitedCount
-        override fun createFragment(position: Int):  Fragment = FlagFragment(position)
-    }
-
-    override fun onChangeToolbarTitle(title: String?) {
-        tvToolbarTitle.text = title
-    }
 }

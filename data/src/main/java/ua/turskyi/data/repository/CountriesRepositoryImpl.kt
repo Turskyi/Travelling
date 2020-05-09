@@ -36,6 +36,15 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         })
     }
 
+    override suspend fun updateSelfie(
+        id: Int,
+        selfie: String
+    ) {
+        GlobalScope.launch {
+            countriesDbSource.updateSelfie(id, selfie)
+        }
+    }
+
     override suspend fun markAsVisited(
         country: CountryModel,
         onError: ((Exception) -> Unit?)?

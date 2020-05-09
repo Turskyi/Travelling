@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
@@ -18,6 +19,13 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
 
     init {
         visitedCountries = _visitedCountries
+    }
+
+    fun updateSelfie(id: Int, selfie: String){
+        viewModelScope.launch(IO) {
+            interactor.updateSelfie(id,selfie)
+        }
+        getVisitedCountriesFromDB()
     }
 
     fun getVisitedCountriesFromDB() {

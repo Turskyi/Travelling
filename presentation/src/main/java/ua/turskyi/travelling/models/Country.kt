@@ -7,13 +7,15 @@ data class Country(
     var id: Int,
     val name: String,
     val flag: String,
-    var visited: Boolean? = null
+    var visited: Boolean? = null,
+    var selfie: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Int::class.java.classLoader) as Int,
         parcel.readValue(String::class.java.classLoader) as String,
         parcel.readValue(String::class.java.classLoader) as String,
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readValue(String::class.java.classLoader) as? String
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -21,6 +23,7 @@ data class Country(
         parcel.writeValue(name)
         parcel.writeValue(flag)
         parcel.writeValue(visited)
+        parcel.writeValue(selfie)
     }
 
     override fun describeContents(): Int {

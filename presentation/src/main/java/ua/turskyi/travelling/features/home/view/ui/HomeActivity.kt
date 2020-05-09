@@ -73,7 +73,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     OnChartGestureListener {
 
     companion object {
-        const val ACCESS_LOCATION = 10001
+        const val ACCESS_LOCATION_AND_EXTERNAL_STORAGE = 10001
     }
 
     private lateinit var binding: ActivityHomeBinding
@@ -141,7 +141,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         grantResult: IntArray
     ) {
         when (requestCode) {
-            ACCESS_LOCATION -> {
+            ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> {
                 if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
                     initView()
@@ -297,7 +297,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun initListeners() {
-        pieChart.onChartGestureListener = this
         adapter.onImageClickListener = {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
@@ -318,11 +317,16 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun checkPermission() {
-        val permissionGranted = ContextCompat.checkSelfPermission(
+        val locationPermission = ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
-        if (permissionGranted != PackageManager.PERMISSION_GRANTED) {
+        val externalStoragePermission =
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        if (locationPermission != PackageManager.PERMISSION_GRANTED && externalStoragePermission != PackageManager.PERMISSION_GRANTED) {
             requestPermission()
         } else {
             initView()
@@ -333,8 +337,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
             this,
-            listOf(Manifest.permission.ACCESS_FINE_LOCATION).toTypedArray(),
-            ACCESS_LOCATION
+            listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(),
+            ACCESS_LOCATION_AND_EXTERNAL_STORAGE
         )
     }
 
@@ -437,6 +441,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
         pieChart.data = data
         pieChart.description.isEnabled = false
+        pieChart.onChartGestureListener = this
 
         /* remove or enable hole inside */
         pieChart.isDrawHoleEnabled = false

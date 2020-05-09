@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
-import kotlinx.android.synthetic.main.list_item_country.view.*
+import kotlinx.android.synthetic.main.item_list_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
@@ -53,7 +53,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater
-            .from(parent.context).inflate(R.layout.list_item_country, parent, false)
+            .from(parent.context).inflate(R.layout.item_list_country, parent, false)
         return ViewHolder(view)
     }
 

@@ -19,6 +19,13 @@ class CountriesInteractor : KoinComponent {
         return repository.loadCountriesByNameAndRange(name, limit, offset, onSusses, onError)
     }
 
+    suspend fun updateSelfie(
+        id: Int,
+        selfie: String
+    ) {
+        return repository.updateSelfie(id, selfie)
+    }
+
     suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,
