@@ -9,9 +9,9 @@ import java.util.*
 
 class ClickableWebView : WebView {
     companion object {
-        private const val MAX_CLICK_DURATION = 200
+        const val MAX_CLICK_DURATION = 200
+        var startClickTime: Long = 0
     }
-    private var startClickTime: Long = 0
 
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
         context,
