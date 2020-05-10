@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
@@ -80,6 +81,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private var backPressedTiming: Long = 0
     private var mSnackBar: Snackbar? = null
     private var job: Job = Job()
+    private var mLastClickTime: Long = 0
     private val viewModel by inject<HomeActivityViewModel>()
     private val adapter by inject<HomeAdapter>()
     override val coroutineContext: CoroutineContext
@@ -298,12 +300,16 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     private fun initListeners() {
         adapter.onImageClickListener = {
+            /* mis-clicking prevention, using threshold of 1000 ms */
+            if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
                 bundle.putInt(POSITION, adapter.getItemPosition(it))
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
+            mLastClickTime = SystemClock.elapsedRealtime()
+        }
         adapter.onLongClickListener = { countryNode ->
             showSnackBarWithCountry(countryNode.mapNodeToActual())
         }
