@@ -1,6 +1,5 @@
 package ua.turskyi.data.room.dao
 
-import androidx.paging.DataSource
 import androidx.room.*
 import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
@@ -12,12 +11,6 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
 
 @Dao
 abstract class CountriesDao {
-
-    @Query("SELECT * FROM  $TABLE_COUNTRIES")
-    abstract fun loadAllSearchedCountries(): DataSource.Factory<Int, CountryEntity>
-
-    @Query("SELECT * FROM  $TABLE_COUNTRIES where $COLUMN_NAME LIKE :name")
-    abstract fun loadAllCountriesByName(name: String): DataSource.Factory<Int, CountryEntity>
 
     @Query("SELECT * FROM  $TABLE_COUNTRIES where $COLUMN_NAME LIKE :name LIMIT :limit OFFSET :offset")
     abstract fun loadAllCountriesByNameAndRange(name: String?, limit: Int, offset: Int): MutableList<CountryEntity>

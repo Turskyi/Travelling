@@ -14,7 +14,6 @@ import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositio
 import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.MainThreadExecutor
-import ua.turskyi.travelling.utils.Tips
 import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
@@ -57,7 +56,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         } else {
-        return    PagedList.Builder(filteredDataSource, config)
+            PagedList.Builder(filteredDataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
@@ -70,8 +69,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 _notVisitedCountriesNumLiveData.postValue(num)
                 _visibilityLoader.postValue(GONE)
             }, {
-                _visibilityLoader.postValue(GONE)
-                Tips.show("OOPS! COULDN'T LOAD COUNTRIES")
+                it.printStackTrace()
             })
         }
     }
@@ -79,7 +77,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     fun markAsVisited(country: Country) {
         viewModelScope.launch(Dispatchers.Main) {
             interactor.markAsVisitedCountryModel(country.mapActualToModel()) {
-              Tips.show("Oops! Try again :/")
+                it.printStackTrace()
             }
         }
     }

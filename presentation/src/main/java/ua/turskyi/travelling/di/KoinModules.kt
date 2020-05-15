@@ -7,7 +7,7 @@ import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivit
 import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
-import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 
 val adaptersModule = module {
@@ -20,7 +20,7 @@ val viewModelsModule = module {
     factory { HomeActivityViewModel(get()) }
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsActivityViewModel(get()) }
-    factory { AddCityViewModel(get()) }
+    factory { AddCityDialogViewModel(get()) }
 }
 
 val interactorsModule = module {

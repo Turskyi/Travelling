@@ -30,5 +30,17 @@
         <item quantity="other">I\'ve been to %d countries</item>
     </plurals>
 
+    <plurals name="numberOfCitiesVisited">
+        <item quantity="one">I\'ve been to %d city</item>
+        <item quantity="few">I\'ve been to %d cities</item>
+        <item quantity="other">I\'ve been to %d cities</item>
+    </plurals>
+
+    <plurals name="numberOfCountriesOfCitiesVisited">
+        <item quantity="one">in %d country</item>
+        <item quantity="few">in %d countries</item>
+        <item quantity="other">in %d countries</item>
+    </plurals>
+
     <string name="facebook_app_id">2312394202364807</string>
 </resources>

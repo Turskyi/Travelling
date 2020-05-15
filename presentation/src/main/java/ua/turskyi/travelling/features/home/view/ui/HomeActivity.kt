@@ -80,10 +80,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private lateinit var binding: ActivityHomeBinding
     private var backPressedTiming: Long = 0
     private var mSnackBar: Snackbar? = null
-    private var job: Job = Job()
     private var mLastClickTime: Long = 0
     private val viewModel by inject<HomeActivityViewModel>()
     private val adapter by inject<HomeAdapter>()
+    private var job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -401,7 +401,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 }
             })
         viewModel.visitedCountriesWithCities.observe(this, Observer {
-            updateAdapter(it)
+            updateAdapterWith(it)
+            initTitleWithNumberOf(it)
         })
         viewModel.visitedCountries.observe(
             this,
@@ -478,15 +479,40 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         return spannableString
     }
 
-    private fun updateAdapter(visitedCountries: List<VisitedCountry>) {
+    private fun updateAdapterWith(visitedCountries: List<VisitedCountry>) {
         for (countryNode in visitedCountries) {
             countryNode.isExpanded = false
         }
         adapter.setList(visitedCountries)
-        toolbarLayout.title = resources.getQuantityString(
-            R.plurals.numberOfCountriesVisited,
-            visitedCountries.size,
-            visitedCountries.size
-        )
+    }
+
+    private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) {
+        if (viewModel.citiesCount == 0) {
+            toolbarLayout.title = resources.getQuantityString(
+                R.plurals.numberOfCountriesVisited,
+                visitedCountries.size,
+                visitedCountries.size
+            )
+        } else {
+            if (viewModel.citiesCount > visitedCountries.size) {
+                toolbarLayout.title = "${resources.getQuantityString(
+                    R.plurals.numberOfCitiesVisited,
+                    viewModel.citiesCount,
+                    viewModel.citiesCount
+                )} ${resources.getQuantityString(
+                    R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
+                    visitedCountries.size
+                )}"
+            } else {
+                toolbarLayout.title = "${resources.getQuantityString(
+                    R.plurals.numberOfCitiesVisited,
+                    visitedCountries.size,
+                    visitedCountries.size
+                )} ${resources.getQuantityString(
+                    R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
+                    visitedCountries.size
+                )}"
+            }
+        }
     }
 }

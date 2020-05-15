@@ -8,14 +8,11 @@ import android.graphics.Color.TRANSPARENT
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -30,7 +27,6 @@ import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.models.Country
-
 
 class FlagFragment : Fragment(R.layout.fragment_flag) {
     companion object {
@@ -68,15 +64,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
             ivEnlarged.visibility = VISIBLE
             wvFlag.visibility = GONE
             val selectedImageUri = data?.data
-            Log.d(
-                "Selfie==>",
-                "before update selfie ${selectedImageUri.toString()}"
-            )
             if (selectedImageUri.toString().contains("com.android.providers.media")) {
-                Log.d(
-                    "Selfie==>",
-                    "local"
-                )
                 val imageId =
                     selectedImageUri?.lastPathSegment?.takeLastWhile { it.isDigit() }?.toInt()
                 val visitedCountriesObserverForLocalPhotos =
@@ -173,8 +161,6 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
             val position = this.arguments?.getInt(POSITION)
             position?.let {
                 mListener?.onChangeToolbarTitle(countries[position].name)
-            }
-            position?.let {
                 if (countries[position].selfie.isNullOrEmpty()) {
                     showTheFlag(countries, position)
                 } else {

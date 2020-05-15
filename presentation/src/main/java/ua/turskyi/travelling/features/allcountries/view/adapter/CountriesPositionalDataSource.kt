@@ -1,18 +1,11 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext
-
 
 internal class CountriesPositionalDataSource(
     private val interactor: CountriesInteractor

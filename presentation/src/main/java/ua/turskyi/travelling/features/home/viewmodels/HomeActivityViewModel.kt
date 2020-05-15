@@ -1,6 +1,5 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,16 +9,15 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.*
-import ua.turskyi.travelling.features.home.view.ui.AddCityDialogFragment.Companion.CITY_LOG
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
-import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 
 class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
 
     var notVisitedCount = 0
+    var citiesCount = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
@@ -75,13 +73,13 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     viewModelScope.launch {
                         interactor.getCities({ cities ->
                             for (city in cities) {
-                                Log.d(CITY_LOG, "init ${city.id} ${city.name} ${city.parentId}")
                                 if (country.id == city.parentId) {
                                     cityList.add(city.mapModelToBaseNode())
                                 }
                             }
+                            citiesCount = cities.size
                         }, {
-                            Tips.show("OOPS! COULDN'T LOAD CITIES")
+                            it.printStackTrace()
                         })
                     }
                     country.childNode = cityList
@@ -90,7 +88,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
                 _visibilityLoader.postValue(View.GONE)
             }, {
-                Tips.show("OOPS! COULDN'T LOAD VISITED COUNTRIES")
+                it.printStackTrace()
             })
         }
     }

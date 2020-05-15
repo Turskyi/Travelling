@@ -17,7 +17,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.home.viewmodels.AddCityViewModel
+import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Tips
@@ -32,7 +32,7 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         const val CITY_LOG = "CITY_LOG"
     }
 
-    private val viewModel by inject<AddCityViewModel>()
+    private val viewModel by inject<AddCityDialogViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {

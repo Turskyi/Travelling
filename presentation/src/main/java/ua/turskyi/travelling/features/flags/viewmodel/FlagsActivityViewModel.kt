@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactors.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
-import ua.turskyi.travelling.utils.Tips
 
 class FlagsActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
     var visitedCount = 0
@@ -28,7 +27,6 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
             }, {
                 it.printStackTrace()
-                Tips.show("OOPS! COULDN'T UPDATE PICTURE")
             })
         }
     }
@@ -40,7 +38,6 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
             }, {
                 it.printStackTrace()
-                Tips.show("OOPS! COULDN'T LOAD FLAGS")
             })
         }
     }
