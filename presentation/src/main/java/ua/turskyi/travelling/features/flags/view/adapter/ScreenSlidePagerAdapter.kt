@@ -12,11 +12,7 @@ import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 
 class ScreenSlidePagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity), KoinComponent {
     private val viewModel: FlagsActivityViewModel by inject()
-    override fun getItemCount(): Int {
-//        TODO: is it necessary this method here?
-        viewModel.getVisitedCountriesFromDB()
-        return viewModel.visitedCount
-    }
+    override fun getItemCount(): Int = viewModel.visitedCount
 
     override fun createFragment(position: Int): Fragment = FlagFragment().apply {
         arguments = bundleOf(

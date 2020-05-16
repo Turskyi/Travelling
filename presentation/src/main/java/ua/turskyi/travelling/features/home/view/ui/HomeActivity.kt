@@ -129,10 +129,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             false -> {
                 pieChart.isDrawHoleEnabled = true
                 pieChart.centerText = setCenterPictureViaSpannableString()
+                showTitleWithOnlyCountries()
             }
             true -> {
                 pieChart.centerText = ""
                 pieChart.isDrawHoleEnabled = false
+                showTitleWithCitiesAndCountries()
             }
         }
     }
@@ -514,5 +516,39 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 )}"
             }
         }
+    }
+
+    private fun showTitleWithCitiesAndCountries() {
+        viewModel.visitedCountriesWithCities.observe(this, Observer {
+            if (viewModel.citiesCount > it.size) {
+                toolbarLayout.title = "${resources.getQuantityString(
+                    R.plurals.numberOfCitiesVisited,
+                    viewModel.citiesCount,
+                    viewModel.citiesCount
+                )} ${resources.getQuantityString(
+                    R.plurals.numberOfCountriesOfCitiesVisited, it.size,
+                    it.size
+                )}"
+            } else {
+                toolbarLayout.title = "${resources.getQuantityString(
+                    R.plurals.numberOfCitiesVisited,
+                    it.size,
+                    it.size
+                )} ${resources.getQuantityString(
+                    R.plurals.numberOfCountriesOfCitiesVisited, it.size,
+                    it.size
+                )}"
+            }
+        })
+    }
+
+    private fun showTitleWithOnlyCountries() {
+        viewModel.visitedCountriesWithCities.observe(this, Observer {
+            toolbarLayout.title = resources.getQuantityString(
+                R.plurals.numberOfCountriesVisited,
+                it.size,
+                it.size
+            )
+        })
     }
 }
