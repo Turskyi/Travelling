@@ -115,7 +115,7 @@
             android:visibility="gone"
             android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             app:elevation="@dimen/elevation_4"
-            app:fabCustomSize="@dimen/siz_fab_custom"
+            app:fabCustomSize="@dimen/size_fab_custom"
             app:fabSize="auto"
             app:maxImageSize="@dimen/size_fab_max_image"
             app:rippleColor="@android:color/black"

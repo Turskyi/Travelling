@@ -1,12 +1,9 @@
 package ua.turskyi.travelling.features.home.view.ui
 
 import android.Manifest
-import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
@@ -21,14 +18,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.facebook.share.model.ShareHashtag
-import com.facebook.share.model.ShareMediaContent
-import com.facebook.share.model.SharePhoto
-import com.facebook.share.widget.ShareDialog
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -44,14 +36,11 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
-import splitties.toast.toast
-import ua.turskyi.travelling.Constant.GOOGLE_PLAY_ADDRESS
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
 import ua.turskyi.travelling.extensions.mapNodeToActual
-import ua.turskyi.travelling.extensions.mapViewToBitmap
 import ua.turskyi.travelling.extensions.spToPix
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
@@ -62,10 +51,6 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
-import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /* # milliseconds, desired time passed between two back presses. */
@@ -116,11 +101,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
     override fun onChartLongPressed(me: MotionEvent?) {
-        if (isFacebookInstalled(this)) {
-            shareViaFacebook()
-        } else {
-            shareImageViaChooser()
-        }
+        val bottomSheet = ShareListBottomSheetDialog()
+        bottomSheet.show(supportFragmentManager, null)
     }
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
@@ -186,88 +168,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
-    }
-
-    private fun getScreenShot(view: View): Bitmap? {
-        return view.mapViewToBitmap()?.let { Bitmap.createBitmap(it) }
-    }
-
-    private fun shareImageViaChooser() {
-        val fileName =
-            "piechart${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())}.jpg"
-        val bitmap = getScreenShot(toolbarLayout)
-        val file = bitmap?.let { storeFileAs(it, fileName) }
-        val uri = file?.let {
-            FileProvider.getUriForFile(
-                this,
-                applicationContext.packageName.toString() + ".provider",
-                it
-            )
-        }
-
-        val intentImage = Intent()
-        intentImage.action = Intent.ACTION_SEND
-        intentImage.type = "image/*"
-        intentImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intentImage.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
-        intentImage.putExtra(Intent.EXTRA_TEXT, "#travelling_the_world \n $GOOGLE_PLAY_ADDRESS")
-        intentImage.putExtra(Intent.EXTRA_STREAM, uri)
-        try {
-            startActivity(
-                Intent.createChooser(
-                    intentImage,
-                    "Share How Many Countries You Have Visited"
-                )
-            )
-        } catch (e: ActivityNotFoundException) {
-            toast("No app available to share pie chart")
-        }
-    }
-
-    private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
-        val dirPath =
-            externalCacheDir?.absolutePath + "/Screenshots"
-        val dir = File(dirPath)
-        if (!dir.exists()) dir.mkdirs()
-        val file = File(dirPath, fileName)
-        try {
-            val fileOutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
-            fileOutputStream.flush()
-            fileOutputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return file
-    }
-
-    private fun isFacebookInstalled(context: Context): Boolean {
-        val packageManager: PackageManager = context.packageManager
-        try {
-            packageManager.getPackageInfo("com.facebook.katana", PackageManager.GET_META_DATA)
-        } catch (e: PackageManager.NameNotFoundException) {
-            return false
-        }
-        return true
-    }
-
-    private fun shareViaFacebook() {
-        val webAddress =
-            ShareHashtag.Builder().setHashtag("#travelling_the_world \n $GOOGLE_PLAY_ADDRESS")
-                .build()
-        val bitmap = getScreenShot(toolbarLayout)
-        val sharePhoto = SharePhoto.Builder().setBitmap(bitmap).setCaption(
-            "piechart${SimpleDateFormat(
-                "dd.MM.yyyy",
-                Locale.getDefault()
-            ).format(Date())}"
-        )
-            .build()
-        val mediaContent = ShareMediaContent.Builder()
-            .addMedium(sharePhoto)
-            .setShareHashtag(webAddress)
-            .build()
-        ShareDialog.show(this, mediaContent)
     }
 
     private fun initView() {

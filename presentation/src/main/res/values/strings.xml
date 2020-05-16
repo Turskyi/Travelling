@@ -43,4 +43,5 @@
     </plurals>
 
     <string name="facebook_app_id">2312394202364807</string>
+    <string name="share_title">Share How Many Countries You Have Visited</string>
 </resources>

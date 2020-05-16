@@ -34,8 +34,10 @@
     <dimen name="headline_6">20sp</dimen>
 
     <!-- heights -->
-    <dimen name="height_splash_logo">351dp</dimen>
+    <dimen name="height_share_btn">120dp</dimen>
+    <dimen name="height_bottom_sheet">200dp</dimen>
     <dimen name="height_app_bar">300dp</dimen>
+    <dimen name="height_splash_logo">351dp</dimen>
 
     <!-- widths -->
     <dimen name="width_splash_logo">361dp</dimen>
@@ -46,6 +48,7 @@
     <dimen name="radius_dialogue_corners">12dp</dimen>
 
     <!-- sizes -->
-    <dimen name="siz_fab_custom">224dp</dimen>
+    <dimen name="size_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
+    <dimen name="width_facebook_icon">390dp</dimen>
 </resources>
