@@ -29,7 +29,6 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
 
     companion object {
         const val DIALOG_LOG = "DIALOG_LOG"
-        const val CITY_LOG = "CITY_LOG"
     }
 
     private val viewModel by inject<AddCityDialogViewModel>()
@@ -174,13 +173,11 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         editText: LinedEditText
     ) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-        val addresses: MutableList<Address>? =
-            location.latitude.let { latitude ->
-                geoCoder.getFromLocation(
-                    latitude,
+        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+                    location.latitude,
                     location.longitude, 1
                 )
-            }
+
         val cityName: String? = addresses?.get(0)?.locality
         editText.setText(cityName)
     }

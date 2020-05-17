@@ -32,14 +32,17 @@
     <dimen name="caption">12sp</dimen>
     <dimen name="textAppearanceSubtitle2">14sp</dimen>
     <dimen name="headline_6">20sp</dimen>
+    <dimen name="headline_5">24sp</dimen>
 
     <!-- heights -->
+    <dimen name="height_list_item_tablet">60dp</dimen>
     <dimen name="height_share_btn">120dp</dimen>
     <dimen name="height_bottom_sheet">200dp</dimen>
     <dimen name="height_app_bar">300dp</dimen>
     <dimen name="height_splash_logo">351dp</dimen>
 
     <!-- widths -->
+    <dimen name="width_arrow_tablet">60dp</dimen>
     <dimen name="width_splash_logo">361dp</dimen>
     <dimen name="width_smallest_screen">360dp</dimen>
 
