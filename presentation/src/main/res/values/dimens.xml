@@ -41,7 +41,7 @@
 
     <!-- widths -->
     <dimen name="width_splash_logo">361dp</dimen>
-    <dimen name="width_gradient">360dp</dimen>
+    <dimen name="width_smallest_screen">360dp</dimen>
 
     <!-- radius -->
     <dimen name="radius_cardview">4dp</dimen>
@@ -51,4 +51,5 @@
     <dimen name="size_fab_custom">224dp</dimen>
     <dimen name="size_fab_max_image">192dp</dimen>
     <dimen name="width_facebook_icon">390dp</dimen>
+    <dimen name="height_bg_launch_screen">640dp</dimen>
 </resources>

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.SpannableString
@@ -110,7 +111,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         when (pieChart.isDrawHoleEnabled) {
             false -> {
                 pieChart.isDrawHoleEnabled = true
-                pieChart.centerText = setCenterPictureViaSpannableString()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    pieChart.centerText = setCenterPictureViaSpannableString()
+                }
                 showTitleWithOnlyCountries()
             }
             true -> {
@@ -355,7 +358,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* remove or enable hole inside */
         pieChart.isDrawHoleEnabled = false
 
-        pieChart.holeRadius = 80F
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pieChart.holeRadius = 80F
+        } else {
+            pieChart.holeRadius = 20F
+            pieChart.setTransparentCircleColor(Color.BLACK)
+            pieChart.transparentCircleRadius = 24F
+            pieChart.setHoleColor(Color.BLACK)
+        }
 
         /* removes color squares */
         pieChart.legend.isEnabled = false
