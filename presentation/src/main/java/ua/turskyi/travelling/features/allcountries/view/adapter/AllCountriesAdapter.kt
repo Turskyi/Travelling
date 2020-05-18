@@ -111,7 +111,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
             setBackgroundColor(Color.TRANSPARENT)
             loadData(
                 "<html><head><style type='text/css'>" +
-                        "body{margin:auto auto;text-align:center;} img{width:60%25;}" +
+                        "body{margin:auto auto;text-align:center;} img{width:80%25;}" +
                         " </style></head><body><img src='${country.flag}'/>" +
                         "</body></html>", "text/html", "UTF-8"
             )
