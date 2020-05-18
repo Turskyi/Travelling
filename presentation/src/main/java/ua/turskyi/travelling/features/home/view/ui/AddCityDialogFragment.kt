@@ -26,7 +26,6 @@ import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.util.*
 
-
 class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){
 
     companion object {
@@ -61,6 +60,10 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
         val editText = dialogView.findViewById<LinedEditText>(R.id.letCity)
 
+        /**
+         * There is a unique case when particular android version cannot perform location logic
+         * and crashing, so here button just used as a cancel button.
+         */
         if (Build.VERSION.RELEASE == "5.1") {
             buttonGps.text = getString(R.string.home_dialog_btn_cancel)
            /* Removes CompoundDrawable */
@@ -101,7 +104,11 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         }
 
         buttonGps.setOnClickListener {
-            if (Build.VERSION.RELEASE == "5.1" && Build.VERSION.RELEASE != "5.1.1") {
+            /**
+             * There is a unique case when particular android version cannot perform location logic
+             * and crashing, so here button just used as a cancel button.
+             */
+            if (Build.VERSION.RELEASE == "5.1") {
                 alertDialog?.cancel()
             } else {
                 checkIfGpsEnabled(editText)
