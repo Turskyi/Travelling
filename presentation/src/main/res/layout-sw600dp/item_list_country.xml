@@ -25,12 +25,14 @@
 
     <TextView
         android:id="@+id/tvCountry"
+        android:layout_height="@dimen/height_list_item_tablet"
+        android:textSize="@dimen/headline_5"
         style="@style/TextViewStyle"
         tool:text="@string/visitedCountry" />
 
     <ImageView
         android:id="@+id/ivMore"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/width_arrow_tablet"
         android:layout_height="match_parent"
         android:gravity="end|center"
         android:paddingEnd="@dimen/dp_10"

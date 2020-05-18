@@ -116,7 +116,7 @@ class CountryNodeProvider : BaseNodeProvider() {
         holder.itemView.wvFlag.setBackgroundColor(Color.TRANSPARENT)
         holder.itemView.wvFlag.loadData(
                 "<html><head><style type='text/css'>" +
-                        "body{margin:auto auto;text-align:center;} img{width:30;}" +
+                        "body{margin:auto auto;text-align:center;} img{width:60%25;}" +
                         " </style></head><body><img src='${visitedCountry.img}'/>" +
                         "</body></html>", "text/html", "UTF-8"
         )
