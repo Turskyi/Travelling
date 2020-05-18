@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.location.*
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.util.*
+
 
 class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){
 
@@ -59,6 +61,12 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
         val editText = dialogView.findViewById<LinedEditText>(R.id.letCity)
 
+        if (Build.VERSION.RELEASE == "5.1") {
+            buttonGps.text = getString(R.string.home_dialog_btn_cancel)
+           /* Removes CompoundDrawable */
+            buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        }
+
         editText.visibility = VISIBLE
         editText.setText("")
         buttonSave.visibility = VISIBLE
@@ -93,7 +101,11 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         }
 
         buttonGps.setOnClickListener {
-            checkIfGpsEnabled(editText)
+            if (Build.VERSION.RELEASE == "5.1" && Build.VERSION.RELEASE != "5.1.1") {
+                alertDialog?.cancel()
+            } else {
+                checkIfGpsEnabled(editText)
+            }
         }
     }
 

@@ -44,4 +44,5 @@
 
     <string name="facebook_app_id">2312394202364807</string>
     <string name="share_title">Share How Many Countries You Have Visited</string>
+    <string name="home_dialog_btn_cancel">Cancel</string>
 </resources>
