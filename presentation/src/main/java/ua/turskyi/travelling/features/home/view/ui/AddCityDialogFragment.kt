@@ -79,6 +79,14 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         return alertDialog!!
     }
 
+    override  fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val activity: Activity? = activity
+        if (activity is DialogInterface.OnDismissListener) {
+            (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
+        }
+    }
+
     private fun initLocationServices() {
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -199,12 +207,5 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
 
         val cityName: String? = addresses?.get(0)?.locality
         editText.setText(cityName)
-    }
-  override  fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        val activity: Activity? = activity
-        if (activity is DialogInterface.OnDismissListener) {
-            (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
-        }
     }
 }
