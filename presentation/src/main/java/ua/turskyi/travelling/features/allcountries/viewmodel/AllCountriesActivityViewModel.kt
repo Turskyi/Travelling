@@ -1,7 +1,6 @@
 package ua.turskyi.travelling.features.allcountries.viewmodel
 
 import android.view.View
-import android.view.View.GONE
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,8 +22,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         get() = _notVisitedCountriesNumLiveData
 
     private val _visibilityLoader = MutableLiveData<Int>()
-    val visibilityLoader: MutableLiveData<Int>
-        get() = _visibilityLoader
+    var visibilityLoader: MutableLiveData<Int>
 
     var pagedList: PagedList<Country>
 
@@ -35,6 +33,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         }
 
     init {
+        visibilityLoader = _visibilityLoader
         _visibilityLoader.postValue(View.VISIBLE)
         pagedList = getCountryList(searchQuery)
         viewModelScope.launch {
@@ -49,8 +48,9 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             .build()
         val dataSource = CountriesPositionalDataSource(interactor)
         val filteredDataSource =
-            FilteredPositionalDataSource(name = searchQuery, interactor = interactor)
+            FilteredPositionalDataSource(countryName = searchQuery, interactor = interactor)
         return if (searchQuery == "" || searchQuery == "%%") {
+            visibilityLoader = dataSource.visibilityLoader
             PagedList.Builder(dataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
@@ -67,7 +67,6 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         viewModelScope.launch {
             interactor.getNotVisitedCountriesNum({ num ->
                 _notVisitedCountriesNumLiveData.postValue(num)
-                _visibilityLoader.postValue(GONE)
             }, {
                 it.printStackTrace()
             })

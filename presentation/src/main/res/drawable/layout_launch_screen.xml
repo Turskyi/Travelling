@@ -4,7 +4,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:opacity="opaque">
-    <item android:drawable="@drawable/bg_launch_screen"/>
+    <item android:drawable="@drawable/bg_launch_screen" />
     <item android:drawable="@drawable/ic_countries_seen"
         android:width="@dimen/width_splash_logo"
         android:height="@dimen/height_splash_logo"

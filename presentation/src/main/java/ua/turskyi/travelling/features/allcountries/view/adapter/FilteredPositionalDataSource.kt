@@ -1,11 +1,5 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactors.CountriesInteractor
@@ -13,8 +7,8 @@ import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext
 
-
-internal class FilteredPositionalDataSource(private val name: String?,
+internal class FilteredPositionalDataSource(
+    private val countryName: String?,
     private val interactor: CountriesInteractor
 ) : PositionalDataSource<Country>(), CoroutineScope {
     private var job: Job = Job()
@@ -26,7 +20,8 @@ internal class FilteredPositionalDataSource(private val name: String?,
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.loadCountriesByNameAndRange(name, params.requestedLoadSize, 0,
+            interactor.loadCountriesByNameAndRange(
+                countryName, params.requestedLoadSize, 0,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList(), 0)
                 },
@@ -42,7 +37,8 @@ internal class FilteredPositionalDataSource(private val name: String?,
         callback: LoadRangeCallback<Country>
     ) {
         GlobalScope.launch {
-            interactor.loadCountriesByNameAndRange(name, params.loadSize, params.startPosition,
+            interactor.loadCountriesByNameAndRange(
+                countryName, params.loadSize, params.startPosition,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList())
                 },

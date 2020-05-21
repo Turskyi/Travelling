@@ -2,18 +2,13 @@ package ua.turskyi.travelling.extensions
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Base64
-import android.util.Log
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import java.io.File
+import java.io.FileOutputStream
 
 fun List<CountryModel>.mapModelListToActualList() = this.mapTo(
     mutableListOf(),
@@ -40,24 +35,18 @@ fun VisitedCountry.mapNodeToActual() = Country(
     flag = img, selfie = selfie
 )
 
-fun Uri.mapUriToBitMap(context: Context): Bitmap =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, this))
-    } else {
-        @Suppress("DEPRECATION")
-        MediaStore.Images.Media.getBitmap(context.contentResolver, this)
-    }
-
-/**
- * @return bitmap (from given string)
- */
-fun String.mapStringToBitMap(): Bitmap? {
-    return try {
-        val encodeByte = Base64.decode(this, Base64.DEFAULT)
-        BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+fun Bitmap.mapBitmapToFile(context: Context, fileName: String): File {
+    val dirPath = context.externalCacheDir?.absolutePath + "/Screenshots"
+    val dir = File(dirPath)
+    if (!dir.exists()) dir.mkdirs()
+    val file = File(dirPath, fileName)
+    try {
+        val fileOutputStream = FileOutputStream(file)
+        this.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
+        fileOutputStream.flush()
+        fileOutputStream.close()
     } catch (e: Exception) {
-        Log.d("LOGS==>","error to bitmap ${e.message}")
-        e.message
-        null
+        e.printStackTrace()
     }
+    return file
 }

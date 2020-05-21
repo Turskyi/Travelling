@@ -31,7 +31,7 @@ class FlagsActivityViewModel(private val interactor: CountriesInteractor) : View
         }
     }
 
-    fun getVisitedCountriesFromDB() {
+    private fun getVisitedCountriesFromDB() {
         viewModelScope.launch {
             interactor.getVisitedModelCountries({ countries ->
                  visitedCount = countries.size

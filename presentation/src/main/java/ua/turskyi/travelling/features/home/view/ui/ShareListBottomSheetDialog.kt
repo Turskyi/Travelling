@@ -20,13 +20,11 @@ import kotlinx.android.synthetic.main.layout_bottom_sheet.*
 import splitties.toast.toast
 import ua.turskyi.travelling.Constant
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.extensions.mapBitmapToFile
 import ua.turskyi.travelling.extensions.mapViewToBitmap
 import ua.turskyi.travelling.utils.Tips
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class ShareListBottomSheetDialog : BottomSheetDialogFragment() {
 
@@ -60,28 +58,11 @@ class ShareListBottomSheetDialog : BottomSheetDialogFragment() {
         }
     }
 
-    private fun storeFileAs(bitmap: Bitmap, fileName: String): File {
-        val dirPath = requireActivity().externalCacheDir?.absolutePath + "/Screenshots"
-        val dir = File(dirPath)
-        if (!dir.exists()) dir.mkdirs()
-        val file = File(dirPath, fileName)
-        try {
-            val fileOutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
-            fileOutputStream.flush()
-            fileOutputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return file
-    }
-
-
     private fun shareImageViaChooser() {
         val fileName =
             "piechart${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())}.jpg"
         val bitmap = getScreenShot((activity as HomeActivity).toolbarLayout)
-        val file = bitmap?.let { storeFileAs(it, fileName) }
+        val file = bitmap?.mapBitmapToFile(requireContext(), fileName)
         val uri = file?.let {
             FileProvider.getUriForFile(
                 requireContext(),

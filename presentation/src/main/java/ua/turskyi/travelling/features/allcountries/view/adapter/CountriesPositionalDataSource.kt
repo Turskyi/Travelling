@@ -1,5 +1,7 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
+import android.view.View.GONE
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactors.CountriesInteractor
@@ -14,6 +16,10 @@ internal class CountriesPositionalDataSource(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    private val _visibilityLoader = MutableLiveData<Int>()
+    val visibilityLoader: MutableLiveData<Int>
+        get() = _visibilityLoader
+
     override fun loadInitial(
         params: LoadInitialParams,
         callback: LoadInitialCallback<Country>
@@ -22,6 +28,7 @@ internal class CountriesPositionalDataSource(
             interactor.getCountriesByRange(params.requestedLoadSize, 0,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToActualList(), 0)
+                    _visibilityLoader.postValue(GONE)
                 },
                 {
                     callback.onResult(emptyList(), 0)
