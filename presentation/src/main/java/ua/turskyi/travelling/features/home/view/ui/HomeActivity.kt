@@ -220,7 +220,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
 
         adapter.onCountryNameClickListener = { countryNode ->
-            AddCityDialogFragment(countryNode).show(supportFragmentManager, null)
+            /* Creating the new Fragment with the Country id passed in. */
+            val fragment = AddCityDialogFragment.newInstance(countryNode.id)
+            fragment.show(supportFragmentManager, null)
         }
         adapter.onCityLongClickListener = { city ->
             showSnackBarWithThis(city)
@@ -266,8 +268,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             rvVisitedCountries,
             getString(R.string.delete_it, city.name),
             Snackbar.LENGTH_LONG
-        )
-            .setActionTextColor(Color.WHITE)
+        ).setActionTextColor(Color.WHITE)
             .setAction(getString(R.string.yes)) {
                 removeCityOnLongClick(city)
                 longToast(getString(R.string.deleted, city.name))

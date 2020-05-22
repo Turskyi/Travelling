@@ -20,16 +20,25 @@ import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
-import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.util.*
 
-class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : DialogFragment(){
+class AddCityDialogFragment : DialogFragment() {
 
     companion object {
         const val DIALOG_LOG = "DIALOG_LOG"
+        const val ARG_ID = "id"
+
+        fun newInstance(id: Int): AddCityDialogFragment {
+            val fragment = AddCityDialogFragment()
+            val bundle = Bundle().apply {
+                putInt(ARG_ID, id)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     private val viewModel by inject<AddCityDialogViewModel>()
@@ -75,7 +84,7 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
-        initListeners(buttonSave, editText, visitedCountry, alertDialog, buttonGps)
+        initListeners(buttonSave, editText, arguments?.getInt(ARG_ID), alertDialog, buttonGps)
         return alertDialog!!
     }
 
@@ -96,15 +105,18 @@ class AddCityDialogFragment(private val visitedCountry: VisitedCountry) : Dialog
     private fun initListeners(
         buttonSave: Button,
         editText: LinedEditText,
-        visitedCountry: VisitedCountry,
+        id: Int?,
         alertDialog: AlertDialog?,
         buttonGps: Button
     ) {
         buttonSave.setOnClickListener {
             if (editText.text.toString() != "") {
-                viewModel.insert(
-                    City(editText.text.toString(), visitedCountry.id)
-                )
+                id?.let { visitedCountryId -> City(editText.text.toString(), visitedCountryId) }
+                    ?.let { city ->
+                        viewModel.insert(
+                            city
+                        )
+                    }
             } else {
                 alertDialog?.cancel()
             }
