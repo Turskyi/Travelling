@@ -1,6 +1,8 @@
 package ua.turskyi.travelling.features.allcountries.view.ui
 
 import android.animation.ValueAnimator
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
@@ -54,6 +56,15 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
         adapter.onCountryClickListener = ::addToVisited
+        adapter.onCountryLongClickListener = ::sendToGoogleMapToShowGeographicalLocation
+    }
+
+    private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("geo:0,0?q=${country.name}")
+        )
+        startActivity(intent)
     }
 
     private fun addToVisited(country: Country) {

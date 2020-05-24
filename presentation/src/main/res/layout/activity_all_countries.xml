@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ToolbarTitleStyle"
-                android:layout_height="72dp">
+                android:layout_height="@dimen/height_toolbar_all_countries">
 
                 <TextView
                     android:id="@+id/tvToolbarTitle"

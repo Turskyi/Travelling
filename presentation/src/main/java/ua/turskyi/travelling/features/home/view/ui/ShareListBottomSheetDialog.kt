@@ -91,6 +91,7 @@ class ShareListBottomSheetDialog : BottomSheetDialogFragment() {
     }
 
     private fun getScreenShot(view: View): Bitmap? {
+
         return view.mapViewToBitmap()?.let { Bitmap.createBitmap(it) }
     }
 

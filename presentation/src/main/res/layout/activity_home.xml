@@ -31,9 +31,10 @@
                 android:fitsSystemWindows="true"
                 android:background="@android:color/black"
                 android:soundEffectsEnabled="true"
-                app:collapsedTitleTextAppearance="@style/CasualTextAppearance"
+                app:collapsedTitleTextAppearance="@style/CasualSmallTextAppearance"
                 app:contentScrim="@android:color/black"
                 app:expandedTitleGravity="bottom|center"
+                app:collapsedTitleGravity="start"
                 app:expandedTitleTextAppearance="@style/CasualTextAppearance"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
@@ -93,12 +94,12 @@
             tools:visibility="visible"
             app:fabSize="auto"
             app:elevation="@dimen/elevation_4"
-            app:rippleColor="@android:color/black"
             app:useCompatPadding="true"
             app:layout_anchor="@id/pieChart"
+            app:layout_behavior=".widgets.FabScrollBehavior"
             app:layout_anchorGravity="bottom|end"
-            app:maxImageSize="48dp"
-            app:srcCompat="@drawable/ic_countries_seen" />
+            app:maxImageSize="@dimen/size_max_float_btn"
+            app:srcCompat="@drawable/btn_plus_ripple" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatBtnLarge"

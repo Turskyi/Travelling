@@ -13,6 +13,7 @@ import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.util.DisplayMetrics
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -102,6 +103,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
     override fun onChartLongPressed(me: MotionEvent?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val bottomSheet = ShareListBottomSheetDialog()
         bottomSheet.show(supportFragmentManager, null)
     }
@@ -119,7 +121,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             true -> {
                 pieChart.centerText = ""
                 pieChart.isDrawHoleEnabled = false
-                showTitleWithCitiesAndCountries()
+                if (viewModel.citiesCount > 0) {
+                    showTitleWithCitiesAndCountries()
+                } else {
+                    showTitleWithOnlyCountries()
+                }
             }
         }
     }
@@ -143,6 +149,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
     override fun onResume() {
         super.onResume()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         launch {
             viewModel.initList()
         }
@@ -168,9 +175,24 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         backPressedTiming = System.currentTimeMillis()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                openInfoDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+    }
+
+    private fun openInfoDialog() {
+        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_home))
+        infoDialog.show(supportFragmentManager, "info dialog")
     }
 
     private fun initView() {
@@ -178,6 +200,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         binding.viewModel = this.viewModel
         binding.lifecycleOwner = this
         setSupportActionBar(toolbar)
+        /* set drawable icon */
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
 
         /* remove default text "no chart data available */
         pieChart.setNoDataText(null)

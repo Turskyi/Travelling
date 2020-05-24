@@ -27,6 +27,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
     COUNTRIES_DIFF_CALLBACK) {
 
     var onCountryClickListener: ((country: Country) -> Unit)? = null
+    var onCountryLongClickListener: ((country: Country) -> Unit)? = null
 
     /**
      * Allows the RecyclerView to determine which items have changed when the [List] of [Country]
@@ -127,6 +128,10 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
         init {
             itemView.setOnClickListener {
                 onCountryClickListener?.invoke(getItem(layoutPosition) as Country)
+            }
+            itemView.setOnLongClickListener {
+                onCountryLongClickListener?.invoke(getItem(layoutPosition) as Country)
+                true
             }
         }
     }

@@ -1,6 +1,8 @@
 package ua.turskyi.travelling.utils
 
 import android.content.Context
+import android.content.res.TypedArray
+import ua.turskyi.travelling.R
 
 class ContextUtil private constructor() {
     companion object {
@@ -17,6 +19,14 @@ class ContextUtil private constructor() {
         fun getContext(): Context? {
             if (context != null) return context
             throw NullPointerException("u should init first")
+        }
+
+        fun getToolbarHeight(context: Context): Int {
+            val styledAttributes: TypedArray =
+                context.theme.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))
+            val toolbarHeight = styledAttributes.getDimension(0, 0f).toInt()
+            styledAttributes.recycle()
+            return toolbarHeight
         }
     }
 
