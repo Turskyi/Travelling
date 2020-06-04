@@ -13,7 +13,7 @@
         android:paddingStart="@dimen/offset_40"
         android:paddingEnd="@dimen/offset_40"
         android:text="@string/share_title"
-        android:textSize="@dimen/headline_6"
+        android:textSize="@dimen/headline6"
         android:textStyle="bold" />
 
     <LinearLayout

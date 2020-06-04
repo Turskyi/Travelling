@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:animateLayoutChanges="true"
+    android:animationCache="true"
+    android:background="@android:color/black"
+    android:persistentDrawingCache="animation">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -14,32 +16,31 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
             android:paddingBottom="@dimen/offset_8"
+            app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:toolbarId="@+id/toolbar">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_toolbar_all_countries"
                 android:fitsSystemWindows="true"
                 app:navigationIcon="?attr/homeAsUpIndicator"
-                android:layout_width="match_parent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/ToolbarTitleStyle"
-                android:layout_height="@dimen/height_toolbar_all_countries">
+                app:theme="@style/ToolbarTitleStyle">
 
                 <TextView
                     android:id="@+id/tvToolbarTitle"
                     style="@style/ToolbarTitleStyle"
-                    android:fontFamily="casual"
                     android:layout_marginEnd="@dimen/offset_29"
+                    android:fontFamily="casual"
                     tool:text="250 visitedCountries remain to visit" />
             </androidx.appcompat.widget.Toolbar>
 
             <ua.turskyi.travelling.widgets.ShadowedLinearLayout
                 android:id="@+id/sllSearch"
                 style="@style/ShadowLayout"
-                app:shadowRadius="@dimen/offset_8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -49,36 +50,39 @@
                 app:containerElevation="@dimen/elevation_1"
                 app:scaleViewOnElevationChange="true"
                 app:shadowMarginStart="@dimen/offset_8"
-                app:shadowMarginTop="@dimen/offset_8">
+                app:shadowMarginTop="@dimen/offset_8"
+                app:shadowRadius="@dimen/offset_8">
 
                 <ImageButton
                     android:id="@+id/ibSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
+                    android:contentDescription="@string/icon_search"
                     android:padding="@dimen/offset_8"
-                    android:src="@drawable/ic_search"
-                    android:contentDescription="@string/icon_search" />
+                    android:src="@drawable/ic_search" />
 
                 <EditText
                     android:id="@+id/etSearch"
                     android:layout_width="0dp"
-                    android:inputType="textCapSentences"
                     android:layout_height="wrap_content"
+                    android:autofillHints="country"
                     android:background="@android:color/transparent"
+                    android:hint="@string/search_country"
+                    android:inputType="textCapSentences"
+                    android:labelFor="@+id/ibSearch"
+                    android:maxLength="100"
                     android:paddingStart="@dimen/offset_8"
                     android:paddingEnd="@dimen/offset_8"
-                    android:maxLength="100"
-                    android:singleLine="true"
-                    android:hint="@string/search_country"
-                    android:labelFor="@+id/ibSearch"
-                    android:autofillHints="country" />
+                    android:singleLine="true" />
             </ua.turskyi.travelling.widgets.ShadowedLinearLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
     <ProgressBar
         android:id="@+id/pb"
         style="@style/ProgressBarStyle" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAllCountries"
         style="@style/RecyclerViewStyle"
@@ -87,13 +91,32 @@
     <TextView
         android:id="@+id/tvNoResults"
         style="@style/TextViewStyle"
-        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fontFamily="casual"
         android:gravity="center"
         android:text="@string/all_countries_no_results"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/headline_6" />
+        android:textSize="@dimen/headline6"
+        android:textStyle="bold" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatBtnInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawingCacheQuality="auto"
+        android:fadeScrollbars="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:elevation="@dimen/elevation_4"
+        app:fabSize="auto"
+        app:fabCustomSize="@dimen/size_all_countries_fab_custom"
+        app:layout_anchor="@id/rvAllCountries"
+        app:layout_anchorGravity="bottom|end"
+        app:maxImageSize="@dimen/size_all_countries_fab_max_image"
+        app:srcCompat="@drawable/btn_info_ripple"
+        app:useCompatPadding="true"
+        tool:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

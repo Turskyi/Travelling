@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ua.turskyi.domain.interactors.CountriesInteractor
+import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapActualToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource

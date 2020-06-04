@@ -12,7 +12,9 @@ import ua.turskyi.domain.util.throwException
 
 class CountriesNetSource(private val countriesApi: CountriesApi) : KoinComponent {
 
-    fun getCountryNetList(onComplete: (List<CountryNet>?) -> Unit, onError: (Exception) -> Unit) {
+    fun getCountryNetList(
+        onComplete: (List<CountryNet>?) -> Unit,
+        onError: (Exception) -> Unit) {
         countriesApi.getCategoriesFromApi().enqueue(object : Callback<CountryListResponse> {
             override fun onFailure(call: Call<CountryListResponse>, t: Throwable) {
                 onError(NetworkErrorException(t))

@@ -57,6 +57,7 @@ import kotlin.coroutines.CoroutineContext
 
 /* # milliseconds, desired time passed between two back presses. */
 private const val TIME_INTERVAL = 2000
+
 class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
     OnChartGestureListener {
 
@@ -107,6 +108,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         val bottomSheet = ShareListBottomSheetDialog()
         bottomSheet.show(supportFragmentManager, null)
     }
+
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
     override fun onChartSingleTapped(me: MotionEvent?) {
@@ -147,6 +149,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -274,7 +277,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
             this,
-            listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(),
+            listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).toTypedArray(),
             ACCESS_LOCATION_AND_EXTERNAL_STORAGE
         )
     }
@@ -284,7 +290,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun removeCityOnLongClick(city: City) {
-       viewModel.removeCity(city)
+        viewModel.removeCity(city)
     }
 
     private fun showSnackBarWithThis(city: City) {

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
-import ua.turskyi.domain.interactors.CountriesInteractor
+import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
@@ -47,6 +47,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     notVisitedCount = notVisitedCountriesNum
                 }, {
                     getVisitedCountriesFromDB()
+                    it.printStackTrace()
                 })
             }
         }

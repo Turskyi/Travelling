@@ -4,7 +4,7 @@ import android.view.View.GONE
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
-import ua.turskyi.domain.interactors.CountriesInteractor
+import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext

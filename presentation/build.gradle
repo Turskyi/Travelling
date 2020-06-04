@@ -62,13 +62,17 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+    /* koin */
+    api "org.koin:koin-androidx-viewmodel:$koin_version"
+    api "org.koin:koin-core:$koin_version"
+    api "org.koin:koin-androidx-scope:$koin_version"
 
     /* design components */
     implementation 'com.google.android.material:material:1.1.0'
 
     /* android */
-    implementation 'androidx.appcompat:appcompat:1.2.0-rc01'
-    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0-alpha01'
+    implementation 'androidx.core:core-ktx:1.3.0'
 
     /* constraintlayout */
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -79,11 +83,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-
-    /* koin */
-    api "org.koin:koin-androidx-viewmodel:2.0.1"
-    api "org.koin:koin-core:2.0.1"
-    api "org.koin:koin-androidx-scope:2.0.1"
 
     /* Glide (Image caching and management) */
     def glideVersion = "4.11.0"

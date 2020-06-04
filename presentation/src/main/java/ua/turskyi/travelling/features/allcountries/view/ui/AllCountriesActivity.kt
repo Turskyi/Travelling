@@ -10,19 +10,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_all_countries.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
+import ua.turskyi.travelling.features.home.view.ui.InfoDialog
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
 
 class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) {
 
-    private val viewModel: AllCountriesActivityViewModel by  inject()
+    private val viewModel: AllCountriesActivityViewModel by inject()
     private val adapter: AllCountriesAdapter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +59,20 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
         toolbar.setNavigationOnClickListener { onBackPressed() }
         adapter.onCountryClickListener = ::addToVisited
         adapter.onCountryLongClickListener = ::sendToGoogleMapToShowGeographicalLocation
+        rvAllCountries.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                when {
+                    dy > 0 -> floatBtnInfo?.show()
+                    dy < 0 -> floatBtnInfo?.hide()
+                }
+            }
+        })
+        floatBtnInfo.setOnClickListener { openInfoDialog() }
+    }
+
+    private fun openInfoDialog() {
+        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_all_countries))
+        infoDialog.show(supportFragmentManager, "info dialog")
     }
 
     private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
@@ -85,7 +101,8 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     }
 
     private fun updateTitle(num: Int) {
-        tvToolbarTitle.text = resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
+        tvToolbarTitle.text =
+            resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
     }
 
     private fun collapseSearch() {

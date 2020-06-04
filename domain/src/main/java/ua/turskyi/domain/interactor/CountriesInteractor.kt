@@ -1,4 +1,4 @@
-package ua.turskyi.domain.interactors
+package ua.turskyi.domain.interactor
 
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -33,9 +33,7 @@ class CountriesInteractor : KoinComponent {
         offset: Int,
         onSusses: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
-    ) {
-        return repository.getCountriesByRange(limit, offset, onSusses, onError)
-    }
+    ) = repository.getCountriesByRange(limit, offset, onSusses, onError)
 
     suspend fun refreshCountries(
         onSusses: () -> Unit,
@@ -47,9 +45,7 @@ class CountriesInteractor : KoinComponent {
     suspend fun getNotVisitedCountriesNum(
         onSusses: (Int) -> Unit,
         onError: ((Exception) -> Unit?)?
-    ) {
-        return repository.getNumNotVisitedCountries(onSusses,onError)
-    }
+    ) = repository.getNumNotVisitedCountries(onSusses, onError)
 
     suspend fun getVisitedModelCountries(
         onSusses: (List<CountryModel>) -> Unit,

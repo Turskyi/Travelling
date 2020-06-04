@@ -45,15 +45,17 @@
     <string name="facebook_app_id">2312394202364807</string>
     <string name="share_title">Share How Many Countries You Have Visited</string>
     <string name="home_dialog_btn_cancel">Cancel</string>
-    <string name="txt_info_home">• By clicking on \"+\" you can add a country.\n• By clicking
-        on a country you can add a city.\n• By clicking on the pie chart you can change the view
-        of it.\n• By long press, on the pie chart, you can share it on Facebook or another way.
-        \n• By clicking on a flag you will be transferred to the screen where you can see the flag
-        in full screen or replace it with a photo.\n• By clicking on the city you will be redirected
-        to the map showing the geographical location of it.
+    <string name="txt_info_home">• Click on \"+\" to add a country.\n• Click on a country to add a
+        city.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
+        you can share it on Facebook or on another platform.\n• Click on a flag to be able to see
+        the flag in full screen and replace it with a photo.\n• Click on the city to be able to see
+        the geographical location of it.
     </string>
-    <string name="txt_info_flags">• By long press, on the flag, you can replace it with a photo.
-        \n• By clicking on a photo you will change it back to flag and vise versa.\n• By swiping
-        left or right you can see flags or photos from countries you have visited.
+    <string name="txt_info_flags">• If you press on the flag, you can replace it with a photo.
+        \n• Click on a photo to change it back to flag and vise versa.\n• Swipe
+        left or right to see flags or photos from countries you have visited.
+    </string>
+    <string name="txt_info_all_countries">• If you press on a country, you will be able to see
+        the geographical location of it
     </string>
 </resources>

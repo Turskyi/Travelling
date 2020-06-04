@@ -26,7 +26,7 @@
     <TextView
         android:id="@+id/tvCountry"
         android:layout_height="@dimen/height_list_item_tablet"
-        android:textSize="@dimen/headline_5"
+        android:textSize="@dimen/headline5"
         style="@style/TextViewStyle"
         tool:text="@string/visitedCountry" />
 

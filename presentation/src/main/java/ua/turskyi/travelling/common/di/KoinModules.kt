@@ -1,7 +1,7 @@
-package ua.turskyi.travelling.di
+package ua.turskyi.travelling.common.di
 
 import org.koin.dsl.module
-import ua.turskyi.domain.interactors.CountriesInteractor
+import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter

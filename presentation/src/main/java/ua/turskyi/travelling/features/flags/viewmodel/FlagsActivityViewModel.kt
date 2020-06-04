@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import ua.turskyi.domain.interactors.CountriesInteractor
+import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 

@@ -15,15 +15,7 @@ class EmptyListObserver(private val recyclerView: RecyclerView, private val empt
         emptyView?.setDynamicVisibility(recyclerView.adapter?.itemCount == 0)
     }
 
-    override fun onChanged() {
-        checkIfEmpty()
-    }
-
-    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-        checkIfEmpty()
-    }
-
-    override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-        checkIfEmpty()
-    }
+    override fun onChanged() = checkIfEmpty()
+    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = checkIfEmpty()
+    override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) = checkIfEmpty()
 }

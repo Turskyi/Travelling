@@ -51,17 +51,16 @@ abstract class Database : RoomDatabase() {
                 super.onOpen(db)
                 db.query("PRAGMA synchronous = OFF")
             }
-        }).fallbackToDestructiveMigration()
-            .addCallback(object : Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    db.query("PRAGMA journal_mode = MEMORY")
-                }
+        }).addCallback(object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                db.query("PRAGMA journal_mode = MEMORY")
+            }
 
-                override fun onOpen(db: SupportSQLiteDatabase) {
-                    super.onOpen(db)
-                    db.query("PRAGMA synchronous = OFF")
-                }
-            }).build()
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
+                db.query("PRAGMA synchronous = OFF")
+            }
+        }).build()
     }
 }

@@ -9,7 +9,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.City
 
-
 class CityProvider : BaseNodeProvider() {
 
     override val itemViewType: Int

@@ -28,7 +28,7 @@
             android:layout_height="@dimen/height_list_item_tablet"
             android:layout_gravity="center"
             android:padding="@dimen/dp_10"
-            android:textSize="@dimen/headline_5"
+            android:textSize="@dimen/headline5"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             tool:text="City" />

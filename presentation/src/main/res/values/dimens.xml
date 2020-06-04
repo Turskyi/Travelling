@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- region Padding/Margin/Offset -->
+    <!-- region Paddings/Margins/Offsets -->
     <dimen name="offset_1">1dp</dimen>
     <dimen name="offset_2">2dp</dimen>
     <dimen name="offset_4">4dp</dimen>
@@ -16,10 +15,7 @@
     <dimen name="offset_64">64dp</dimen>
     <dimen name="offset_140">140dp</dimen>
 
-    <!-- endregion -->
-
-    <!-- region Elevation -->
-    <!--region Elevation-->
+    <!--region Elevations-->
     <dimen name="elevation_1">1dp</dimen>
     <dimen name="elevation_2">2dp</dimen>
     <dimen name="elevation_4">4dp</dimen>
@@ -28,11 +24,10 @@
 
     <!--region Typography-->
     <!--https://material.io/develop/android/theming/typography/-->
-    <!--https://material.io/design/typography/the-type-system.html#type-scale-->
     <dimen name="caption">12sp</dimen>
-    <dimen name="textAppearanceSubtitle2">14sp</dimen>
-    <dimen name="headline_6">20sp</dimen>
-    <dimen name="headline_5">24sp</dimen>
+    <dimen name="subtitle2">14sp</dimen>
+    <dimen name="headline6">20sp</dimen>
+    <dimen name="headline5">24sp</dimen>
 
     <!-- heights -->
     <dimen name="height_list_item_tablet">60dp</dimen>
@@ -49,13 +44,15 @@
     <dimen name="width_splash_logo">361dp</dimen>
     <dimen name="width_facebook_icon">390dp</dimen>
 
-    <!-- radius -->
+    <!-- radii -->
     <dimen name="radius_cardview">4dp</dimen>
     <dimen name="radius_dialogue_corners">12dp</dimen>
 
     <!-- sizes -->
-    <dimen name="size_fab_custom">224dp</dimen>
-    <dimen name="size_fab_max_image">192dp</dimen>
+    <dimen name="size_home_fab_custom">224dp</dimen>
+    <dimen name="size_all_countries_fab_custom">30dp</dimen>
+    <dimen name="size_home_fab_max_image">192dp</dimen>
+    <dimen name="size_all_countries_fab_max_image">34dp</dimen>
     <dimen name="size_max_float_btn">60dp</dimen>
 
 </resources>
