@@ -36,7 +36,6 @@
     <dimen name="height_bottom_sheet">200dp</dimen>
     <dimen name="height_app_bar">300dp</dimen>
     <dimen name="height_splash_logo">351dp</dimen>
-    <dimen name="height_bg_launch_screen">640dp</dimen>
 
     <!-- widths -->
     <dimen name="width_arrow_tablet">60dp</dimen>

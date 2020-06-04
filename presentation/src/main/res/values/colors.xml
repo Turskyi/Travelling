@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimaryDark">#011638</color>
-    <color name="colorDarkHalfTransparent">#99011638</color>
     <color name="colorBrightBlue">#020DE1</color>
     <color name="colorAccent">#d50000</color>
-    <color name="colorRedHalfTransparent">#33D50000</color>
-    <color name="colorBlackHalfTransparent">#70000000</color>
-    <color name="colorGreenHalfTransparent">#57215F02</color>
     <color name="colorBlack">@android:color/black</color>
     <color name="colorBgDarkDialogue">#37474F</color>
     <color name="colorLightGrey">#EAEAEA</color>
     <color name="colorBgVisitedCountry">#090909</color>
     <color name="colorBgCity">#1B2432</color>
-    <color name="colorTransparent">@android:color/transparent</color>
-    <color name="translucent_scrim_top">#26000000</color>
-    <color name="translucent_scrim_top_center">#0C000000</color>
-    <color name="translucent_scrim_bottom">#2A000000</color>
-    <color name="translucent_scrim_bottom_center">#0D000000</color>
 </resources>
