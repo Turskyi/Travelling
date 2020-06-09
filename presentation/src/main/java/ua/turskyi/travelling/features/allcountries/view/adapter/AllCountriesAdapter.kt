@@ -23,11 +23,8 @@ import kotlinx.android.synthetic.main.item_list_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
-class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHolder>(
+class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
     COUNTRIES_DIFF_CALLBACK) {
-
-    var onCountryClickListener: ((country: Country) -> Unit)? = null
-    var onCountryLongClickListener: ((country: Country) -> Unit)? = null
 
     /**
      * Allows the RecyclerView to determine which items have changed when the [List] of [Country]
@@ -52,13 +49,16 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
             }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    var onCountryClickListener: ((country: Country) -> Unit)? = null
+    var onCountryLongClickListener: ((country: Country) -> Unit)? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
         val view = LayoutInflater
             .from(parent.context).inflate(R.layout.item_list_country, parent, false)
-        return ViewHolder(view)
+        return CountryViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val currentCountry = getItem(position) as Country
         holder.tvCountry.text = currentCountry.name
         setSelectableItemBackground(holder)
@@ -71,7 +71,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
         showPicturesInSVG(currentCountry, holder)
     }
 
-    private fun setSelectableItemBackground(holder: ViewHolder) {
+    private fun setSelectableItemBackground(holder: CountryViewHolder) {
         val outValue = TypedValue()
         holder.itemView.context.theme.resolveAttribute(
             R.attr.selectableItemBackground,
@@ -83,7 +83,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
 
     private fun showPicturesInSVG(
         country: Country,
-        holder: ViewHolder
+        holder: CountryViewHolder
     ) {
         val uri: Uri = Uri.parse(country.flag)
 
@@ -102,7 +102,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
     }
 
     private fun showPicturesInWebView(
-        holder: ViewHolder,
+        holder: CountryViewHolder,
         country: Country
     ) {
         holder.ivFlag.visibility = GONE
@@ -119,7 +119,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.ViewHo
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvCountry: TextView = itemView.tvCountry
         val ivFlag: ImageView = itemView.ivFlag
         val wvFlag: WebView = itemView.wvFlag

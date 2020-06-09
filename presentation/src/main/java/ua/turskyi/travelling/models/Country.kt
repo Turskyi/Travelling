@@ -18,6 +18,11 @@ data class Country(
         parcel.readValue(String::class.java.classLoader) as? String
     )
 
+    companion object CREATOR : Parcelable.Creator<Country> {
+        override fun createFromParcel(parcel: Parcel) = Country(parcel)
+        override fun newArray(size: Int) = arrayOfNulls<Country?>(size)
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeValue(id)
         parcel.writeValue(name)
@@ -26,17 +31,5 @@ data class Country(
         parcel.writeValue(selfie)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Country> {
-        override fun createFromParcel(parcel: Parcel): Country {
-            return Country(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Country?> {
-            return arrayOfNulls(size)
-        }
-    }
+    override fun describeContents() = 0
 }

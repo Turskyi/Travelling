@@ -40,7 +40,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
     }
 
     suspend fun initList() {
-        val load: () -> Unit = {
+        val loadCountries: () -> Unit = {
             viewModelScope.launch {
                 interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
                     getVisitedCountriesFromDB()
@@ -52,8 +52,8 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
             }
         }
         when {
-            isOnline() -> interactor.refreshCountries({ load() }, { load() })
-            else -> load()
+            isOnline() -> interactor.refreshCountries({ loadCountries() }, { loadCountries() })
+            else -> loadCountries()
         }
     }
 

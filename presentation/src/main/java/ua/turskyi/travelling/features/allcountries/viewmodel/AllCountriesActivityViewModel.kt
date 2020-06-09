@@ -44,6 +44,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     private fun getCountryList(searchQuery: String): PagedList<Country> {
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(20)
             .setPageSize(20)
             .build()
         val dataSource = CountriesPositionalDataSource(interactor)

@@ -5,8 +5,8 @@ import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.room.dao.CountriesDao
 
 class CountriesDbSource(private val countriesDao: CountriesDao) {
-    fun loadCountriesByNameAndRange(name: String?,limit: Int, offset: Int) =
-        countriesDao.loadAllCountriesByNameAndRange(name,limit,offset)
+    fun loadCountriesByNameAndRange(name: String?, limit: Int, offset: Int) =
+        countriesDao.loadAllCountriesByNameAndRange(name, limit, offset)
 
     fun getLocalCountriesByRange(limit: Int, offset: Int) =
         countriesDao.getCountriesByRange(limit, offset)
@@ -20,5 +20,5 @@ class CountriesDbSource(private val countriesDao: CountriesDao) {
 
     fun insertCity(cityEntity: CityEntity) = countriesDao.insertCity(cityEntity)
     fun removeCity(city: CityEntity) = countriesDao.delete(city)
-   suspend fun updateSelfie(id: Int, selfie: String) = countriesDao.updateSelfie(id,selfie)
+    suspend fun updateSelfie(id: Int, selfie: String) = countriesDao.updateSelfie(id, selfie)
 }

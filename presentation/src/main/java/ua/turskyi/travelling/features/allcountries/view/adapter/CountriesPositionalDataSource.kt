@@ -9,9 +9,9 @@ import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext
 
-internal class CountriesPositionalDataSource(
-    private val interactor: CountriesInteractor
-) : PositionalDataSource<Country>(), CoroutineScope {
+internal class CountriesPositionalDataSource(private val interactor: CountriesInteractor) :
+    PositionalDataSource<Country>(), CoroutineScope {
+
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -26,8 +26,8 @@ internal class CountriesPositionalDataSource(
     ) {
         launch {
             interactor.getCountriesByRange(params.requestedLoadSize, 0,
-                { allCountries ->
-                    callback.onResult(allCountries.mapModelListToActualList(), 0)
+                { initCountries ->
+                    callback.onResult(initCountries.mapModelListToActualList(), 0)
                     _visibilityLoader.postValue(GONE)
                 },
                 {
