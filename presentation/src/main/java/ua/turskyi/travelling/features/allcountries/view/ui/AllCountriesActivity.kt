@@ -17,7 +17,7 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
-import ua.turskyi.travelling.features.home.view.ui.InfoDialog
+import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard

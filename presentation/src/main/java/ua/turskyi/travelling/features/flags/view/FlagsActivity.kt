@@ -10,7 +10,7 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
-import ua.turskyi.travelling.features.home.view.ui.InfoDialog
+import ua.turskyi.travelling.common.view.InfoDialog
 
 class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentListener {
 

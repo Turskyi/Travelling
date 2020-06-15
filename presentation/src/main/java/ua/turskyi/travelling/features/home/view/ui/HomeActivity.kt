@@ -39,6 +39,7 @@ import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config

@@ -5,14 +5,14 @@ import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
     suspend fun refreshCountriesInDb(
-        onSusses: () -> Unit,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun updateSelfie(
         id: Int,
         selfie: String,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -27,17 +27,17 @@ interface CountriesRepository {
     )
 
     suspend fun getVisitedModelCountriesFromDb(
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun getCities(
-        onSusses: (MutableList<CityModel>) -> Unit,
+        onSuccess: (MutableList<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun getNumNotVisitedCountries(
-        onSusses: (Int) -> Unit,
+        onSuccess: (Int) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -59,7 +59,7 @@ interface CountriesRepository {
     suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -67,7 +67,7 @@ interface CountriesRepository {
         name: String?,
         limit: Int,
         offset: Int,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 }

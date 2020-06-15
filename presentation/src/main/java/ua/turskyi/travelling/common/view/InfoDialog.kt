@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.features.home.view.ui
+package ua.turskyi.travelling.common.view
 
 import android.app.Dialog
 import android.os.Bundle

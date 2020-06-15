@@ -19,7 +19,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     private val countriesDbSource: CountriesDbSource by inject()
 
     override suspend fun refreshCountriesInDb(
-        onSusses: () -> Unit,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         countriesNetSource.getCountryNetList({ countryNetList ->
@@ -28,7 +28,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                     addModelsToDb(modelList)
                 }
                 withContext(Dispatchers.Main) {
-                    onSusses()
+                    onSuccess()
                 }
             }
         }, {
@@ -39,12 +39,12 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     override suspend fun updateSelfie(
         id: Int,
         selfie: String,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
             countriesDbSource.updateSelfie(id, selfie)
-            onSusses(countriesDbSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
+            onSuccess(countriesDbSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
         }
     }
 
@@ -100,11 +100,11 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     }
 
     override suspend fun getVisitedModelCountriesFromDb(
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
-            onSusses(
+            onSuccess(
                 countriesDbSource.getVisitedLocalCountriesFromDb()
                     .mapEntityListToModelList()
             )
@@ -112,22 +112,22 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     }
 
     override suspend fun getCities(
-        onSusses: (MutableList<CityModel>) -> Unit,
+        onSuccess: (MutableList<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
-            onSusses(
+            onSuccess(
                 countriesDbSource.getCities().mapEntitiesToModelList()
             )
         }
     }
 
     override suspend fun getNumNotVisitedCountries(
-        onSusses: (Int) -> Unit,
+        onSuccess: (Int) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
-            onSusses(countriesDbSource.getNumNotVisitedCountries())
+            onSuccess(countriesDbSource.getNumNotVisitedCountries())
         }
     }
 
@@ -143,11 +143,11 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
     override suspend fun getCountriesByRange(
         limit: Int,
         offset: Int,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
-            onSusses(
+            onSuccess(
                 countriesDbSource.getLocalCountriesByRange(limit, offset)
                     .mapEntityListToModelList()
             )
@@ -158,11 +158,11 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         name: String?,
         limit: Int,
         offset: Int,
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
         GlobalScope.launch {
-            onSusses(
+            onSuccess(
                 countriesDbSource.loadCountriesByNameAndRange(name,limit, offset)
                     .mapEntityListToModelList()
             )
