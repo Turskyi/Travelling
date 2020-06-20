@@ -58,4 +58,6 @@
     <string name="txt_info_all_countries">• If you press on a country, you will be able to see
         the geographical location of it
     </string>
+    <string name="toast.no_facebook_app">You do not have Facebook app installed</string>
+    <string name="toast.no_app_installed">No app available to share pie chart</string>
 </resources>

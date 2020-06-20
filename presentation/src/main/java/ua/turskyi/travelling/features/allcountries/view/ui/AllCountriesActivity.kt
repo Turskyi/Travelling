@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_all_countries.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.extensions.openInfoDialog
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
-import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
@@ -67,12 +67,7 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
                 }
             }
         })
-        floatBtnInfo.setOnClickListener { openInfoDialog() }
-    }
-
-    private fun openInfoDialog() {
-        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_all_countries))
-        infoDialog.show(supportFragmentManager, "info dialog")
+        floatBtnInfo.setOnClickListener { openInfoDialog(getString(R.string.txt_info_all_countries)) }
     }
 
     private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {

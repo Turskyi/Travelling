@@ -1,22 +1,27 @@
 package ua.turskyi.travelling.features.home.view.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.location.*
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
+import splitties.toast.longToast
+import splitties.toast.toast
+import ua.turskyi.travelling.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
@@ -28,7 +33,6 @@ import java.util.*
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
-        const val DIALOG_LOG = "DIALOG_LOG"
         const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {
@@ -44,6 +48,7 @@ class AddCityDialogFragment : DialogFragment() {
     private val viewModel by inject<AddCityDialogViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
+    private var editText: LinedEditText? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
         initLocationServices()
 
@@ -67,7 +72,7 @@ class AddCityDialogFragment : DialogFragment() {
 
         val buttonSave = dialogView.findViewById<Button>(R.id.buttonSave)
         val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
-        val editText = dialogView.findViewById<LinedEditText>(R.id.letCity)
+        editText = dialogView.findViewById(R.id.letCity)
 
         /**
          * There is a unique case when particular android version cannot perform location logic
@@ -75,24 +80,42 @@ class AddCityDialogFragment : DialogFragment() {
          */
         if (Build.VERSION.RELEASE == "5.1") {
             buttonGps.text = getString(R.string.home_dialog_btn_cancel)
-           /* Removes CompoundDrawable */
+            /* Removes CompoundDrawable */
             buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
 
-        editText.visibility = VISIBLE
-        editText.setText("")
+        editText?.visibility = VISIBLE
+        editText?.setText("")
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
-        initListeners(buttonSave, editText, arguments?.getInt(ARG_ID), alertDialog, buttonGps)
+        editText?.let {
+            initListeners(buttonSave, it, arguments?.getInt(ARG_ID), alertDialog, buttonGps)
+        }
         return alertDialog!!
     }
 
-    override  fun onDismiss(dialog: DialogInterface) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val activity: Activity? = activity
         if (activity is DialogInterface.OnDismissListener) {
             (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == ACCESS_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                toast("GPS permission granted")
+                editText?.let { addCityTo(it) }
+            } else {
+                longToast("GPS permission denied")
+            }
         }
     }
 
@@ -147,7 +170,7 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    private fun checkIfGpsEnabled():Boolean {
+    private fun checkIfGpsEnabled(): Boolean {
         var gpsEnabled = false
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -158,13 +181,30 @@ class AddCityDialogFragment : DialogFragment() {
     }
 
     private fun addCityTo(editText: LinedEditText) {
-        val findLastLocationTask = fusedLocationClient.lastLocation
-        findLastLocationTask.addOnSuccessListener { location ->
-            if (location != null) {
-                addLastLocation(location, editText)
-            } else {
-                Tips.show(getString(R.string.dialog_hold_on))
-                addChangedLocation(editText)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                ACCESS_LOCATION
+            )
+        } else {
+            val findLastLocationTask = fusedLocationClient.lastLocation
+            findLastLocationTask.addOnSuccessListener { location ->
+                if (location != null) {
+                    addLastLocation(location, editText)
+                } else {
+                    Tips.show(getString(R.string.dialog_hold_on))
+                    addChangedLocation(editText)
+                }
             }
         }
     }
@@ -203,7 +243,7 @@ class AddCityDialogFragment : DialogFragment() {
                 locationListener
             )
         } catch (ex: SecurityException) {
-            Log.d(DIALOG_LOG, "Security Exception, no location available ${ex.message}")
+            ex.printStackTrace()
         }
     }
 
@@ -213,9 +253,9 @@ class AddCityDialogFragment : DialogFragment() {
     ) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: MutableList<Address>? = geoCoder.getFromLocation(
-                    location.latitude,
-                    location.longitude, 1
-                )
+            location.latitude,
+            location.longitude, 1
+        )
 
         val cityName: String? = addresses?.get(0)?.locality
         editText.setText(cityName)

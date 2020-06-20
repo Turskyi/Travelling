@@ -38,6 +38,8 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
+import ua.turskyi.travelling.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
+import ua.turskyi.travelling.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
@@ -56,15 +58,8 @@ import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.IntFormatter
 import kotlin.coroutines.CoroutineContext
 
-/* # milliseconds, desired time passed between two back presses. */
-private const val TIME_INTERVAL = 2000
-
 class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
     OnChartGestureListener {
-
-    companion object {
-        const val ACCESS_LOCATION_AND_EXTERNAL_STORAGE = 10001
-    }
 
     private lateinit var binding: ActivityHomeBinding
     private var backPressedTiming: Long = 0
@@ -154,15 +149,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onResume() {
         super.onResume()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        launch {
-            viewModel.initList()
-        }
+        launch { viewModel.initList() }
     }
 
     override fun onDismiss(p0: DialogInterface?) {
-        launch {
-            viewModel.initList()
-        }
+        launch { viewModel.initList() }
     }
 
     override fun onBackPressed() {
@@ -207,7 +198,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* set drawable icon */
         supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
 
-        /* remove default text "no chart data available */
+        /* remove default text "no chart data available" */
         pieChart.setNoDataText(null)
 
         val layoutManager = LinearLayoutManager(this)
@@ -226,9 +217,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         val width: Int = displayMetrics.widthPixels
-        if (width < 1082) {
-            toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
-        }
+        if (width < 1082) toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
     }
 
     private fun initListeners() {
@@ -286,10 +275,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         )
     }
 
-    private fun removeCountryOnLongClick(country: Country) {
-        viewModel.removeFromVisited(country)
-    }
-
     private fun removeCityOnLongClick(city: City) {
         viewModel.removeCity(city)
     }
@@ -313,7 +298,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             getString(R.string.delete_it, country.name),
             Snackbar.LENGTH_LONG
         ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
-            removeCountryOnLongClick(country)
+            viewModel.removeFromVisited(country)
             longToast(getString(R.string.deleted, country.name))
         }
         decorateSnackbar()
