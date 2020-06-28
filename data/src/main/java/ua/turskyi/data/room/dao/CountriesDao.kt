@@ -12,7 +12,7 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
 @Dao
 abstract class CountriesDao {
 
-    @Query("SELECT * FROM  $TABLE_COUNTRIES where $COLUMN_NAME LIKE :name LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM  $TABLE_COUNTRIES WHERE $COLUMN_NAME LIKE :name LIMIT :limit OFFSET :offset")
     abstract fun loadAllCountriesByNameAndRange(name: String?, limit: Int, offset: Int): MutableList<CountryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
