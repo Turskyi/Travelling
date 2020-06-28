@@ -33,7 +33,7 @@
     <dimen name="height_list_item_tablet">60dp</dimen>
     <dimen name="height_toolbar_all_countries">72dp</dimen>
     <dimen name="height_share_btn">120dp</dimen>
-    <dimen name="height_bottom_sheet">200dp</dimen>
+    <dimen name="height_bottom_sheet">400dp</dimen>
     <dimen name="height_app_bar">300dp</dimen>
     <dimen name="height_splash_logo">351dp</dimen>
 
