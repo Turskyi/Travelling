@@ -150,6 +150,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         super.onResume()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         launch { viewModel.initList() }
+        /* nice and smooth animation of a chart */
+        pieChart.animateY(1500)
     }
 
     override fun onDismiss(p0: DialogInterface?) {
@@ -329,7 +331,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         viewModel.visitedCountries.observe(
             this,
             Observer { visitedCountries ->
-                initPieChart(visitedCountries)
+                initPieChart()
+                createPieChartWith(visitedCountries)
                 showFloatBtn(visitedCountries)
             })
         viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
@@ -347,42 +350,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
-    private fun initPieChart(visitedCountries: List<Country>) {
-        val entries: MutableList<PieEntry> = mutableListOf()
-        entries.add(PieEntry(visitedCountries.size.toFloat()))
-        entries.add(PieEntry(viewModel.notVisitedCount.toFloat()))
-        val pieChartColors: MutableList<Int> = mutableListOf()
-        pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorAccent))
-        pieChartColors.add(
-            ContextCompat.getColor(
-                applicationContext,
-                R.color.colorBrightBlue
-            )
-        )
-
-        val dataSet = PieDataSet(entries, null)
-        dataSet.colors = pieChartColors
-
-        val data = PieData(dataSet)
-        data.setValueFormatter(IntFormatter())
-        data.setValueTextSize(applicationContext.spToPix(R.dimen.caption))
-        data.setValueTextColor(Color.WHITE)
-
-        pieChart.data = data
+    private fun initPieChart() {
         pieChart.description.isEnabled = false
+
+        /* work around instead of click listener */
         pieChart.onChartGestureListener = this
 
         /* remove or enable hole inside */
         pieChart.isDrawHoleEnabled = false
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pieChart.holeRadius = 80F
-        } else {
-            pieChart.holeRadius = 20F
-            pieChart.setTransparentCircleColor(Color.BLACK)
-            pieChart.transparentCircleRadius = 24F
-            pieChart.setHoleColor(Color.BLACK)
-        }
 
         /* removes color squares */
         pieChart.legend.isEnabled = false
@@ -396,6 +371,33 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         animationDrawable.setEnterFadeDuration(2000)
         animationDrawable.setExitFadeDuration(4000)
         animationDrawable.start()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pieChart.holeRadius = 80F
+        } else {
+            pieChart.holeRadius = 20F
+            pieChart.setTransparentCircleColor(Color.BLACK)
+            pieChart.transparentCircleRadius = 24F
+            pieChart.setHoleColor(Color.BLACK)
+        }
+    }
+
+    private fun createPieChartWith(visitedCountries: List<Country>) {
+        val entries: MutableList<PieEntry> = mutableListOf()
+        entries.add(PieEntry(visitedCountries.size.toFloat()))
+        entries.add(PieEntry(viewModel.notVisitedCount.toFloat()))
+        val pieChartColors: MutableList<Int> = mutableListOf()
+        pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorAccent))
+        pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorBrightBlue))
+
+        val dataSet = PieDataSet(entries, null)
+        dataSet.colors = pieChartColors
+
+        val data = PieData(dataSet)
+        data.setValueFormatter(IntFormatter())
+        data.setValueTextSize(applicationContext.spToPix(R.dimen.caption))
+        data.setValueTextColor(Color.WHITE)
+
+        pieChart.data = data
 
         /* updates data in pieChart every time */
         pieChart.invalidate()
