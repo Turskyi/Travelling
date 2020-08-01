@@ -9,10 +9,10 @@
     <item
         android:width="200dp"
         android:height="200dp"
-        android:bottom="@dimen/offset_20"
+        android:bottom="-20dp"
         android:drawable="@drawable/ic_countries_seen"
-        android:end="@dimen/offset_20"
+        android:end="-6dp"
         android:gravity="center"
-        android:start="@dimen/offset_20"
-        android:top="@dimen/offset_26" />
+        android:start="-6dp"
+        android:top="-12dp" />
 </layer-list>

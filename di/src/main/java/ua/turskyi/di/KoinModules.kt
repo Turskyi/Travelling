@@ -47,8 +47,7 @@ val dataProvidersModule = module {
                         "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
                     ).build()
                 chain.proceed(request)
-            }
-            .addInterceptor(get<HttpLoggingInterceptor>())
+            }.addInterceptor(get<HttpLoggingInterceptor>())
             .build()
     }
 

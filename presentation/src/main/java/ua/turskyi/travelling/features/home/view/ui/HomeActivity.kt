@@ -68,6 +68,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private val viewModel by inject<HomeActivityViewModel>()
     private val adapter by inject<HomeAdapter>()
     private var job: Job = Job()
+    private var isPermissionGranted = false
+    private var isCenterEnabled = false
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -113,12 +115,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 pieChart.isDrawHoleEnabled = true
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     pieChart.centerText = setCenterPictureViaSpannableString()
+                    isCenterEnabled = true
                 }
                 showTitleWithOnlyCountries()
             }
             true -> {
                 pieChart.centerText = ""
                 pieChart.isDrawHoleEnabled = false
+                isCenterEnabled = false
                 if (viewModel.citiesCount > 0) {
                     showTitleWithCitiesAndCountries()
                 } else {
@@ -137,6 +141,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> {
                 if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
+                    isPermissionGranted = true
                     initView()
                     initObservers()
                 } else {
@@ -150,8 +155,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         super.onResume()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         launch { viewModel.initList() }
-        /* nice and smooth animation of a chart */
-        pieChart.animateY(1500)
+
+        if (isPermissionGranted){
+            /* nice and smooth animation of a chart */
+            binding.pieChart.animateY(1500)
+        }
     }
 
     override fun onDismiss(p0: DialogInterface?) {
@@ -201,7 +209,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
 
         /* remove default text "no chart data available" */
-        pieChart.setNoDataText(null)
+        binding.pieChart.setNoDataText(null)
 
         val layoutManager = LinearLayoutManager(this)
         rvVisitedCountries.adapter = this.adapter
@@ -261,6 +269,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         if (locationPermission != PackageManager.PERMISSION_GRANTED && externalStoragePermission != PackageManager.PERMISSION_GRANTED) {
             requestPermission()
         } else {
+            isPermissionGranted = true
             initView()
             initObservers()
         }
@@ -356,8 +365,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* work around instead of click listener */
         pieChart.onChartGestureListener = this
 
-        /* remove or enable hole inside */
-        pieChart.isDrawHoleEnabled = false
+        if (!isCenterEnabled){
+            /* remove or enable hole inside */
+            pieChart.isDrawHoleEnabled = false
+        }
 
         /* removes color squares */
         pieChart.legend.isEnabled = false
@@ -398,7 +409,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         data.setValueTextColor(Color.WHITE)
 
         pieChart.data = data
-
         /* updates data in pieChart every time */
         pieChart.invalidate()
     }

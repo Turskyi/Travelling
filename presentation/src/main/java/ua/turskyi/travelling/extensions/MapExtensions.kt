@@ -7,7 +7,7 @@ import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 
 fun List<CountryModel>.mapModelListToActualList() = this.mapTo(
-    mutableListOf(), { model -> model.mapModelToActual() })
+    mutableListOf(), { it.mapModelToActual() })
 
 fun List<CountryModel>.mapModelListToNodeList() = this.mapTo(
     mutableListOf(), { model -> model.mapModelToNode() })
