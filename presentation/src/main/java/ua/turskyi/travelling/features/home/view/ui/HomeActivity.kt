@@ -45,6 +45,7 @@ import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.config
+import ua.turskyi.travelling.extensions.getScreenWidth
 import ua.turskyi.travelling.extensions.mapNodeToActual
 import ua.turskyi.travelling.extensions.spToPix
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
@@ -137,6 +138,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         permissions: Array<String>,
         grantResult: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResult)
         when (requestCode) {
             ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> {
                 if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
@@ -224,10 +226,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun initGravityForTitle() {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val width: Int = displayMetrics.widthPixels
-        if (width < 1082) toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
+        if (getScreenWidth() < 1082) toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
     }
 
     private fun initListeners() {
@@ -275,8 +274,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
+    private fun requestPermission() = ActivityCompat.requestPermissions(
             this,
             listOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -284,11 +282,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             ).toTypedArray(),
             ACCESS_LOCATION_AND_EXTERNAL_STORAGE
         )
-    }
 
-    private fun removeCityOnLongClick(city: City) {
-        viewModel.removeCity(city)
-    }
+    private fun removeCityOnLongClick(city: City) = viewModel.removeCity(city)
 
     private fun showSnackBarWithThis(city: City) {
         mSnackBar = Snackbar.make(
@@ -327,24 +322,24 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     private fun initObservers() {
         viewModel.navigateToAllCountries.observe(this,
-            Observer { shouldNavigate ->
+            { shouldNavigate ->
                 if (shouldNavigate == true) {
                     start<AllCountriesActivity>()
                     viewModel.onNavigatedToAllCountries()
                 }
             })
-        viewModel.visitedCountriesWithCities.observe(this, Observer {
+        viewModel.visitedCountriesWithCities.observe(this, {
             updateAdapterWith(it)
             initTitleWithNumberOf(it)
         })
         viewModel.visitedCountries.observe(
             this,
-            Observer { visitedCountries ->
+            { visitedCountries ->
                 initPieChart()
                 createPieChartWith(visitedCountries)
                 showFloatBtn(visitedCountries)
             })
-        viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
+        viewModel.visibilityLoader.observe(this, { currentVisibility ->
             pb.visibility = currentVisibility
         })
     }
@@ -458,7 +453,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun showTitleWithCitiesAndCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, Observer {
+        viewModel.visitedCountriesWithCities.observe(this, {
             if (viewModel.citiesCount > it.size) {
                 toolbarLayout.title = "${resources.getQuantityString(
                     R.plurals.numberOfCitiesVisited,
@@ -482,7 +477,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun showTitleWithOnlyCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, Observer {
+        viewModel.visitedCountriesWithCities.observe(this, {
             toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
                 it.size,

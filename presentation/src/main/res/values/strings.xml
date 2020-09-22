@@ -11,7 +11,7 @@
     <string name="dialogue_btn_gps">GPS</string>
     <string name="btn_save">Save</string>
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
-    <string name="dialog_hold_on">Hold on a moment</string>
+    <string name="dialog_hold_on">Hold on a moment, trying to find your location.</string>
     <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
     <string name="icon_search">search image</string>
     <string name="search_country">country</string>
@@ -60,4 +60,6 @@
     </string>
     <string name="toast.no_facebook_app">You do not have Facebook app installed</string>
     <string name="toast.no_app_installed">No app available to share pie chart</string>
+    <string name="flag_chooser_title_complete_using">Complete action using</string>
+    <string name="flag_message_did_not_choose">did not choose anything</string>
 </resources>

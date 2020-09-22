@@ -78,9 +78,7 @@ class SectionAverageGapItemDecoration(
             }
             val section = findSectionLastItemPos(position)
             if (gapHSizePx < 0 || gapVSizePx < 0) spanCount?.let { spanCountNum ->
-                transformGapDefinition(parent,
-                    spanCountNum
-                )
+                transformGapDefinition(spanCountNum)
             }
             outRect.top = gapVSizePx
             outRect.bottom = 0
@@ -142,9 +140,8 @@ class SectionAverageGapItemDecoration(
         if (!mSectionList.contains(section)) mSectionList.add(section)
     }
 
-    private fun transformGapDefinition(parent: RecyclerView, spanCount: Int) {
+    private fun transformGapDefinition(spanCount: Int) {
         val displayMetrics = DisplayMetrics()
-        parent.display.getMetrics(displayMetrics)
         gapHSizePx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             gapHorizontalDp.toFloat(),
@@ -170,8 +167,10 @@ class SectionAverageGapItemDecoration(
 
     private fun findSectionLastItemPos(curPos: Int): Section? {
         for (section in mSectionList) {
-            if (section?.contains(curPos)!!) {
-                return section
+            section?.contains(curPos)?.let{
+                if (section.contains(curPos)) {
+                    return section
+                }
             }
         }
         return null

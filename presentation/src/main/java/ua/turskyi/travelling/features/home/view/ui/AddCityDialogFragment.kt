@@ -15,6 +15,7 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -25,7 +26,6 @@ import ua.turskyi.travelling.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
-import ua.turskyi.travelling.utils.Tips
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.util.*
@@ -108,7 +108,6 @@ class AddCityDialogFragment : DialogFragment() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == ACCESS_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 toast("GPS permission granted")
@@ -162,9 +161,9 @@ class AddCityDialogFragment : DialogFragment() {
     private fun checkIfGpsEnabled(editText: LinedEditText) {
         val gpsEnabled = checkIfGpsEnabled()
         if (!gpsEnabled) {
-            Tips.show(getString(R.string.dialogue_turn_on_gps))
+            toast(R.string.dialogue_turn_on_gps)
         } else if (!isOnline()) {
-            Tips.show(getString(R.string.dialog_turn_no_internet))
+            toast(R.string.dialog_turn_no_internet)
         } else {
             addCityTo(editText)
         }
@@ -189,7 +188,7 @@ class AddCityDialogFragment : DialogFragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(
+            requestPermissions(requireActivity(),
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -202,7 +201,7 @@ class AddCityDialogFragment : DialogFragment() {
                 if (location != null) {
                     addLastLocation(location, editText)
                 } else {
-                    Tips.show(getString(R.string.dialog_hold_on))
+                    toast(R.string.dialog_hold_on)
                     addChangedLocation(editText)
                 }
             }

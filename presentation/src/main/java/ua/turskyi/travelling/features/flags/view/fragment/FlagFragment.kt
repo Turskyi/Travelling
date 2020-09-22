@@ -12,6 +12,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
 import android.webkit.WebViewClient
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -28,17 +30,73 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITIO
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.models.Country
 
+
 class FlagFragment : Fragment(R.layout.fragment_flag) {
-    companion object {
-        private const val RESULT_CODE_PHOTO_PICKER = 1
-    }
 
     private val viewModel: FlagsActivityViewModel by inject()
 
     var mListener: OnFlagFragmentListener? = null
 
+   private lateinit var photoPickerResultLauncher: ActivityResultLauncher<Intent>
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        photoPickerResultLauncher = registerForActivityResult(
+            StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val photoChooserIntent: Intent? = result.data
+                val position = this.arguments?.getInt(POSITION)
+                ivEnlarged.visibility = VISIBLE
+                wvFlag.visibility = GONE
+                val selectedImageUri = photoChooserIntent?.data
+                if (selectedImageUri.toString().contains("com.android.providers.media")) {
+                    val imageId =
+                        selectedImageUri?.lastPathSegment?.takeLastWhile { it.isDigit() }?.toInt()
+                    val visitedCountriesObserverForLocalPhotos =
+                        Observer<List<Country>> { visitedCountries ->
+                            val contentImg = imageId?.let { contentImgId ->
+                                position?.let {
+                                    getContentUriFromUri(
+                                        visitedCountries[position].id,
+                                        contentImgId,
+                                        visitedCountries[position].name,
+                                        visitedCountries[position].flag
+                                    )
+                                }
+                            }
+                            contentImg?.selfie?.let { uri ->
+                                position?.let {
+                                    viewModel.updateSelfie(
+                                        visitedCountries[position].id,
+                                        uri
+                                    )
+                                }
+                            }
+                        }
+                    viewModel.visitedCountries.observeOnce(
+                        viewLifecycleOwner,
+                        visitedCountriesObserverForLocalPhotos
+                    )
+                } else {
+                    val visitedCountriesObserverForCloudPhotos =
+                        Observer<List<Country>> { visitedCountries ->
+                            position?.let {
+                                viewModel.updateSelfie(
+                                    visitedCountries[position].id,
+                                    selectedImageUri.toString()
+                                )
+                            }
+                        }
+                    viewModel.visitedCountries.observeOnce(
+                        viewLifecycleOwner,
+                        visitedCountriesObserverForCloudPhotos
+                    )
+                }
+            } else {
+                splitties.toast.toast(getString(R.string.flag_message_did_not_choose))
+            }
+        }
         if (context is OnFlagFragmentListener) {
             mListener = context
         } else {
@@ -55,61 +113,6 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
         super.onResume()
         initListeners()
         initObservers()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RESULT_CODE_PHOTO_PICKER && resultCode == Activity.RESULT_OK) {
-            val position = this.arguments?.getInt(POSITION)
-            ivEnlarged.visibility = VISIBLE
-            wvFlag.visibility = GONE
-            val selectedImageUri = data?.data
-            if (selectedImageUri.toString().contains("com.android.providers.media")) {
-                val imageId =
-                    selectedImageUri?.lastPathSegment?.takeLastWhile { it.isDigit() }?.toInt()
-                val visitedCountriesObserverForLocalPhotos =
-                    Observer<List<Country>> { visitedCountries ->
-                        val contentImg = imageId?.let { contentImgId ->
-                            position?.let {
-                                getContentUriFromUri(
-                                    visitedCountries[position].id,
-                                    contentImgId,
-                                    visitedCountries[position].name,
-                                    visitedCountries[position].flag
-                                )
-                            }
-                        }
-                        contentImg?.selfie?.let { uri ->
-                            position?.let {
-                                viewModel.updateSelfie(
-                                    visitedCountries[position].id,
-                                    uri
-                                )
-                            }
-                        }
-                    }
-                viewModel.visitedCountries.observeOnce(
-                    viewLifecycleOwner,
-                    visitedCountriesObserverForLocalPhotos
-                )
-            } else {
-                val visitedCountriesObserverForCloudPhotos =
-                    Observer<List<Country>> { visitedCountries ->
-                        position?.let {
-                            viewModel.updateSelfie(
-                                visitedCountries[position].id,
-                                selectedImageUri.toString()
-                            )
-                        }
-                    }
-                viewModel.visitedCountries.observeOnce(
-                    viewLifecycleOwner,
-                    visitedCountriesObserverForCloudPhotos
-                )
-            }
-        } else {
-            splitties.toast.toast("did not choose anything")
-        }
     }
 
     private fun getContentUriFromUri(id: Int, imageId: Int, name: String, flag: String): Country {
@@ -144,10 +147,8 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
         val action: String = Intent.ACTION_OPEN_DOCUMENT
         val intent = Intent(action)
         intent.type = "image/jpeg"
-        startActivityForResult(
-            Intent.createChooser(intent, "Complete action using"),
-            RESULT_CODE_PHOTO_PICKER
-        )
+        val intentChooser =  Intent.createChooser(intent, getString(R.string.flag_chooser_title_complete_using))
+        photoPickerResultLauncher.launch(intentChooser)
     }
 
     private fun initListeners() {
@@ -204,7 +205,12 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                             /* perform click */
                             showSelfie(countries, position)
                             /* return first clickListener */
-                            ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
+                            ivEnlarged.setOnClickListener(
+                                showFlagClickListener(
+                                    countries,
+                                    position
+                                )
+                            )
                         }
                         else -> fingerState =
                             if (fingerState == FINGER_DRAGGING) FINGER_RELEASED else {

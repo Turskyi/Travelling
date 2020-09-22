@@ -13,7 +13,11 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
 abstract class CountriesDao {
 
     @Query("SELECT * FROM  $TABLE_COUNTRIES WHERE $COLUMN_NAME LIKE :name LIMIT :limit OFFSET :offset")
-    abstract fun loadAllCountriesByNameAndRange(name: String?, limit: Int, offset: Int): MutableList<CountryEntity>
+    abstract fun loadAllCountriesByNameAndRange(
+        name: String?,
+        limit: Int,
+        offset: Int
+    ): MutableList<CountryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertAllCountries(countries: List<CountryEntity>?)
@@ -23,10 +27,10 @@ abstract class CountriesDao {
     abstract fun getCountriesByRange(limit: Int, offset: Int): List<CountryEntity>
 
     @Query("SELECT COUNT($COLUMN_ID) FROM $TABLE_COUNTRIES WHERE ${CountryEntity.COLUMN_VISITED} IS null OR ${CountryEntity.COLUMN_VISITED} = 0")
-   abstract fun getNumNotVisitedCountries(): Int
+    abstract fun getNumNotVisitedCountries(): Int
 
     @Query("SELECT * FROM $TABLE_COUNTRIES WHERE ${CountryEntity.COLUMN_VISITED} = 1")
-   abstract fun getVisitedCountries(): List<CountryEntity>
+    abstract fun getVisitedCountries(): List<CountryEntity>
 
     @Query("SELECT * FROM $TABLE_CITIES")
     abstract fun getCities(): MutableList<CityEntity>
@@ -35,7 +39,7 @@ abstract class CountriesDao {
     abstract fun insertCountry(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun  insertCity(city: CityEntity)
+    abstract fun insertCity(city: CityEntity)
 
     @Delete
     abstract fun delete(city: CityEntity)

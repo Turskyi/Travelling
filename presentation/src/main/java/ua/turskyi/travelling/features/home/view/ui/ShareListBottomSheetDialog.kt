@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.layout_bottom_sheet.*
+import splitties.toast.toast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.extensions.isFacebookInstalled
 import ua.turskyi.travelling.extensions.shareImageViaChooser
 import ua.turskyi.travelling.extensions.shareViaFacebook
-import ua.turskyi.travelling.utils.Tips
 
 class ShareListBottomSheetDialog : BottomSheetDialogFragment() {
 
@@ -30,7 +30,7 @@ class ShareListBottomSheetDialog : BottomSheetDialogFragment() {
     private fun initListeners() {
         ivFacebook.setOnClickListener {
             if (requireContext().isFacebookInstalled()) shareViaFacebook()
-            else Tips.show(getString(R.string.toast_no_facebook_app))
+            else toast(R.string.toast_no_facebook_app)
             dismiss()
         }
         ivOther.setOnClickListener {
