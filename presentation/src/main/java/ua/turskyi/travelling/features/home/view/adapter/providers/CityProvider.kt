@@ -21,7 +21,8 @@ class CityProvider : BaseNodeProvider() {
 
     override fun convert(helper: BaseViewHolder, item: BaseNode) {
         val entity: City = item as City
-        helper.setText(R.id.tv, entity.name)
+        helper.setText(R.id.tvCity, entity.name)
+        helper.setText(R.id.tvMonth, entity.month)
     }
 
     override fun onClick(

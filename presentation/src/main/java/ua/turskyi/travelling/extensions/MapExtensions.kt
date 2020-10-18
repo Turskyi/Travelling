@@ -23,5 +23,5 @@ fun VisitedCountry.mapNodeToActual() = Country(
     flag = img, selfie = selfie
 )
 
-fun CityModel.mapModelToBaseNode() = City(id = id, name = name, parentId = parentId)
-fun City.mapNodeToModel() = CityModel(id = id, name = name, parentId = parentId)
+fun CityModel.mapModelToBaseNode() = City(id = id, name = name, parentId = parentId, month = month)
+fun City.mapNodeToModel() = CityModel(id = id, name = name, parentId = parentId, month = month)

@@ -9,9 +9,13 @@ import ua.turskyi.domain.model.CountryModel
 fun List<CountryModel>.mapModelListToEntityList() =
     mapTo(mutableListOf(), { countryModel -> countryModel.mapModelToEntity() })
 
-fun CountryModel.mapModelToEntity() = CountryEntity(id, name, flag, visited,null)
-fun CityModel.mapModelToEntity() = CityEntity(id = id, name =  name, parentId = parentId)
-fun CityEntity.mapEntityToModel() = CityModel(id = id, name = name, parentId = parentId)
+fun CountryModel.mapModelToEntity() = CountryEntity(id, name, flag, visited, null)
+fun CityModel.mapModelToEntity() =
+    CityEntity(id = id, name = name, parentId = parentId, month = month)
+
+fun CityEntity.mapEntityToModel() =
+    CityModel(id = id, name = name, parentId = parentId, month = month)
+
 fun List<CountryNet>.mapNetListToModelList() = this.mapTo(
     mutableListOf(), { countryNet -> countryNet.mapNetToEntity() })
 

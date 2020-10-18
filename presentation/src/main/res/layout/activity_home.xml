@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel" />
@@ -11,9 +12,9 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:background="@android:color/black"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
+        android:background="@android:color/black"
         android:fitsSystemWindows="true"
         tools:context=".view.ui.HomeActivity">
 
@@ -28,13 +29,13 @@
                 android:id="@+id/toolbarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 android:background="@android:color/black"
+                android:fitsSystemWindows="true"
                 android:soundEffectsEnabled="true"
+                app:collapsedTitleGravity="start"
                 app:collapsedTitleTextAppearance="@style/CasualSmallTextAppearance"
                 app:contentScrim="@android:color/black"
                 app:expandedTitleGravity="bottom|center"
-                app:collapsedTitleGravity="start"
                 app:expandedTitleTextAppearance="@style/CasualTextAppearance"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
@@ -77,29 +78,33 @@
             android:id="@+id/pb"
             style="@style/ProgressBarStyle"
             android:layout_marginTop="@dimen/offset_140"
-            android:elevation="@dimen/elevation_4"/>
+            android:elevation="@dimen/elevation_4" />
 
-        <include layout="@layout/content_home" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVisitedCountries"
+            style="@style/RecyclerViewStyle"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatBtnSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:contentDescription="@string/image"
             android:drawingCacheQuality="auto"
             android:fadeScrollbars="true"
             android:focusable="true"
             android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:fabSize="auto"
             app:elevation="@dimen/elevation_4"
-            app:useCompatPadding="true"
+            app:fabSize="auto"
             app:layout_anchor="@id/pieChart"
-            app:layout_behavior=".widgets.FabScrollBehavior"
             app:layout_anchorGravity="bottom|end"
+            app:layout_behavior=".widgets.FabScrollBehavior"
             app:maxImageSize="@dimen/size_max_float_btn"
-            app:srcCompat="@drawable/btn_plus_ripple" />
+            app:srcCompat="@drawable/btn_plus_ripple"
+            app:useCompatPadding="true"
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatBtnLarge"
@@ -108,13 +113,14 @@
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/offset_64"
             android:clickable="true"
+            android:contentDescription="@string/image"
             android:drawingCacheQuality="auto"
             android:elevation="4dp"
             android:fadeScrollbars="true"
             android:focusable="true"
+            android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             android:soundEffectsEnabled="true"
             android:visibility="gone"
-            android:onClick="@{() -> viewModel.onFloatBtnClicked()}"
             app:elevation="@dimen/elevation_4"
             app:fabCustomSize="@dimen/size_home_fab_custom"
             app:fabSize="auto"

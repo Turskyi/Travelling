@@ -39,7 +39,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
         visitedCountriesWithCities = _visitedCountriesWithCities
     }
 
-    suspend fun initList() {
+    suspend fun initListOfCountries() {
         val loadCountries: () -> Unit = {
             viewModelScope.launch {
                 interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
@@ -97,14 +97,14 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
     fun removeFromVisited(country: Country) {
         viewModelScope.launch {
             interactor.removeCountryModelFromVisitedList(country.mapActualToModel())
-            initList()
+            initListOfCountries()
         }
     }
 
     fun removeCity(city: City) {
         viewModelScope.launch {
             interactor.removeCity(city.mapNodeToModel())
-            initList()
+            initListOfCountries()
         }
     }
 }

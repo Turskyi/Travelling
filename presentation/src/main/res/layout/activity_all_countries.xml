@@ -16,7 +16,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/offset_8"
+            android:paddingBottom="@dimen/offset8"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:toolbarId="@+id/toolbar">
@@ -49,9 +49,9 @@
                 android:orientation="horizontal"
                 app:containerElevation="@dimen/elevation_1"
                 app:scaleViewOnElevationChange="true"
-                app:shadowMarginStart="@dimen/offset_8"
-                app:shadowMarginTop="@dimen/offset_8"
-                app:shadowRadius="@dimen/offset_8">
+                app:shadowMarginStart="@dimen/offset8"
+                app:shadowMarginTop="@dimen/offset8"
+                app:shadowRadius="@dimen/offset8">
 
                 <ImageButton
                     android:id="@+id/ibSearch"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/icon_search"
-                    android:padding="@dimen/offset_8"
+                    android:padding="@dimen/offset8"
                     android:src="@drawable/ic_search" />
 
                 <EditText
@@ -72,8 +72,8 @@
                     android:inputType="textCapSentences"
                     android:labelFor="@+id/ibSearch"
                     android:maxLength="100"
-                    android:paddingStart="@dimen/offset_8"
-                    android:paddingEnd="@dimen/offset_8"
+                    android:paddingStart="@dimen/offset8"
+                    android:paddingEnd="@dimen/offset8"
                     android:singleLine="true" />
             </ua.turskyi.travelling.widgets.ShadowedLinearLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -117,6 +117,7 @@
         app:maxImageSize="@dimen/size_all_countries_fab_max_image"
         app:srcCompat="@drawable/btn_info_ripple"
         app:useCompatPadding="true"
-        tool:visibility="visible" />
+        tool:visibility="visible"
+        android:contentDescription="@string/image" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

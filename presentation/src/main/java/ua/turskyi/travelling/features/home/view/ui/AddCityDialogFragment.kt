@@ -8,10 +8,12 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -33,7 +35,7 @@ import java.util.*
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
-        const val ARG_ID = "id"
+        private const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {
             val fragment = AddCityDialogFragment()
@@ -48,7 +50,8 @@ class AddCityDialogFragment : DialogFragment() {
     private val viewModel by inject<AddCityDialogViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    private var editText: LinedEditText? = null
+    private var etCity: LinedEditText? = null
+    private var etMonth: EditText? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
         initLocationServices()
 
@@ -71,8 +74,10 @@ class AddCityDialogFragment : DialogFragment() {
         val alertDialog = builder?.create()
 
         val buttonSave = dialogView.findViewById<Button>(R.id.buttonSave)
+        val buttonMonth = dialogView.findViewById<Button>(R.id.btnMonth)
         val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
-        editText = dialogView.findViewById(R.id.letCity)
+        etCity = dialogView.findViewById(R.id.letCity)
+        etMonth = dialogView.findViewById(R.id.etMonth)
 
         /**
          * There is a unique case when particular android version cannot perform location logic
@@ -84,15 +89,74 @@ class AddCityDialogFragment : DialogFragment() {
             buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
 
-        editText?.visibility = VISIBLE
-        editText?.setText("")
+        etCity?.visibility = VISIBLE
+        etCity?.setText("")
+        etMonth?.setText("")
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
-        editText?.let {
-            initListeners(buttonSave, it, arguments?.getInt(ARG_ID), alertDialog, buttonGps)
-        }
+        initListeners(buttonSave, alertDialog, buttonGps, buttonMonth)
+
         return alertDialog!!
+    }
+
+    private fun initListeners(
+        buttonSave: Button,
+        alertDialog: AlertDialog?,
+        buttonGps: Button,
+        buttonMonth: Button
+    ) {
+        buttonSave.setOnClickListener {
+            if (etCity?.text.toString() != "") {
+                if (etMonth?.text.toString() != "") {
+                    arguments?.getInt(ARG_ID)?.let { parentId ->
+                        City(
+                            name = etCity?.text.toString(),
+                            parentId = parentId,
+                            month = etMonth?.text.toString()
+                        ).let { city ->
+                            viewModel.insert(
+                                city
+                            )
+                        }
+                    }
+                } else {
+                    arguments?.getInt(ARG_ID)?.let { parentId ->
+                        City(etCity?.text.toString(), parentId).let { city ->
+                            viewModel.insert(
+                                city
+                            )
+                        }
+                    }
+                }
+            } else {
+                alertDialog?.cancel()
+                toast(R.string.home_city_did_not_save)
+            }
+            alertDialog?.dismiss()
+        }
+
+        buttonGps.setOnClickListener {
+            /**
+             * There is a unique case when particular android version cannot perform location logic
+             * and crashing, so here button just used as a cancel button.
+             */
+            etCity?.let {
+                if (Build.VERSION.RELEASE == "5.1") {
+                    alertDialog?.cancel()
+                } else {
+                    checkIfGpsEnabled(it)
+                }
+            }
+        }
+
+        buttonMonth.setOnClickListener {
+            val monthName = DateFormat.format(
+                getString(R.string.home_dialog_month_format),
+                Date()
+            )
+            etMonth?.setText(monthName)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -111,7 +175,7 @@ class AddCityDialogFragment : DialogFragment() {
         if (requestCode == ACCESS_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 toast("GPS permission granted")
-                editText?.let { addCityTo(it) }
+                etCity?.let { addCityTo(it) }
             } else {
                 longToast("GPS permission denied")
             }
@@ -122,40 +186,6 @@ class AddCityDialogFragment : DialogFragment() {
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-    }
-
-    private fun initListeners(
-        buttonSave: Button,
-        editText: LinedEditText,
-        id: Int?,
-        alertDialog: AlertDialog?,
-        buttonGps: Button
-    ) {
-        buttonSave.setOnClickListener {
-            if (editText.text.toString() != "") {
-                id?.let { visitedCountryId -> City(editText.text.toString(), visitedCountryId) }
-                    ?.let { city ->
-                        viewModel.insert(
-                            city
-                        )
-                    }
-            } else {
-                alertDialog?.cancel()
-            }
-            alertDialog?.dismiss()
-        }
-
-        buttonGps.setOnClickListener {
-            /**
-             * There is a unique case when particular android version cannot perform location logic
-             * and crashing, so here button just used as a cancel button.
-             */
-            if (Build.VERSION.RELEASE == "5.1") {
-                alertDialog?.cancel()
-            } else {
-                checkIfGpsEnabled(editText)
-            }
-        }
     }
 
     private fun checkIfGpsEnabled(editText: LinedEditText) {
@@ -188,7 +218,8 @@ class AddCityDialogFragment : DialogFragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(requireActivity(),
+            requestPermissions(
+                requireActivity(),
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION

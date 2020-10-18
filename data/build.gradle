@@ -37,10 +37,10 @@ dependencies {
 
     /* network */
     api "com.squareup.okhttp3:okhttp:4.3.1"
-    api 'com.squareup.retrofit2:retrofit:2.7.1'
+    api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api 'com.google.code.gson:gson:2.8.6'
     api 'com.squareup.okhttp3:logging-interceptor:4.3.1'
-    api 'com.squareup.retrofit2:converter-gson:2.7.1'
+    api "com.squareup.retrofit2:converter-gson:$retrofit_version"
     api 'com.auth0:java-jwt:3.8.2'
 
     /* room */
@@ -53,9 +53,9 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     /* koin */
-    api "org.koin:koin-androidx-viewmodel:2.0.1"
-    api "org.koin:koin-core:2.0.1"
-    api "org.koin:koin-androidx-scope:2.0.1"
+    api "org.koin:koin-androidx-viewmodel:$koin_version"
+    api "org.koin:koin-core:$koin_version"
+    api "org.koin:koin-androidx-scope:$koin_version"
 
     /* test */
     testImplementation 'junit:junit:4.13'

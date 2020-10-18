@@ -1,4 +1,8 @@
 <resources>
+    <!-- not translatable -->
+    <string name="facebook_app_id" translatable="false">2312394202364807</string>
+    <string name="home_dialog_month_format" translatable="false">MMMM</string>
+
     <string name="app_name">Travelling</string>
     <string name="delete_it">Delete %1$s ?</string>
     <string name="deleted">%1$s deleted</string>
@@ -42,11 +46,10 @@
         <item quantity="other">in %d countries</item>
     </plurals>
 
-    <string name="facebook_app_id">2312394202364807</string>
     <string name="share_title">Share How Many Countries You Have Visited</string>
     <string name="home_dialog_btn_cancel">Cancel</string>
     <string name="txt_info_home">• Click on \"+\" to add a country.\n• Click on a country to add a
-        city.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
+        city and a month.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
         you can share it on Facebook or on another platform.\n• Click on a flag to be able to see
         the flag in full screen and replace it with a photo.\n• Click on the city to be able to see
         the geographical location of it.
@@ -62,4 +65,7 @@
     <string name="toast.no_app_installed">No app available to share pie chart</string>
     <string name="flag_chooser_title_complete_using">Complete action using</string>
     <string name="flag_message_did_not_choose">did not choose anything</string>
+    <string name="home_city_month">Month</string>
+    <string name="home_city_did_not_save">did not save anything</string>
+
 </resources>

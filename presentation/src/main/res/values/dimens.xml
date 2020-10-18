@@ -4,7 +4,7 @@
     <dimen name="offset_1">1dp</dimen>
     <dimen name="offset_2">2dp</dimen>
     <dimen name="offset_4">4dp</dimen>
-    <dimen name="offset_8">8dp</dimen>
+    <dimen name="offset8">8dp</dimen>
     <dimen name="offset_10">10dp</dimen>
     <dimen name="offset_12">12dp</dimen>
     <dimen name="offset_16">16dp</dimen>

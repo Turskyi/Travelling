@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.style.ImageSpan
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -29,8 +27,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.content_home.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,8 +62,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private var backPressedTiming: Long = 0
     private var mSnackBar: Snackbar? = null
     private var mLastClickTime: Long = 0
-    private val viewModel by inject<HomeActivityViewModel>()
-    private val adapter by inject<HomeAdapter>()
+    private val homeViewModel by inject<HomeActivityViewModel>()
+    private val homeAdapter by inject<HomeAdapter>()
     private var job: Job = Job()
     private var isPermissionGranted = false
     private var isCenterEnabled = false
@@ -111,20 +107,20 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onChartDoubleTapped(me: MotionEvent?) {}
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
     override fun onChartSingleTapped(me: MotionEvent?) {
-        when (pieChart.isDrawHoleEnabled) {
+        when (binding.pieChart.isDrawHoleEnabled) {
             false -> {
-                pieChart.isDrawHoleEnabled = true
+                binding.pieChart.isDrawHoleEnabled = true
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    pieChart.centerText = setCenterPictureViaSpannableString()
+                    binding.pieChart.centerText = setCenterPictureViaSpannableString()
                     isCenterEnabled = true
                 }
                 showTitleWithOnlyCountries()
             }
             true -> {
-                pieChart.centerText = ""
-                pieChart.isDrawHoleEnabled = false
+                binding.pieChart.centerText = ""
+                binding.pieChart.isDrawHoleEnabled = false
                 isCenterEnabled = false
-                if (viewModel.citiesCount > 0) {
+                if (homeViewModel.citiesCount > 0) {
                     showTitleWithCitiesAndCountries()
                 } else {
                     showTitleWithOnlyCountries()
@@ -156,16 +152,16 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onResume() {
         super.onResume()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        launch { viewModel.initList() }
+        launch { homeViewModel.initListOfCountries() }
 
-        if (isPermissionGranted){
+        if (isPermissionGranted) {
             /* nice and smooth animation of a chart */
             binding.pieChart.animateY(1500)
         }
     }
 
     override fun onDismiss(p0: DialogInterface?) {
-        launch { viewModel.initList() }
+        launch { homeViewModel.initListOfCountries() }
     }
 
     override fun onBackPressed() {
@@ -174,7 +170,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             return
         } else {
             Snackbar.make(
-                rvVisitedCountries,
+                binding.rvVisitedCountries,
                 resources.getString(R.string.tap_back_button_in_order_to_exit),
                 Snackbar.LENGTH_SHORT
             ).show()
@@ -204,53 +200,54 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     private fun initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-        binding.viewModel = this.viewModel
+        binding.viewModel = this.homeViewModel
         binding.lifecycleOwner = this
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         /* set drawable icon */
         supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
 
         /* remove default text "no chart data available" */
         binding.pieChart.setNoDataText(null)
 
-        val layoutManager = LinearLayoutManager(this)
-        rvVisitedCountries.adapter = this.adapter
-        rvVisitedCountries.layoutManager = layoutManager
-        rvVisitedCountries.addItemDecoration(
-            SectionAverageGapItemDecoration(
-                10, 10, 20, 15
+        val linearLayoutManager = LinearLayoutManager(this)
+        binding.rvVisitedCountries.apply {
+            this.adapter = homeAdapter
+            this.layoutManager = linearLayoutManager
+            this.addItemDecoration(
+                SectionAverageGapItemDecoration(
+                    10, 10, 20, 15
+                )
             )
-        )
-
+        }
         initGravityForTitle()
     }
 
     private fun initGravityForTitle() {
-        if (getScreenWidth() < 1082) toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
+        if (getScreenWidth() < 1082) binding.toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
     }
 
     private fun initListeners() {
-        adapter.onImageClickListener = {
+        homeAdapter.onFlagClickListener = {
             /* mis-clicking prevention, using threshold of 1000 ms */
             if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
                 val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
                 val bundle = Bundle()
-                bundle.putInt(POSITION, adapter.getItemPosition(it))
+                bundle.putInt(POSITION, homeAdapter.getItemPosition(it))
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
             mLastClickTime = SystemClock.elapsedRealtime()
         }
-        adapter.onLongClickListener = { countryNode ->
+        homeAdapter.onLongClickListener = { countryNode ->
             showSnackBarWithCountry(countryNode.mapNodeToActual())
         }
 
-        adapter.onCountryNameClickListener = { countryNode ->
+        homeAdapter.onCountryNameClickListener = { countryNode ->
             /* Creating the new Fragment with the Country id passed in. */
             val fragment = AddCityDialogFragment.newInstance(countryNode.id)
             fragment.show(supportFragmentManager, null)
         }
-        adapter.onCityLongClickListener = { city ->
+        homeAdapter.onCityLongClickListener = { city ->
             showSnackBarWithThis(city)
         }
     }
@@ -275,19 +272,19 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun requestPermission() = ActivityCompat.requestPermissions(
-            this,
-            listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ).toTypedArray(),
-            ACCESS_LOCATION_AND_EXTERNAL_STORAGE
-        )
+        this,
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ).toTypedArray(),
+        ACCESS_LOCATION_AND_EXTERNAL_STORAGE
+    )
 
-    private fun removeCityOnLongClick(city: City) = viewModel.removeCity(city)
+    private fun removeCityOnLongClick(city: City) = homeViewModel.removeCity(city)
 
     private fun showSnackBarWithThis(city: City) {
         mSnackBar = Snackbar.make(
-            rvVisitedCountries,
+            binding.rvVisitedCountries,
             getString(R.string.delete_it, city.name),
             Snackbar.LENGTH_LONG
         ).setActionTextColor(Color.WHITE)
@@ -300,11 +297,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     private fun showSnackBarWithCountry(country: Country) {
         mSnackBar = Snackbar.make(
-            rvVisitedCountries,
+            binding.rvVisitedCountries,
             getString(R.string.delete_it, country.name),
             Snackbar.LENGTH_LONG
         ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
-            viewModel.removeFromVisited(country)
+            homeViewModel.removeFromVisited(country)
             longToast(getString(R.string.deleted, country.name))
         }
         decorateSnackbar()
@@ -316,81 +313,81 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
         val snackView = mSnackBar?.view
         val snackTextView =
-            snackView?.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+            snackView?.findViewById<TextView>(R.id.snackbar_text)
         snackTextView?.setTextColor(Color.RED)
     }
 
     private fun initObservers() {
-        viewModel.navigateToAllCountries.observe(this,
+        homeViewModel.navigateToAllCountries.observe(this,
             { shouldNavigate ->
                 if (shouldNavigate == true) {
                     start<AllCountriesActivity>()
-                    viewModel.onNavigatedToAllCountries()
+                    homeViewModel.onNavigatedToAllCountries()
                 }
             })
-        viewModel.visitedCountriesWithCities.observe(this, {
-            updateAdapterWith(it)
-            initTitleWithNumberOf(it)
+        homeViewModel.visitedCountriesWithCities.observe(this, { visitedCountries ->
+            updateAdapterWith(visitedCountries)
+            initTitleWithNumberOf(visitedCountries)
         })
-        viewModel.visitedCountries.observe(
+        homeViewModel.visitedCountries.observe(
             this,
             { visitedCountries ->
                 initPieChart()
                 createPieChartWith(visitedCountries)
                 showFloatBtn(visitedCountries)
             })
-        viewModel.visibilityLoader.observe(this, { currentVisibility ->
-            pb.visibility = currentVisibility
+        homeViewModel.visibilityLoader.observe(this, { currentVisibility ->
+            binding.pb.visibility = currentVisibility
         })
     }
 
     private fun showFloatBtn(visitedCountries: List<Country>?) {
         if (visitedCountries.isNullOrEmpty()) {
-            floatBtnLarge.show()
-            floatBtnSmall.visibility = View.GONE
+            binding.floatBtnLarge.show()
+            binding.floatBtnSmall.visibility = View.GONE
         } else {
-            floatBtnLarge.hide()
-            floatBtnSmall.show()
+            binding.floatBtnLarge.hide()
+            binding.floatBtnSmall.show()
         }
     }
 
     private fun initPieChart() {
-        pieChart.description.isEnabled = false
+        binding.pieChart.description.isEnabled = false
 
         /* work around instead of click listener */
-        pieChart.onChartGestureListener = this
+        binding.pieChart.onChartGestureListener = this
 
-        if (!isCenterEnabled){
+        if (!isCenterEnabled) {
             /* remove or enable hole inside */
-            pieChart.isDrawHoleEnabled = false
+            binding.pieChart.isDrawHoleEnabled = false
         }
 
         /* removes color squares */
-        pieChart.legend.isEnabled = false
+        binding.pieChart.legend.isEnabled = false
 
         /* rotate the pie chart to 45 degrees */
-        pieChart.rotationAngle = -10f
+        binding.pieChart.rotationAngle = -10f
 
-        pieChart.setBackgroundResource(R.drawable.gradient_list)
+        binding.pieChart.setBackgroundResource(R.drawable.gradient_list)
         val animationDrawable: AnimationDrawable =
-            pieChart.background as AnimationDrawable
+            binding.pieChart.background as AnimationDrawable
         animationDrawable.setEnterFadeDuration(2000)
         animationDrawable.setExitFadeDuration(4000)
         animationDrawable.start()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pieChart.holeRadius = 80F
+            binding.pieChart.holeRadius = 80F
         } else {
-            pieChart.holeRadius = 20F
-            pieChart.setTransparentCircleColor(Color.BLACK)
-            pieChart.transparentCircleRadius = 24F
-            pieChart.setHoleColor(Color.BLACK)
+            binding.pieChart.holeRadius = 20F
+            binding.pieChart.setTransparentCircleColor(Color.BLACK)
+            binding.pieChart.transparentCircleRadius = 24F
+            binding.pieChart.setHoleColor(Color.BLACK)
         }
     }
 
     private fun createPieChartWith(visitedCountries: List<Country>) {
         val entries: MutableList<PieEntry> = mutableListOf()
         entries.add(PieEntry(visitedCountries.size.toFloat()))
-        entries.add(PieEntry(viewModel.notVisitedCount.toFloat()))
+        entries.add(PieEntry(homeViewModel.notVisitedCount.toFloat()))
         val pieChartColors: MutableList<Int> = mutableListOf()
         pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorAccent))
         pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorBrightBlue))
@@ -403,9 +400,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         data.setValueTextSize(applicationContext.spToPix(R.dimen.caption))
         data.setValueTextColor(Color.WHITE)
 
-        pieChart.data = data
+        binding.pieChart.data = data
         /* updates data in pieChart every time */
-        pieChart.invalidate()
+        binding.pieChart.invalidate()
     }
 
     private fun setCenterPictureViaSpannableString(): SpannableString? {
@@ -419,66 +416,82 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         for (countryNode in visitedCountries) {
             countryNode.isExpanded = false
         }
-        adapter.setList(visitedCountries)
+        homeAdapter.setList(visitedCountries)
     }
 
     private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) {
-        if (viewModel.citiesCount == 0) {
-            toolbarLayout.title = resources.getQuantityString(
+        if (homeViewModel.citiesCount == 0) {
+            binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
                 visitedCountries.size,
                 visitedCountries.size
             )
         } else {
-            if (viewModel.citiesCount > visitedCountries.size) {
-                toolbarLayout.title = "${resources.getQuantityString(
-                    R.plurals.numberOfCitiesVisited,
-                    viewModel.citiesCount,
-                    viewModel.citiesCount
-                )} ${resources.getQuantityString(
-                    R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
-                    visitedCountries.size
-                )}"
+            if (homeViewModel.citiesCount > visitedCountries.size) {
+                binding.toolbarLayout.title = "${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCitiesVisited,
+                        homeViewModel.citiesCount,
+                        homeViewModel.citiesCount
+                    )
+                } ${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
+                        visitedCountries.size
+                    )
+                }"
             } else {
-                toolbarLayout.title = "${resources.getQuantityString(
-                    R.plurals.numberOfCitiesVisited,
-                    visitedCountries.size,
-                    visitedCountries.size
-                )} ${resources.getQuantityString(
-                    R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
-                    visitedCountries.size
-                )}"
+                binding.toolbarLayout.title = "${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCitiesVisited,
+                        visitedCountries.size,
+                        visitedCountries.size
+                    )
+                } ${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCountriesOfCitiesVisited, visitedCountries.size,
+                        visitedCountries.size
+                    )
+                }"
             }
         }
     }
 
     private fun showTitleWithCitiesAndCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, {
-            if (viewModel.citiesCount > it.size) {
-                toolbarLayout.title = "${resources.getQuantityString(
-                    R.plurals.numberOfCitiesVisited,
-                    viewModel.citiesCount,
-                    viewModel.citiesCount
-                )} ${resources.getQuantityString(
-                    R.plurals.numberOfCountriesOfCitiesVisited, it.size,
-                    it.size
-                )}"
+        homeViewModel.visitedCountriesWithCities.observe(this, {
+            if (homeViewModel.citiesCount > it.size) {
+                binding.toolbarLayout.title = "${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCitiesVisited,
+                        homeViewModel.citiesCount,
+                        homeViewModel.citiesCount
+                    )
+                } ${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCountriesOfCitiesVisited, it.size,
+                        it.size
+                    )
+                }"
             } else {
-                toolbarLayout.title = "${resources.getQuantityString(
-                    R.plurals.numberOfCitiesVisited,
-                    it.size,
-                    it.size
-                )} ${resources.getQuantityString(
-                    R.plurals.numberOfCountriesOfCitiesVisited, it.size,
-                    it.size
-                )}"
+                binding.toolbarLayout.title = "${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCitiesVisited,
+                        it.size,
+                        it.size
+                    )
+                } ${
+                    resources.getQuantityString(
+                        R.plurals.numberOfCountriesOfCitiesVisited, it.size,
+                        it.size
+                    )
+                }"
             }
         })
     }
 
     private fun showTitleWithOnlyCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, {
-            toolbarLayout.title = resources.getQuantityString(
+        homeViewModel.visitedCountriesWithCities.observe(this, {
+            binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
                 it.size,
                 it.size

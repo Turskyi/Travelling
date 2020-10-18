@@ -17,7 +17,7 @@ class HomeAdapter : BaseNodeAdapter() {
         addNodeProvider(cityProvider)
     }
 
-    var onImageClickListener: ((data: VisitedCountry) -> Unit)? = null
+    var onFlagClickListener: ((data: VisitedCountry) -> Unit)? = null
         set(value) {
             countryNodeProvider.onImageClickListener = value
             field = value

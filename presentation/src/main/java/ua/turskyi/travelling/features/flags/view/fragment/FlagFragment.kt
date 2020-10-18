@@ -30,7 +30,6 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITIO
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.models.Country
 
-
 class FlagFragment : Fragment(R.layout.fragment_flag) {
 
     private val viewModel: FlagsActivityViewModel by inject()
