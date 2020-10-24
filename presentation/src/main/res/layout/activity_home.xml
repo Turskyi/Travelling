@@ -74,11 +74,14 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <ProgressBar
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pb"
             style="@style/ProgressBarStyle"
-            android:layout_marginTop="@dimen/offset_140"
-            android:elevation="@dimen/elevation_4" />
+            android:scaleType="centerInside"
+            app:lottie_loop="true"
+            android:layout_marginTop="@dimen/offset_64"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/anim_flight" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVisitedCountries"

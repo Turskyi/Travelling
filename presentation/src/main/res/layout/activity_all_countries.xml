@@ -79,10 +79,6 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ProgressBar
-        android:id="@+id/pb"
-        style="@style/ProgressBarStyle" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAllCountries"
         style="@style/RecyclerViewStyle"
@@ -100,24 +96,34 @@
         android:textSize="@dimen/headline6"
         android:textStyle="bold" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/pb"
+        style="@style/ProgressBarStyle"
+        android:padding="@dimen/offset_4"
+        android:layout_marginTop="@dimen/offset_64"
+        android:scaleType="centerInside"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/anim_flight" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatBtnInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:contentDescription="@string/image"
         android:drawingCacheQuality="auto"
         android:fadeScrollbars="true"
         android:focusable="true"
         android:visibility="gone"
         app:elevation="@dimen/elevation_4"
-        app:fabSize="auto"
         app:fabCustomSize="@dimen/size_all_countries_fab_custom"
+        app:fabSize="auto"
         app:layout_anchor="@id/rvAllCountries"
         app:layout_anchorGravity="bottom|end"
         app:maxImageSize="@dimen/size_all_countries_fab_max_image"
         app:srcCompat="@drawable/btn_info_ripple"
         app:useCompatPadding="true"
-        tool:visibility="visible"
-        android:contentDescription="@string/image" />
+        tool:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

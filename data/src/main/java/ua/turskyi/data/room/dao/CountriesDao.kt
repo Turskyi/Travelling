@@ -2,6 +2,7 @@ package ua.turskyi.data.room.dao
 
 import androidx.room.*
 import ua.turskyi.data.entities.room.CityEntity
+import ua.turskyi.data.entities.room.CityEntity.Companion.COLUMN_PARENT_ID
 import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
 import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.entities.room.CountryEntity.Companion.COLUMN_ID
@@ -43,6 +44,9 @@ abstract class CountriesDao {
 
     @Delete
     abstract fun delete(city: CityEntity)
+
+    @Query("DELETE FROM $TABLE_CITIES WHERE $COLUMN_PARENT_ID = :parentId")
+    abstract suspend fun removeCitiesByCountry(parentId: Int)
 
     @Query("UPDATE $TABLE_COUNTRIES SET $COLUMN_SELFIE = :selfie WHERE $COLUMN_ID = :id")
     abstract suspend fun updateSelfie(id: Int, selfie: String)

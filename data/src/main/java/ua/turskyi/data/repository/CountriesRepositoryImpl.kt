@@ -67,6 +67,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             try {
                 val countryLocal = country.mapModelToEntity()
                 countryLocal.visited = false
+                countriesDbSource.removeCitiesByCountry(country.id)
                 countriesDbSource.insertCountry(countryLocal)
             } catch (e: java.lang.Exception) {
                 onError?.invoke(e)

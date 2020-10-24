@@ -1,7 +1,7 @@
 <resources>
     <!-- not translatable -->
     <string name="facebook_app_id" translatable="false">2312394202364807</string>
-    <string name="home_dialog_month_format" translatable="false">MMMM</string>
+    <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
 
     <string name="app_name">Travelling</string>
     <string name="delete_it">Delete %1$s ?</string>
@@ -65,7 +65,7 @@
     <string name="toast.no_app_installed">No app available to share pie chart</string>
     <string name="flag_chooser_title_complete_using">Complete action using</string>
     <string name="flag_message_did_not_choose">did not choose anything</string>
-    <string name="home_city_month">Month</string>
+    <string name="home_city_date">Date</string>
     <string name="home_city_did_not_save">did not save anything</string>
 
 </resources>

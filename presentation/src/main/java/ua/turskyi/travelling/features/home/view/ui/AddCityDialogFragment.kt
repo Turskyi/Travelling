@@ -74,7 +74,7 @@ class AddCityDialogFragment : DialogFragment() {
         val alertDialog = builder?.create()
 
         val buttonSave = dialogView.findViewById<Button>(R.id.buttonSave)
-        val buttonMonth = dialogView.findViewById<Button>(R.id.btnMonth)
+        val buttonDate = dialogView.findViewById<Button>(R.id.btnDate)
         val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
         etCity = dialogView.findViewById(R.id.letCity)
         etMonth = dialogView.findViewById(R.id.etMonth)
@@ -95,7 +95,7 @@ class AddCityDialogFragment : DialogFragment() {
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
-        initListeners(buttonSave, alertDialog, buttonGps, buttonMonth)
+        initListeners(buttonSave, alertDialog, buttonGps, buttonDate)
 
         return alertDialog!!
     }
@@ -104,7 +104,7 @@ class AddCityDialogFragment : DialogFragment() {
         buttonSave: Button,
         alertDialog: AlertDialog?,
         buttonGps: Button,
-        buttonMonth: Button
+        buttonDate: Button
     ) {
         buttonSave.setOnClickListener {
             if (etCity?.text.toString() != "") {
@@ -150,12 +150,12 @@ class AddCityDialogFragment : DialogFragment() {
             }
         }
 
-        buttonMonth.setOnClickListener {
-            val monthName = DateFormat.format(
-                getString(R.string.home_dialog_month_format),
+        buttonDate.setOnClickListener {
+            val monthYear = DateFormat.format(
+                getString(R.string.home_dialog_date_format),
                 Date()
             )
-            etMonth?.setText(monthName)
+            etMonth?.setText(monthYear)
         }
     }
 
