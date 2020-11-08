@@ -40,13 +40,22 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        initResultLauncher()
+        if (context is OnFlagFragmentListener) {
+            mListener = context
+        } else {
+            throw RuntimeException("$context must implement OnFlagFragmentListener")
+        }
+    }
+
+    private fun initResultLauncher() {
         photoPickerResultLauncher = registerForActivityResult(
             StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val photoChooserIntent: Intent? = result.data
                 val position = this.arguments?.getInt(POSITION)
-                ivEnlarged.visibility = VISIBLE
+                ivEnlargedFlag.visibility = VISIBLE
                 wvFlag.visibility = GONE
                 val selectedImageUri = photoChooserIntent?.data
                 if (selectedImageUri.toString().contains("com.android.providers.media")) {
@@ -95,11 +104,6 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
             } else {
                 splitties.toast.toast(getString(R.string.flag_message_did_not_choose))
             }
-        }
-        if (context is OnFlagFragmentListener) {
-            mListener = context
-        } else {
-            throw RuntimeException("$context must implement OnFlagFragmentListener")
         }
     }
 
@@ -152,7 +156,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
 
     private fun initListeners() {
         wvFlag.isLongClickable = true
-        ivEnlarged.setOnLongClickListener(addSelfieLongClickListener())
+        ivEnlargedFlag.setOnLongClickListener(addSelfieLongClickListener())
         wvFlag.setOnLongClickListener(addSelfieLongClickListener())
     }
 
@@ -165,7 +169,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                     showTheFlag(countries, position)
                 } else {
                     showSelfie(countries, position)
-                    ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
+                    ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
                 }
             }
         }
@@ -176,7 +180,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
             OnClickListener = OnClickListener {
         showTheFlag(countries, position)
         /* change clickListener */
-        ivEnlarged.setOnClickListener(showSelfieClickListener(countries, position))
+        ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
         wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
     }
 
@@ -204,7 +208,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                             /* perform click */
                             showSelfie(countries, position)
                             /* return first clickListener */
-                            ivEnlarged.setOnClickListener(
+                            ivEnlargedFlag.setOnClickListener(
                                 showFlagClickListener(
                                     countries,
                                     position
@@ -231,14 +235,14 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
             OnClickListener = OnClickListener {
         showSelfie(countries, position)
         /* return first clickListener */
-        ivEnlarged.setOnClickListener(showFlagClickListener(countries, position))
+        ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
     }
 
     private fun showSelfie(
         countries: List<Country>,
         position: Int?
     ) {
-        ivEnlarged.visibility = VISIBLE
+        ivEnlargedFlag.visibility = VISIBLE
         wvFlag.visibility = GONE
         position?.let {
             val uri: Uri = Uri.parse(countries[position].selfie)
@@ -251,7 +255,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                         .error(R.drawable.ic_broken_image)
                         .priority(Priority.IMMEDIATE)
                 )
-                .into(ivEnlarged)
+                .into(ivEnlargedFlag)
         }
     }
 
@@ -270,7 +274,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                 .withListener(object : GlideToVectorYouListener {
                     override fun onLoadFailed() = showFlagInWebView()
                     private fun showFlagInWebView() {
-                        ivEnlarged.visibility = GONE
+                        ivEnlargedFlag.visibility = GONE
                         wvFlag.webViewClient = WebViewClient()
                         wvFlag.visibility = VISIBLE
                         wvFlag.setBackgroundColor(TRANSPARENT)
@@ -283,14 +287,14 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
                     }
 
                     override fun onResourceReady() {
-                        ivEnlarged?.let { ivFlag ->
+                        ivEnlargedFlag?.let { ivFlag ->
                             ivFlag.visibility = VISIBLE
                             wvFlag.visibility = GONE
                         }
                     }
                 })
                 .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
-                .load(uri, ivEnlarged)
+                .load(uri, ivEnlargedFlag)
         }
     }
 }

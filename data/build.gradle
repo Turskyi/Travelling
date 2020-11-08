@@ -36,12 +36,12 @@ dependencies {
     implementation project(':domain')
 
     /* network */
-    api "com.squareup.okhttp3:okhttp:4.3.1"
+    api 'com.squareup.okhttp3:okhttp:4.9.0'
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api 'com.google.code.gson:gson:2.8.6'
-    api 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+    api 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     api "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    api 'com.auth0:java-jwt:3.8.2'
+    api 'com.auth0:java-jwt:3.11.0'
 
     /* room */
     api "androidx.room:room-runtime:$room_version"

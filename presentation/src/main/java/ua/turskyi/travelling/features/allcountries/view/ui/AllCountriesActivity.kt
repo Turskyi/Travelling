@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_all_countries.*
@@ -87,10 +86,10 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
     private fun initObservers() {
         val observer = EmptyListObserver(rvAllCountries, tvNoResults)
         adapter.registerAdapterDataObserver(observer)
-        viewModel.notVisitedCountriesNumLiveData.observe(this, Observer { notVisitedNum ->
+        viewModel.notVisitedCountriesNumLiveData.observe(this, { notVisitedNum ->
             updateTitle(notVisitedNum)
         })
-        viewModel.visibilityLoader.observe(this, Observer { currentVisibility ->
+        viewModel.visibilityLoader.observe(this, { currentVisibility ->
             pb.visibility = currentVisibility
         })
     }

@@ -122,8 +122,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:17.1.0"
 
     /* Facebook SDK */
-    implementation 'com.facebook.android:facebook-share:5.1.1'
-    implementation 'com.facebook.android:facebook-applinks:5.1.1'
+    implementation 'com.facebook.android:facebook-share:8.1.0'
+    implementation 'com.facebook.android:facebook-applinks:8.1.0'
 
     def lottieVersion = "3.4.4"
     implementation "com.airbnb.android:lottie:$lottieVersion"
@@ -132,4 +132,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
