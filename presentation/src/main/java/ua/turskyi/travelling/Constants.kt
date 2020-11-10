@@ -14,4 +14,6 @@ object Constants {
     const val ACCESS_LOCATION = 10002
 
     const val GOOGLE_PLAY_ADDRESS = "https://play.google.com/store/apps/details?id=$APPLICATION_ID"
+
+    const val SKU_ID = "premium_upgrade"
 }

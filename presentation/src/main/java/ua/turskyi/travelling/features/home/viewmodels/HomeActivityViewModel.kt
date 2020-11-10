@@ -1,6 +1,8 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
+import ua.turskyi.travelling.common.prefs
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
@@ -34,7 +37,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
         get() = _navigateToAllCountries
 
     init {
-        _visibilityLoader.postValue(View.VISIBLE)
+        _visibilityLoader.postValue(VISIBLE)
         visitedCountries = _visitedCountries
         visitedCountriesWithCities = _visitedCountriesWithCities
     }
@@ -87,7 +90,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 }
                 _visitedCountriesWithCities.run { postValue(visitedCountries) }
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
-                _visibilityLoader.postValue(View.GONE)
+                _visibilityLoader.postValue(GONE)
             }, {
                 it.printStackTrace()
             })
@@ -106,5 +109,12 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
             interactor.removeCity(city.mapNodeToModel())
             initListOfCountries()
         }
+    }
+
+    fun syncDatabaseWithFireStore() {
+        _visibilityLoader.postValue(VISIBLE)
+//                TODO: sync database with firestore
+        prefs.isSynchronized = true
+        _visibilityLoader.postValue(GONE)
     }
 }

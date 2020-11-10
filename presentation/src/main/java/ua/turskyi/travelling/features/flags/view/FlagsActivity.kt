@@ -40,7 +40,7 @@ class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentL
     }
 
     private fun openInfoDialog() {
-        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_flags))
+        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_flags),false)
         infoDialog.show(supportFragmentManager, "info dialog")
     }
 

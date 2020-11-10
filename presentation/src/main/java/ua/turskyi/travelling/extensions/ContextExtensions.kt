@@ -4,7 +4,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
 import kotlinx.android.synthetic.main.activity_home.*
 import splitties.toast.toast
