@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "621347185100-o31fb0uco8kro7rsrelgbbu7m77f9ii1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ua.turskyi.travelling",
+            "certificate_hash": "7f9df6cd5e4ad8e08a47cc9d458775311be89c16"
+          }
+        },
+        {
           "client_id": "621347185100-vprimsv4hmuef0fa1pgdhqtaellh6f4p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
