@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.TextUtils
@@ -12,14 +11,11 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.billingclient.api.*
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import splitties.activities.start
@@ -42,6 +38,8 @@ import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.PermissionHandler
+import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -51,11 +49,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private lateinit var binding: ActivityHomeBinding
     private lateinit var billingClient: BillingClient
     private var backPressedTiming: Long = 0
-    private var mSnackBar: Snackbar? = null
     private var mLastClickTime: Long = 0
     private val homeViewModel by inject<HomeActivityViewModel>()
     private val homeAdapter by inject<HomeAdapter>()
-    private var isPermissionGranted = false
     private val mSkuDetailsMap: MutableMap<String, SkuDetails> = HashMap()
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -64,7 +60,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        checkPermission()
+        PermissionHandler.checkPermission(this)
         initBilling()
         initListeners()
     }
@@ -78,10 +74,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /*-----------*/
         launch { homeViewModel.initListOfCountries() }
 
-        if (isPermissionGranted) {
-            /* nice and smooth animation of a chart */
-            binding.circlePieChart.animateY(1500)
-        }
+        binding.circlePieChart.animatePieChart()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -101,11 +94,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             super.onBackPressed()
             return
         } else {
-            Snackbar.make(
-                binding.rvVisitedCountries,
-                resources.getString(R.string.tap_back_button_in_order_to_exit),
-                Snackbar.LENGTH_SHORT
-            ).show()
+            binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
         }
         backPressedTiming = System.currentTimeMillis()
     }
@@ -180,25 +169,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         billingFlowParams?.let { billingClient.launchBillingFlow(this, it) }
     }
 
-    private fun checkPermission() {
-        val locationPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        val externalStoragePermission =
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        if (locationPermission != PackageManager.PERMISSION_GRANTED && externalStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            requestPermission()
-        } else {
-            isPermissionGranted = true
-            initView()
-            initObservers()
-        }
-    }
-
     private fun requestPermission() = ActivityCompat.requestPermissions(
         this,
         listOf(
@@ -208,7 +178,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         ACCESS_LOCATION_AND_EXTERNAL_STORAGE
     )
 
-    private fun initView() {
+    fun initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.viewModel = this.homeViewModel
         binding.lifecycleOwner = this
@@ -242,7 +212,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             mLastClickTime = SystemClock.elapsedRealtime()
         }
         homeAdapter.onLongClickListener = { countryNode ->
-            showSnackBarWithCountry(countryNode.mapNodeToActual())
+            val country = countryNode.mapNodeToActual()
+
+            binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)){
+                action(R.string.yes){
+                    homeViewModel.removeFromVisited(country)
+                    longToast(getString(R.string.deleted, country.name))
+                }
+            }
         }
 
         homeAdapter.onCountryNameClickListener = { countryNode ->
@@ -251,7 +228,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             fragment.show(supportFragmentManager, null)
         }
         homeAdapter.onCityLongClickListener = { city ->
-            showSnackBarWithThis(city)
+           binding.root.showSnackWithAction(getString(R.string.delete_it, city.name)){
+               action(R.string.yes) {
+                   removeCityOnLongClick(city)
+                   longToast(getString(R.string.deleted, city.name))
+               }
+           }
         }
     }
 
@@ -263,7 +245,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
-    private fun initObservers() {
+    fun initObservers() {
         /*  here could be a more efficient way to handle a click to open activity,
         * but it is made on purpose of demonstration databinding */
         homeViewModel.navigateToAllCountries.observe(this,
@@ -393,40 +375,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun removeCityOnLongClick(city: City) = homeViewModel.removeCity(city)
-    private fun showSnackBarWithThis(city: City) {
-        mSnackBar = Snackbar.make(
-            binding.rvVisitedCountries,
-            getString(R.string.delete_it, city.name),
-            Snackbar.LENGTH_LONG
-        ).setActionTextColor(Color.WHITE)
-            .setAction(getString(R.string.yes)) {
-                removeCityOnLongClick(city)
-                longToast(getString(R.string.deleted, city.name))
-            }
-        decorateSnackbar()
-    }
-
-    private fun showSnackBarWithCountry(country: Country) {
-        mSnackBar = Snackbar.make(
-            binding.rvVisitedCountries,
-            getString(R.string.delete_it, country.name),
-            Snackbar.LENGTH_LONG
-        ).setActionTextColor(Color.WHITE).setAction(getString(R.string.yes)) {
-            homeViewModel.removeFromVisited(country)
-            longToast(getString(R.string.deleted, country.name))
-        }
-        decorateSnackbar()
-    }
-
-    private fun decorateSnackbar() {
-        mSnackBar?.config(applicationContext)
-        mSnackBar?.show()
-
-        val snackView = mSnackBar?.view
-        val snackTextView =
-            snackView?.findViewById<TextView>(R.id.snackbar_text)
-        snackTextView?.setTextColor(Color.RED)
-    }
 
     private fun showFloatBtn(visitedCountries: List<Country>?) {
         if (visitedCountries.isNullOrEmpty()) {

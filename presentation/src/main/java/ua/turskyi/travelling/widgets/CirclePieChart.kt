@@ -17,6 +17,8 @@ import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetDialog
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
+import ua.turskyi.travelling.utils.PermissionHandler
+import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 
 /**
  * This custom view is a convenient way to incapsulate all logic related to pie chart to a separate
@@ -26,6 +28,7 @@ class CirclePieChart @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : com.github.mikephil.charting.charts.PieChart(context, attrs, defStyleAttr),
     OnChartGestureListener {
+
     private var isCenterPieChartEnabled = false
 
     init {
@@ -154,5 +157,12 @@ class CirclePieChart @JvmOverloads constructor(
         data = pieData
         /* updates data in pieChart every time */
         invalidate()
+    }
+
+    fun animatePieChart(){
+        if (isPermissionGranted) {
+            /* nice and smooth animation of a chart */
+            animateY(1500)
+        }
     }
 }
