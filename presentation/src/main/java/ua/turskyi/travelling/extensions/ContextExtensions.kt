@@ -2,16 +2,19 @@ package ua.turskyi.travelling.extensions
 
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.widget.Toast
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import splitties.toast.toast
-import ua.turskyi.travelling.Constants
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.common.Constants
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +31,47 @@ fun Context.isFacebookInstalled(): Boolean {
 
 fun Context.spToPix(@DimenRes sizeRes: Int) =
     resources.getDimension(sizeRes) / resources.displayMetrics.density
+
+fun Context.getHomeActivity(): HomeActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is HomeActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.getAppCompatActivity(): AppCompatActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is AppCompatActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.getFragmentActivity(): FragmentActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is FragmentActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.convertPictureToSpannableString(imgRes: Int): SpannableString? {
+    val imageSpan = ImageSpan(this, imgRes)
+    val spannableString = SpannableString(" ")
+    spannableString.setSpan(imageSpan, " ".length - 1, " ".length, 0)
+    return spannableString
+}
+
 
 fun Context.shareImageViaChooser() {
     val fileName =

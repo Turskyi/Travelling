@@ -1,6 +1,5 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
@@ -17,9 +16,9 @@ import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.isOnline
 
-class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel(){
+class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
-    var notVisitedCount = 0
+    var notVisitedCount: Float = 0F
     var citiesCount = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
@@ -47,7 +46,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
             viewModelScope.launch {
                 interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
                     getVisitedCountriesFromDB()
-                    notVisitedCount = notVisitedCountriesNum
+                    notVisitedCount = notVisitedCountriesNum.toFloat()
                 }, {
                     getVisitedCountriesFromDB()
                     it.printStackTrace()

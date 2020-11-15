@@ -24,7 +24,7 @@ import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import splitties.toast.longToast
 import splitties.toast.toast
-import ua.turskyi.travelling.Constants.ACCESS_LOCATION
+import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City

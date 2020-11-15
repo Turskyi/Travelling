@@ -1,4 +1,4 @@
-package ua.turskyi.travelling
+package ua.turskyi.travelling.common
 
 import android.content.Context
 import android.content.SharedPreferences

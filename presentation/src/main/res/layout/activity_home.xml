@@ -44,7 +44,7 @@
                 app:toolbarId="@+id/toolbar">
 
                 <FrameLayout
-                    android:id="@+id/flPieChart"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:foreground="?attr/selectableItemBackground"
@@ -53,12 +53,12 @@
                     android:paddingBottom="@dimen/offset_40"
                     app:layout_collapseMode="pin">
 
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/pieChart"
+                    <ua.turskyi.travelling.widgets.CirclePieChart
+                        android:id="@+id/circle_pie_chart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:elevation="@dimen/elevation_4"
-                        android:soundEffectsEnabled="true" />
+                        android:soundEffectsEnabled="true"/>
 
                 </FrameLayout>
 
@@ -101,7 +101,7 @@
             android:visibility="gone"
             app:elevation="@dimen/elevation_4"
             app:fabSize="auto"
-            app:layout_anchor="@id/pieChart"
+            app:layout_anchor="@id/circle_pie_chart"
             app:layout_anchorGravity="bottom|end"
             app:layout_behavior=".widgets.FabScrollBehavior"
             app:maxImageSize="@dimen/size_max_float_btn"

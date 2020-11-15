@@ -74,6 +74,7 @@
     <string name="toast.no_facebook_app">You do not have Facebook app installed</string>
     <string name="toast.no_app_installed">No app available to share pie chart</string>
     <string name="toast_internet_connection_lost">Тhe app is offline.</string>
+    <string name="toast_connection_billing">Problems with connecting to google play.</string>
     <string name="toast_error_due_to_canceling_purchase">Cancelling the purchase</string>
     <string name="toast_error_unexpected">unexpected error occurred</string>
     <string name="toast_complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>

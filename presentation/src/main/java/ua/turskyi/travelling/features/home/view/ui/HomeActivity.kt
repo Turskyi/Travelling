@@ -5,14 +5,13 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.ImageSpan
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,22 +19,16 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.billingclient.api.*
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.listener.ChartTouchListener
-import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import splitties.activities.start
 import splitties.toast.longToast
 import splitties.toast.toast
-import ua.turskyi.travelling.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
-import ua.turskyi.travelling.Constants.SKU_ID
-import ua.turskyi.travelling.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
+import ua.turskyi.travelling.common.Constants.SKU_ID
+import ua.turskyi.travelling.common.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.common.prefs
 import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
@@ -49,12 +42,11 @@ import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
-import ua.turskyi.travelling.utils.IntFormatter
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
-    OnChartGestureListener, PurchasesUpdatedListener {
+    PurchasesUpdatedListener {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var billingClient: BillingClient
@@ -64,63 +56,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     private val homeViewModel by inject<HomeActivityViewModel>()
     private val homeAdapter by inject<HomeAdapter>()
     private var isPermissionGranted = false
-    private var isCenterEnabled = false
     private val mSkuDetailsMap: MutableMap<String, SkuDetails> = HashMap()
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
-
-    override fun onChartGestureEnd(
-        me: MotionEvent?,
-        lastPerformedGesture: ChartTouchListener.ChartGesture?
-    ) {
-    }
-
-    override fun onChartFling(
-        me1: MotionEvent?,
-        me2: MotionEvent?,
-        velocityX: Float,
-        velocityY: Float
-    ) {
-    }
-
-    override fun onChartGestureStart(
-        me: MotionEvent?,
-        lastPerformedGesture: ChartTouchListener.ChartGesture?
-    ) {
-    }
-
-    override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {}
-    override fun onChartLongPressed(me: MotionEvent?) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        val bottomSheet = ShareListBottomSheetDialog()
-        bottomSheet.show(supportFragmentManager, null)
-    }
-
-    override fun onChartDoubleTapped(me: MotionEvent?) {}
-    override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {}
-    override fun onChartSingleTapped(me: MotionEvent?) {
-        when (binding.pieChart.isDrawHoleEnabled) {
-            false -> {
-                binding.pieChart.isDrawHoleEnabled = true
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    binding.pieChart.centerText = setCenterPictureViaSpannableString()
-                    isCenterEnabled = true
-                }
-                showTitleWithOnlyCountries()
-            }
-            true -> {
-                binding.pieChart.centerText = ""
-                binding.pieChart.isDrawHoleEnabled = false
-                isCenterEnabled = false
-                if (homeViewModel.citiesCount > 0) {
-                    showTitleWithCitiesAndCountries()
-                } else {
-                    showTitleWithOnlyCountries()
-                }
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
@@ -132,12 +71,16 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     override fun onResume() {
         super.onResume()
+        /* makes info icon visible */
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        /* makes sync icon visible */
+        binding.toolbar.inflateMenu(R.menu.menu_sync)
+        /*-----------*/
         launch { homeViewModel.initListOfCountries() }
 
         if (isPermissionGranted) {
             /* nice and smooth animation of a chart */
-            binding.pieChart.animateY(1500)
+            binding.circlePieChart.animateY(1500)
         }
     }
 
@@ -177,7 +120,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 if (prefs.isUpgraded) {
                     homeViewModel.syncDatabaseWithFireStore()
                 } else {
-                    val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_billing), true)
+                    val infoDialog =
+                        InfoDialog.newInstance(getString(R.string.txt_info_billing), true)
                     infoDialog.show(supportFragmentManager, "billing dialog")
                 }
                 true
@@ -227,7 +171,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
-    @Suppress("SameParameterValue")
     fun launchBilling(skuId: String) {
         val billingFlowParams = mSkuDetailsMap[skuId]?.let {
             BillingFlowParams.newBuilder()
@@ -273,9 +216,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         /* set drawable icon */
         supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
 
-        /* remove default text "no chart data available" */
-        binding.pieChart.setNoDataText(null)
-
         val linearLayoutManager = LinearLayoutManager(this)
         binding.rvVisitedCountries.apply {
             this.adapter = homeAdapter
@@ -315,7 +255,17 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         }
     }
 
+    fun setTitle() {
+        if (homeViewModel.citiesCount > 0) {
+            showTitleWithCitiesAndCountries()
+        } else {
+            showTitleWithOnlyCountries()
+        }
+    }
+
     private fun initObservers() {
+        /*  here could be a more efficient way to handle a click to open activity,
+        * but it is made on purpose of demonstration databinding */
         homeViewModel.navigateToAllCountries.observe(this,
             { shouldNavigate ->
                 if (shouldNavigate == true) {
@@ -330,8 +280,10 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         homeViewModel.visitedCountries.observe(
             this,
             { visitedCountries ->
-                initPieChart()
-                createPieChartWith(visitedCountries)
+                binding.circlePieChart.apply {
+                    initPieChart()
+                    createPieChartWith(visitedCountries, homeViewModel.notVisitedCount)
+                }
                 showFloatBtn(visitedCountries)
             })
         homeViewModel.visibilityLoader.observe(this, { currentVisibility ->
@@ -393,7 +345,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                         }
                     }
                 } else {
-                    toast(R.string.toast_internet_connection_lost)
+                    toast(R.string.toast_connection_billing)
                 }
             }
 
@@ -413,9 +365,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun setUpgradedVersion() {
-       if (!prefs.isSynchronized){
-           homeViewModel.syncDatabaseWithFireStore()
-       }
+        if (!prefs.isSynchronized) {
+            homeViewModel.syncDatabaseWithFireStore()
+        }
         prefs.isUpgraded = true
     }
 
@@ -484,67 +436,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             binding.floatBtnLarge.hide()
             binding.floatBtnSmall.show()
         }
-    }
-
-    private fun initPieChart() {
-        binding.pieChart.description.isEnabled = false
-
-        /* work around instead of click listener */
-        binding.pieChart.onChartGestureListener = this
-
-        if (!isCenterEnabled) {
-            /* remove or enable hole inside */
-            binding.pieChart.isDrawHoleEnabled = false
-        }
-
-        /* removes color squares */
-        binding.pieChart.legend.isEnabled = false
-
-        /* rotate the pie chart to 45 degrees */
-        binding.pieChart.rotationAngle = -10f
-
-        binding.pieChart.setBackgroundResource(R.drawable.gradient_list)
-        val animationDrawable: AnimationDrawable =
-            binding.pieChart.background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(2000)
-        animationDrawable.setExitFadeDuration(4000)
-        animationDrawable.start()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            binding.pieChart.holeRadius = 80F
-        } else {
-            binding.pieChart.holeRadius = 20F
-            binding.pieChart.setTransparentCircleColor(Color.BLACK)
-            binding.pieChart.transparentCircleRadius = 24F
-            binding.pieChart.setHoleColor(Color.BLACK)
-        }
-    }
-
-    private fun createPieChartWith(visitedCountries: List<Country>) {
-        val entries: MutableList<PieEntry> = mutableListOf()
-        entries.add(PieEntry(visitedCountries.size.toFloat()))
-        entries.add(PieEntry(homeViewModel.notVisitedCount.toFloat()))
-        val pieChartColors: MutableList<Int> = mutableListOf()
-        pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorAccent))
-        pieChartColors.add(ContextCompat.getColor(applicationContext, R.color.colorBrightBlue))
-
-        val dataSet = PieDataSet(entries, null)
-        dataSet.colors = pieChartColors
-
-        val data = PieData(dataSet)
-        data.setValueFormatter(IntFormatter())
-        data.setValueTextSize(applicationContext.spToPix(R.dimen.caption))
-        data.setValueTextColor(Color.WHITE)
-
-        binding.pieChart.data = data
-        /* updates data in pieChart every time */
-        binding.pieChart.invalidate()
-    }
-
-    private fun setCenterPictureViaSpannableString(): SpannableString? {
-        val imageSpan = ImageSpan(this, R.drawable.pic_pie_chart_center)
-        val spannableString = SpannableString(" ")
-        spannableString.setSpan(imageSpan, " ".length - 1, " ".length, 0)
-        return spannableString
     }
 
     private fun updateAdapterWith(visitedCountries: List<VisitedCountry>) {
@@ -624,12 +515,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         })
     }
 
-    private fun showTitleWithOnlyCountries() {
-        homeViewModel.visitedCountriesWithCities.observe(this, {
+    fun showTitleWithOnlyCountries() {
+        homeViewModel.visitedCountriesWithCities.observe(this, { countryList ->
             binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
-                it.size,
-                it.size
+                countryList.size,
+                countryList.size
             )
         })
     }

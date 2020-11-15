@@ -136,6 +136,11 @@ dependencies {
 
     /* Firebase SDK for Google Analytics */
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics:18.0.0'
+
+    /* Declare the dependency for the Cloud Firestore library */
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-firestore:22.0.0'
 
     /* Firebase for authentication */
     implementation 'com.google.firebase:firebase-auth'

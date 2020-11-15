@@ -1,4 +1,4 @@
-package ua.turskyi.travelling
+package ua.turskyi.travelling.common
 
 import ua.turskyi.travelling.BuildConfig.APPLICATION_ID
 
