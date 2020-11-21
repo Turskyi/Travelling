@@ -32,7 +32,7 @@ object PermissionHandler {
         }
     }
 
-    private fun requestPermission(activity: AppCompatActivity) = ActivityCompat.requestPermissions(
+    fun requestPermission(activity: AppCompatActivity) = ActivityCompat.requestPermissions(
         activity,
         listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,

@@ -1,58 +1,54 @@
 package ua.turskyi.travelling.features.home.view.ui
 
-import android.Manifest
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.TextUtils
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.billingclient.api.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import splitties.activities.start
 import splitties.toast.longToast
-import splitties.toast.toast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
-import ua.turskyi.travelling.common.Constants.SKU_ID
 import ua.turskyi.travelling.common.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.common.prefs
-import ua.turskyi.travelling.common.view.InfoDialog
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
-import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.BillingManager
 import ua.turskyi.travelling.utils.PermissionHandler
 import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
-import java.util.*
+import ua.turskyi.travelling.utils.PermissionHandler.requestPermission
 import kotlin.coroutines.CoroutineContext
 
-class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
-    PurchasesUpdatedListener {
+class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener {
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var billingClient: BillingClient
+
+    private lateinit var billingManager: BillingManager
     private var backPressedTiming: Long = 0
     private var mLastClickTime: Long = 0
     private val homeViewModel by inject<HomeActivityViewModel>()
     private val homeAdapter by inject<HomeAdapter>()
-    private val mSkuDetailsMap: MutableMap<String, SkuDetails> = HashMap()
+
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -60,8 +56,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        PermissionHandler.checkPermission(this)
-        initBilling()
+        PermissionHandler.checkPermission(this@HomeActivity)
+        billingManager = BillingManager(this@HomeActivity)
         initListeners()
     }
 
@@ -69,9 +65,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         super.onResume()
         /* makes info icon visible */
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        /* makes sync icon visible */
-        binding.toolbar.inflateMenu(R.menu.menu_sync)
-        /*-----------*/
+
         launch { homeViewModel.initListOfCountries() }
 
         binding.circlePieChart.animatePieChart()
@@ -79,6 +73,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (!prefs.isSynchronized) {
+            /* makes sync icon visible */
             val inflater = menuInflater
             inflater.inflate(R.menu.menu_sync, menu)
         }
@@ -102,16 +97,14 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                openInfoDialog()
+                openInfoDialog(R.string.txt_info_home)
                 true
             }
             R.id.action_sync -> {
                 if (prefs.isUpgraded) {
                     homeViewModel.syncDatabaseWithFireStore()
                 } else {
-                    val infoDialog =
-                        InfoDialog.newInstance(getString(R.string.txt_info_billing), true)
-                    infoDialog.show(supportFragmentManager, "billing dialog")
+                    openInfoDialog(R.string.txt_info_billing, true)
                 }
                 true
             }
@@ -122,22 +115,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
-    }
-
-    override fun onPurchasesUpdated(
-        billingResult: BillingResult,
-        purchases: MutableList<Purchase>?
-    ) {
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            /*     we will get here after the purchase is made */
-            for (purchase in purchases) {
-                handlePurchase(purchase)
-            }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            toast(R.string.toast_error_due_to_canceling_purchase)
-        } else {
-            toast(R.string.toast_error_unexpected)
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -154,29 +131,11 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                     initView()
                     initObservers()
                 } else {
-                    requestPermission()
+                    requestPermission(this)
                 }
             }
         }
     }
-
-    fun launchBilling(skuId: String) {
-        val billingFlowParams = mSkuDetailsMap[skuId]?.let {
-            BillingFlowParams.newBuilder()
-                .setSkuDetails(it)
-                .build()
-        }
-        billingFlowParams?.let { billingClient.launchBillingFlow(this, it) }
-    }
-
-    private fun requestPermission() = ActivityCompat.requestPermissions(
-        this,
-        listOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).toTypedArray(),
-        ACCESS_LOCATION_AND_EXTERNAL_STORAGE
-    )
 
     fun initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
@@ -188,52 +147,57 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
         val linearLayoutManager = LinearLayoutManager(this)
         binding.rvVisitedCountries.apply {
-            this.adapter = homeAdapter
-            this.layoutManager = linearLayoutManager
-            this.addItemDecoration(
+            adapter = homeAdapter
+            layoutManager = linearLayoutManager
+            addItemDecoration(
                 SectionAverageGapItemDecoration(
-                    10, 10, 20, 15
+                    resources.getDimensionPixelOffset(R.dimen.offset_10),
+                    resources.getDimensionPixelOffset(R.dimen.offset_10),
+                    resources.getDimensionPixelOffset(R.dimen.offset_20),
+                    resources.getDimensionPixelOffset(R.dimen.offset_16)
                 )
             )
         }
         initGravityForTitle()
     }
 
-    private fun initListeners() {
-        homeAdapter.onFlagClickListener = {
-            /* mis-clicking prevention, using threshold of 1000 ms */
-            if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
-                val intent = Intent(this@HomeActivity, FlagsActivity::class.java)
-                val bundle = Bundle()
-                bundle.putInt(POSITION, homeAdapter.getItemPosition(it))
-                intent.putExtras(bundle)
-                startActivity(intent)
-            }
-            mLastClickTime = SystemClock.elapsedRealtime()
-        }
-        homeAdapter.onLongClickListener = { countryNode ->
-            val country = countryNode.mapNodeToActual()
+    fun launchBilling() = billingManager.launchBilling()
 
-            binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)){
-                action(R.string.yes){
-                    homeViewModel.removeFromVisited(country)
-                    longToast(getString(R.string.deleted, country.name))
+    private fun initListeners() {
+        homeAdapter.apply {
+            onFlagClickListener = { country ->
+                /* mis-clicking prevention, using threshold of 1000 ms */
+                if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
+                    openActivity(FlagsActivity::class.java) {
+                        putInt(EXTRA_POSITION, getItemPosition(country))
+                    }
+                }
+                mLastClickTime = SystemClock.elapsedRealtime()
+            }
+            onLongClickListener = { countryNode ->
+                val country = countryNode.mapNodeToActual()
+
+                binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)) {
+                    action(R.string.yes) {
+                        homeViewModel.removeFromVisited(country)
+                        longToast(getString(R.string.deleted, country.name))
+                    }
                 }
             }
-        }
 
-        homeAdapter.onCountryNameClickListener = { countryNode ->
-            /* Creating the new Fragment with the Country id passed in. */
-            val fragment = AddCityDialogFragment.newInstance(countryNode.id)
-            fragment.show(supportFragmentManager, null)
-        }
-        homeAdapter.onCityLongClickListener = { city ->
-           binding.root.showSnackWithAction(getString(R.string.delete_it, city.name)){
-               action(R.string.yes) {
-                   removeCityOnLongClick(city)
-                   longToast(getString(R.string.deleted, city.name))
-               }
-           }
+            onCountryNameClickListener = { countryNode ->
+                /* Creating the new Fragment with the Country id passed in. */
+                val fragment = AddCityDialogFragment.newInstance(countryNode.id)
+                fragment.show(supportFragmentManager, null)
+            }
+            onCityLongClickListener = { city ->
+                binding.root.showSnackWithAction(getString(R.string.delete_it, city.name)) {
+                    action(R.string.yes) {
+                        removeCityOnLongClick(city)
+                        longToast(getString(R.string.deleted, city.name))
+                    }
+                }
+            }
         }
     }
 
@@ -273,102 +237,12 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         })
     }
 
-    private fun handlePurchase(purchase: Purchase) {
-        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            /*  Grant the item to the user */
-            setUpgradedVersion()
-            /* acknowledge the purchase */
-            if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken)
-                launch {
-                    withContext(Dispatchers.IO) {
-                        val acknowledgePurchaseResponseListener =
-                            AcknowledgePurchaseResponseListener { toast(R.string.toast_purchase_acknowledged) }
-                        billingClient.acknowledgePurchase(
-                            acknowledgePurchaseParams.build(),
-                            acknowledgePurchaseResponseListener
-                        )
-                    }
-                }
-            }
-        } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-            /*      Here we can confirm to the user that they've started the pending
-                  purchase, and to complete it, they should follow instructions that
-                  are given to them. You can also choose to remind the user in the
-                  future to complete the purchase if you detect that it is still
-                  pending. */
-            toastLong(R.string.toast_complete_purchase)
-        }
-    }
-
-    private fun initBilling() {
-        billingClient =
-            BillingClient.newBuilder(this).enablePendingPurchases().setListener(this)
-                .build()
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    /* The BillingClient is ready. Query purchases here. */
-                    /* here we can request information about purchases */
-
-                    /* Sku request */
-                    querySkuDetails()
-
-                    /* purchase request */
-                    val purchasesList = queryPurchases()
-                    /* if the product has already been purchased, provide it to the user */
-                    purchasesList?.size?.let {
-                        for (i in 0 until it) {
-                            val purchaseId = purchasesList[i]?.sku
-                            if (TextUtils.equals(SKU_ID, purchaseId)) {
-                                setUpgradedVersion()
-                            }
-                        }
-                    }
-                } else {
-                    toast(R.string.toast_connection_billing)
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                /* we get here if something goes wrong */
-                /*   Try to restart the connection on the next request to
-                    Google Play by calling the startConnection() method.*/
-                toast(R.string.toast_internet_connection_lost)
-            }
-
-            private fun queryPurchases(): List<Purchase?>? {
-                val purchasesResult: Purchase.PurchasesResult =
-                    billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-                return purchasesResult.purchasesList
-            }
-        })
-    }
-
-    private fun setUpgradedVersion() {
+    fun setUpgradedVersion() {
         if (!prefs.isSynchronized) {
             homeViewModel.syncDatabaseWithFireStore()
         }
         prefs.isUpgraded = true
     }
-
-    private fun querySkuDetails() {
-        val skuDetailsParamsBuilder = SkuDetailsParams.newBuilder()
-        val skuList: MutableList<String> = ArrayList()
-        /* here we are adding the product id from the Play Console */
-        skuList.add(SKU_ID)
-        skuDetailsParamsBuilder.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-        billingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build()) { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (skuDetails in purchases) {
-                    mSkuDetailsMap[skuDetails.sku] = skuDetails
-                }
-            }
-        }
-    }
-
-    private fun openInfoDialog() = openInfoDialog(getString(R.string.txt_info_home))
 
     private fun initGravityForTitle() {
         if (getScreenWidth() < 1082) binding.toolbarLayout.expandedTitleGravity = Gravity.BOTTOM
@@ -432,8 +306,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     private fun showTitleWithCitiesAndCountries() {
-        homeViewModel.visitedCountriesWithCities.observe(this, {
-            if (homeViewModel.citiesCount > it.size) {
+        homeViewModel.visitedCountriesWithCities.observe(this, { countries ->
+            if (homeViewModel.citiesCount > countries.size) {
                 binding.toolbarLayout.title = "${
                     resources.getQuantityString(
                         R.plurals.numberOfCitiesVisited,
@@ -442,21 +316,21 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                     )
                 } ${
                     resources.getQuantityString(
-                        R.plurals.numberOfCountriesOfCitiesVisited, it.size,
-                        it.size
+                        R.plurals.numberOfCountriesOfCitiesVisited, countries.size,
+                        countries.size
                     )
                 }"
             } else {
                 binding.toolbarLayout.title = "${
                     resources.getQuantityString(
                         R.plurals.numberOfCitiesVisited,
-                        it.size,
-                        it.size
+                        countries.size,
+                        countries.size
                     )
                 } ${
                     resources.getQuantityString(
-                        R.plurals.numberOfCountriesOfCitiesVisited, it.size,
-                        it.size
+                        R.plurals.numberOfCountriesOfCitiesVisited, countries.size,
+                        countries.size
                     )
                 }"
             }

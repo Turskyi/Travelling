@@ -26,7 +26,7 @@ import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.extensions.observeOnce
 import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
-import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.POSITION
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
 import ua.turskyi.travelling.models.Country
 
@@ -54,7 +54,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val photoChooserIntent: Intent? = result.data
-                val position = this.arguments?.getInt(POSITION)
+                val position = this.arguments?.getInt(EXTRA_POSITION)
                 ivEnlargedFlag.visibility = VISIBLE
                 wvFlag.visibility = GONE
                 val selectedImageUri = photoChooserIntent?.data
@@ -162,7 +162,7 @@ class FlagFragment : Fragment(R.layout.fragment_flag) {
 
     private fun initObservers() {
         val visitedCountriesObserver = Observer<List<Country>> { countries ->
-            val position = this.arguments?.getInt(POSITION)
+            val position = this.arguments?.getInt(EXTRA_POSITION)
             position?.let {
                 mListener?.onChangeToolbarTitle(countries[position].name)
                 if (countries[position].selfie.isNullOrEmpty()) {

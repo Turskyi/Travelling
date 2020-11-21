@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:contentDescription="@string/image"
+            android:contentDescription="@string/content_description.image"
             android:gravity="top"
             android:src="@drawable/ic_btn_facebook" />
 
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:contentDescription="@string/image"
+            android:contentDescription="@string/content_description.image"
             android:paddingStart="@dimen/offset_40"
             android:paddingEnd="0dp"
             android:src="@drawable/ic_use_other" />

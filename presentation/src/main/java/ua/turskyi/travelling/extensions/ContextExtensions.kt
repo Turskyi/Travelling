@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import androidx.annotation.DimenRes
@@ -104,6 +105,12 @@ fun Context.shareImageViaChooser() {
             )
         )
     } catch (e: ActivityNotFoundException) {
-        toast(getString(R.string.toast_no_app_installed))
+        toast(R.string.toast_no_app_installed)
     }
+}
+
+fun <T> Context.openActivity(destination: Class<T>, extras: Bundle.() -> Unit = {}) {
+    val intent = Intent(this, destination)
+    intent.putExtras(Bundle().apply(extras))
+    startActivity(intent)
 }

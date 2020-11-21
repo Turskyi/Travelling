@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/icon_search"
+                    android:contentDescription="@string/content_description.icon_search"
                     android:padding="@dimen/offset8"
                     android:src="@drawable/ic_search" />
 
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="country"
                     android:background="@android:color/transparent"
-                    android:hint="@string/search_country"
+                    android:hint="@string/hint.search_country"
                     android:inputType="textCapSentences"
                     android:labelFor="@+id/ibSearch"
                     android:maxLength="100"
@@ -111,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:contentDescription="@string/image"
+        android:contentDescription="@string/content_description.image"
         android:drawingCacheQuality="auto"
         android:fadeScrollbars="true"
         android:focusable="true"

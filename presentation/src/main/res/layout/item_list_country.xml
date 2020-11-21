@@ -11,7 +11,7 @@
         style="@style/ImageViewStyle"
         tool:visibility="gone"
         tool:src="@android:drawable/ic_menu_gallery"
-        android:contentDescription="@string/flag" />
+        android:contentDescription="@string/content_description.flag" />
 
 <!--    WebView is used in case of error while downloading image source from the internet. -->
     <ua.turskyi.travelling.widgets.ClickableWebView
@@ -21,12 +21,12 @@
         android:visibility="gone"
         tool:visibility="visible"
         tool:drawableStart="@android:drawable/ic_menu_gallery"
-        android:contentDescription="@string/flag" />
+        android:contentDescription="@string/content_description.flag" />
 
     <TextView
         android:id="@+id/tvCountry"
         style="@style/TextViewStyle"
-        tool:text="@string/visitedCountry" />
+        tool:text="visited country" />
 
     <ImageView
         android:id="@+id/ivMore"
@@ -38,6 +38,6 @@
         android:visibility="gone"
         tool:visibility="visible"
         android:src="@drawable/ic_arrow_expandable_down"
-        android:contentDescription="@string/ic_item_arrow" />
+        android:contentDescription="@string/content_description.item_arrow" />
 
 </LinearLayout>

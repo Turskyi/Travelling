@@ -4,9 +4,8 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import ua.turskyi.travelling.common.Constants.SKU_ID
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.home.view.ui.HomeActivity
+import ua.turskyi.travelling.extensions.getHomeActivity
 
 class InfoDialog : AppCompatDialogFragment() {
     companion object {
@@ -29,7 +28,7 @@ class InfoDialog : AppCompatDialogFragment() {
         builder.setMessage(arguments?.getString(ARG_INFO))
             .setPositiveButton(getString(R.string.dialog_btn_ok)) { _, _ ->
                 if (arguments?.getBoolean(ARG_ACTION) == true) {
-                    (activity as HomeActivity).launchBilling(SKU_ID)
+                   context?.getHomeActivity()?.launchBilling()
                 }
             }
         return builder.create()

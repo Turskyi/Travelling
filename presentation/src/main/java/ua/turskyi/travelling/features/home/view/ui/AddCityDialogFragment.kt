@@ -193,7 +193,7 @@ class AddCityDialogFragment : DialogFragment() {
         if (!gpsEnabled) {
             toast(R.string.dialogue_turn_on_gps)
         } else if (!isOnline()) {
-            toast(R.string.dialog_turn_no_internet)
+            toast(R.string.dialog_no_internet)
         } else {
             addCityTo(editText)
         }

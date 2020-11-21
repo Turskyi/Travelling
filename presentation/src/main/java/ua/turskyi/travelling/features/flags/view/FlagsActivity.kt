@@ -15,7 +15,7 @@ import ua.turskyi.travelling.common.view.InfoDialog
 class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentListener {
 
     companion object{
-        const val POSITION = "position"
+        const val EXTRA_POSITION = "ua.turskyi.travelling.POSITION"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +54,7 @@ class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentL
         pager.offscreenPageLimit = 4
         pager.setPageTransformer(ZoomOutPageTransformer())
         val getBundle: Bundle? = this.intent.extras
-        val startPosition = getBundle?.getInt(POSITION)
+        val startPosition = getBundle?.getInt(EXTRA_POSITION)
         startPosition?.let { pager.post { pager.setCurrentItem(it, true) } }
         postponeEnterTransition()
     }
