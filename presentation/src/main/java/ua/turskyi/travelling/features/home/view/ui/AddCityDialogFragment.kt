@@ -22,10 +22,10 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
-import splitties.toast.longToast
-import splitties.toast.toast
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.extensions.toast
+import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.utils.isOnline
@@ -174,10 +174,9 @@ class AddCityDialogFragment : DialogFragment() {
     ) {
         if (requestCode == ACCESS_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                toast("GPS permission granted")
                 etCity?.let { addCityTo(it) }
             } else {
-                longToast("GPS permission denied")
+                toastLong(R.string.msg_gps_permission_denied)
             }
         }
     }

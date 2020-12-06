@@ -1,5 +1,6 @@
 package ua.turskyi.travelling.common.di
 
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
@@ -17,7 +18,7 @@ val adaptersModule = module {
 }
 
 val viewModelsModule = module {
-    factory { HomeActivityViewModel(get()) }
+    factory { HomeActivityViewModel(get(), androidApplication()) }
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsActivityViewModel(get()) }
     factory { AddCityDialogViewModel(get()) }

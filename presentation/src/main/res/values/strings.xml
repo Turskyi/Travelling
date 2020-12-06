@@ -1,10 +1,14 @@
 <resources>
     <!-- not translatable -->
-<!--    test -->
-<!--    <string name="facebook_app_id" translatable="false">2312394202364807</string>-->
-<!--    official -->
-    <string name="facebook_app_id" translatable="false">1207542439627096</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
+    <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
+    <string name="privacy_web_page" translatable="false">https://travelling-the-countries.web.app</string>
+    <!-- for face book sharing -->
+    <string name="facebook_app_id" translatable="false">2312394202364807</string>
+    <string name="facebook_package" translatable="false">com.facebook.katana</string>
+    <!-- for facebook auth -->
+    <string name="facebook_application_id" translatable="false">2312394202364807</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2312394202364807</string>
     <!-- end of not translatable strings -->
 
     <!-- default  strings -->
@@ -15,6 +19,10 @@
     <string name="tap_back_button_in_order_to_exit">Click again to exit.</string>
     <string name="content_description.image">image</string>
     <string name="dialog_btn_ok">OK</string>
+    <string name="dialog_btn_ok_ready">OK ?</string>
+    <string name="dialog_btn_not_ok">not OK</string>
+    <string name="exception_unsupported_context">you cannot instantiate the context</string>
+    <string name="exception_npe_context">you should init context util first</string>
     <!-- end of default strings -->
 
     <!-- home screen -->
@@ -79,18 +87,22 @@
         left or right to see flags or photos from countries you have visited.
     </string>
     <string name="flag_chooser_title_complete_using">Complete action using</string>
-    <string name="flag_message_did_not_choose">did not choose anything</string>
     <!-- end of strings for the screen of flags -->
 
-    <!-- toast messages -->
-    <string name="toast.no_facebook_app">You do not have Facebook app installed</string>
-    <string name="toast.no_app_installed">No app available to share pie chart</string>
-    <string name="toast_internet_connection_lost">Тhe app is offline.</string>
-    <string name="toast_connection_billing">Problems with connecting to google play.</string>
-    <string name="toast_error_due_to_canceling_purchase">Cancelling the purchase</string>
-    <string name="toast_error_unexpected">unexpected error occurred</string>
-    <string name="toast_complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
-    <string name="toast_purchase_acknowledged">Purchase acknowledged</string>
+    <!-- messages -->
+    <string name="msg.no_facebook_app">You do not have Facebook app installed</string>
+    <string name="msg.no_app_installed">No app available to share pie chart</string>
+    <string name="msg.internet_connection_lost">Тhe app is offline.</string>
+    <string name="msg.connection_billing">Problems with connecting to google play.</string>
+    <string name="msg.error_due_to_canceling_purchase">Cancelling the purchase</string>
+    <string name="msg.error_unexpected">unexpected error occurred</string>
+    <string name="msg.complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
+    <string name="msg.purchase_acknowledged">Purchase acknowledged</string>
+    <string name="msg.gps_permission_denied">GPS permission denied</string>
+    <string name="msg.did_not_choose">did not choose anything</string>
+    <string name="msg.did_not_sign_in">did not sign in</string>
+    <string name="msg.sign_in_cancelled">sign in canceled</string>
+    <string name="msg.no_internet">no internet connection</string>
     <!-- end of strings for toasts messages -->
 
 </resources>

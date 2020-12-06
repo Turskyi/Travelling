@@ -15,11 +15,29 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- Custom AppTheme.Launcher. Sets your drawable as background in splash screen. -->
+    <!-- Custom AppTheme.Launcher. Sets drawable as background in splash screen. -->
     <style name="AppTheme.Launcher">
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="android:windowBackground">@drawable/layout_launch_screen</item>
         <item name="android:navigationBarColor">@android:color/black</item>
+    </style>
+
+    <!-- AppTheme for firebase authentication -->
+    <style name="AuthTheme" parent="FirebaseUI">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- app bar -->
+        <item name="colorControlNormal">@android:color/transparent</item>
+        <!-- color of progress bar -->
+        <item name="colorControlActivated">@android:color/white</item>
+        <!-- ripple effect -->
+        <item name="colorControlHighlight">@android:color/white</item>
+        <!-- Required for sign-in flow styling -->
+        <!-- app bar -->
+        <item name="colorPrimary">@android:color/transparent</item>
+        <!-- status bar -->
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <!-- Hyperlink color -->
+        <item name="colorAccent">@android:color/white</item>
     </style>
 
     <style name="RecyclerViewStyle">

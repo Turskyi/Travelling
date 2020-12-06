@@ -12,8 +12,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ua.turskyi.data.BuildConfig.DATABASE_NAME
 import ua.turskyi.data.BuildConfig.HOST_URL
+import ua.turskyi.data.Prefs
 import ua.turskyi.data.api.datasource.CountriesNetSource
 import ua.turskyi.data.api.service.CountriesApi
+import ua.turskyi.data.firestoreSource.FirebaseSource
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.data.repository.CountriesRepositoryImpl
 import ua.turskyi.data.room.Database
@@ -79,5 +81,10 @@ val sourcesModule = module {
     single { get<Retrofit>().create(CountriesApi::class.java) }
     single { CountriesDbSource(get()) }
     single { CountriesNetSource(get()) }
+    single { FirebaseSource() }
+}
+
+val managersModule = module {
+    single { Prefs(androidContext()) }
 }
 

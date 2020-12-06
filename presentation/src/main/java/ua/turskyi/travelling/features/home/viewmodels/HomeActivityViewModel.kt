@@ -1,35 +1,53 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
+import android.app.Application
+import android.content.Intent
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
+import com.firebase.ui.auth.AuthUI
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.common.prefs
+import ua.turskyi.travelling.R
+import ua.turskyi.travelling.common.App
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
-import ua.turskyi.travelling.utils.isOnline
+import ua.turskyi.travelling.utils.Event
 
-class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
+class HomeActivityViewModel(private val interactor: CountriesInteractor, application: Application) :
+    AndroidViewModel(application) {
 
-    var notVisitedCount: Float = 0F
+    var notVisitedCountriesCount: Float = 0F
     var citiesCount = 0
+
+    val isSynchronized: Boolean
+        get() = interactor.isSynchronized
+
+    val isUpgraded: Boolean
+        get() = interactor.isUpgraded
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
         get() = _visibilityLoader
 
     private val _visitedCountries = MutableLiveData<List<Country>>()
-    var visitedCountries: LiveData<List<Country>>
+    val visitedCountries: LiveData<List<Country>>
+        get() = _visitedCountries
 
     private val _visitedCountriesWithCities = MutableLiveData<List<VisitedCountry>>()
-    var visitedCountriesWithCities: LiveData<List<VisitedCountry>>
+    val visitedCountriesWithCities: LiveData<List<VisitedCountry>>
+        get() = _visitedCountriesWithCities
+
+    private val _errorMessage = MutableLiveData<Event<String>>()
+    val errorMessage: LiveData<Event<String>>
+        get() = _errorMessage
 
     private val _navigateToAllCountries = MutableLiveData<Boolean>()
     val navigateToAllCountries: LiveData<Boolean>
@@ -37,8 +55,38 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
 
     init {
         _visibilityLoader.postValue(VISIBLE)
-        visitedCountries = _visitedCountries
-        visitedCountriesWithCities = _visitedCountriesWithCities
+//        TODO: remove
+        interactor.isUpgraded = false
+        interactor.isSynchronized = false
+    }
+
+    fun upgradeAndSync(authorizationResultLauncher: ActivityResultLauncher<Intent>) {
+        _visibilityLoader.postValue(VISIBLE)
+        interactor.isUpgraded = true
+        if (!interactor.isSynchronized) {
+            authorizationResultLauncher.launch(getAuthorizationIntent())
+        }
+        _visibilityLoader.postValue(GONE)
+    }
+
+    private fun getAuthorizationIntent(): Intent {
+        /** Choosing authentication providers */
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build()
+        )
+        return AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            /** Set logo drawable */
+            .setLogo(R.drawable.pic_logo)
+            .setTheme(R.style.AuthTheme)
+            .setTosAndPrivacyPolicyUrls(
+//                TODO: replace with Terms of service
+                getApplication<App>().getString(R.string.privacy_web_page),
+                getApplication<App>().getString(R.string.privacy_web_page)
+            )
+            .build()
     }
 
     suspend fun initListOfCountries() {
@@ -46,17 +94,30 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
             viewModelScope.launch {
                 interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
                     getVisitedCountriesFromDB()
-                    notVisitedCount = notVisitedCountriesNum.toFloat()
-                }, {
+                    notVisitedCountriesCount = notVisitedCountriesNum.toFloat()
+                }, { exception ->
                     getVisitedCountriesFromDB()
-                    it.printStackTrace()
+                    exception.printStackTrace()
+                    _errorMessage.run {
+                        exception.message?.let { message ->
+                            /* Trigger the event by setting a new Event as a new value */
+                            postValue(Event(message))
+                        }
+                    }
                 })
             }
         }
-        when {
-            isOnline() -> interactor.refreshCountries({ loadCountries() }, { loadCountries() })
-            else -> loadCountries()
-        }
+        interactor.refreshCountries({ loadCountries() }, { exception ->
+            exception.printStackTrace()
+            _visibilityLoader.postValue(GONE)
+            _errorMessage.run {
+                exception.message?.let { message ->
+                    /* Trigger the event by setting a new Event as a new value */
+                    postValue(Event(message))
+                }
+            }
+            loadCountries()
+        })
     }
 
     fun onFloatBtnClicked() {
@@ -81,8 +142,15 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                                 }
                             }
                             citiesCount = cities.size
-                        }, {
-                            it.printStackTrace()
+                        }, { exception ->
+                            exception.printStackTrace()
+                            _visibilityLoader.postValue(GONE)
+                            _errorMessage.run {
+                                exception.message?.let { message ->
+                                    /* Trigger the event by setting a new Event as a new value */
+                                    postValue(Event(message))
+                                }
+                            }
                         })
                     }
                     country.childNode = cityList
@@ -90,8 +158,15 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 _visitedCountriesWithCities.run { postValue(visitedCountries) }
                 _visitedCountries.run { postValue(countries.mapModelListToActualList()) }
                 _visibilityLoader.postValue(GONE)
-            }, {
-                it.printStackTrace()
+            }, { exception ->
+                exception.printStackTrace()
+                _visibilityLoader.postValue(GONE)
+                _errorMessage.run {
+                    exception.message?.let { message ->
+                        /* Trigger the event by setting a new Event as a new value */
+                        postValue(Event(message))
+                    }
+                }
             })
         }
     }
@@ -112,8 +187,22 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
 
     fun syncDatabaseWithFireStore() {
         _visibilityLoader.postValue(VISIBLE)
-//                TODO: sync database with firestore
-        prefs.isSynchronized = true
-        _visibilityLoader.postValue(GONE)
+        viewModelScope.launch {
+            interactor.syncVisitedCountries({
+                interactor.isSynchronized = true
+                _visibilityLoader.postValue(GONE)
+                log("synchronization finished successfully")
+            }, { exception ->
+                log("synchronization error ${exception.message}")
+                exception.printStackTrace()
+                _visibilityLoader.postValue(GONE)
+                _errorMessage.run {
+                    exception.message?.let { message ->
+                        /* Trigger the event by setting a new Event as a new value */
+                        postValue(Event(message))
+                    }
+                }
+            })
+        }
     }
 }

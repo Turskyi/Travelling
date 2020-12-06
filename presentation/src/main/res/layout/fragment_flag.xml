@@ -6,12 +6,12 @@
     android:orientation="horizontal">
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/ivEnlargedFlag"
+        android:id="@+id/iv_enlarged_flag"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <WebView
-        android:id="@+id/wvFlag"
+        android:id="@+id/wv_flag"
         style="@style/ImageViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

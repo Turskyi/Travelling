@@ -10,13 +10,11 @@ import ua.turskyi.travelling.extensions.getHomeActivity
 class InfoDialog : AppCompatDialogFragment() {
     companion object {
         const val ARG_INFO = "ua.turskyi.travelling.ARG_INFO"
-        const val ARG_ACTION = "ua.turskyi.travelling.ARG_ACTION"
 
-        fun newInstance(info: String, action: Boolean): InfoDialog {
+        fun newInstance(info: String): InfoDialog {
             val fragment = InfoDialog()
             val bundle = Bundle().apply {
                 putString(ARG_INFO, info)
-                putBoolean(ARG_ACTION, action)
             }
             fragment.arguments = bundle
             return fragment
@@ -27,9 +25,7 @@ class InfoDialog : AppCompatDialogFragment() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setMessage(arguments?.getString(ARG_INFO))
             .setPositiveButton(getString(R.string.dialog_btn_ok)) { _, _ ->
-                if (arguments?.getBoolean(ARG_ACTION) == true) {
-                   context?.getHomeActivity()?.launchBilling()
-                }
+                dismiss()
             }
         return builder.create()
     }

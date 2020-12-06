@@ -4,7 +4,15 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
+    val isSynchronized: Boolean
+    var isUpgraded: Boolean
+
     suspend fun refreshCountriesInDb(
+        onSuccess: () -> Unit,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
+    suspend fun syncVisitedCountries(
         onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
@@ -13,11 +21,6 @@ interface CountriesRepository {
         id: Int,
         selfie: String,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
-
-    suspend fun addModelsToDb(
-        countries: MutableList<CountryModel>,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -32,11 +35,11 @@ interface CountriesRepository {
     )
 
     suspend fun getCities(
-        onSuccess: (MutableList<CityModel>) -> Unit,
+        onSuccess: (List<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun getNumNotVisitedCountries(
+    suspend fun getCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
@@ -57,8 +60,8 @@ interface CountriesRepository {
     )
 
     suspend fun getCountriesByRange(
-        limit: Int,
-        offset: Int,
+        to: Int,
+        from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )

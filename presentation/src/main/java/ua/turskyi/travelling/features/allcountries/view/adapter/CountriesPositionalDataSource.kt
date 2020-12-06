@@ -7,6 +7,8 @@ import kotlinx.coroutines.*
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapModelListToActualList
 import ua.turskyi.travelling.models.Country
+import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.coroutines.CoroutineContext
 
 internal class CountriesPositionalDataSource(private val interactor: CountriesInteractor) :
@@ -28,10 +30,15 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
             interactor.getCountriesByRange(params.requestedLoadSize, 0,
                 { initCountries ->
                     callback.onResult(initCountries.mapModelListToActualList(), 0)
-                    _visibilityLoader.postValue(GONE)
+                 /* a little bit delay of stopping animation */
+                    Timer().schedule(2000) {
+                        _visibilityLoader.postValue(GONE)
+                    }
                 },
                 {
+                    it.printStackTrace()
                     callback.onResult(emptyList(), 0)
+                    _visibilityLoader.postValue(GONE)
                 })
             job.cancel()
         }
@@ -47,7 +54,9 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
                     callback.onResult(allCountries.mapModelListToActualList())
                 },
                 {
+                    it.printStackTrace()
                     callback.onResult(emptyList())
+                    _visibilityLoader.postValue(GONE)
                 })
         }
         job.cancel()

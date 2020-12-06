@@ -5,18 +5,20 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_flags.*
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.databinding.ActivityFlagsBinding
+import ua.turskyi.travelling.extensions.openInfoDialog
 import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
-import ua.turskyi.travelling.common.view.InfoDialog
 
-class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentListener {
+class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnFlagFragmentListener {
 
-    companion object{
+    companion object {
         const val EXTRA_POSITION = "ua.turskyi.travelling.POSITION"
     }
+
+    private lateinit var binding: ActivityFlagsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentL
     }
 
     override fun onChangeToolbarTitle(title: String?) {
-        tvToolbarTitle.text = title
+        binding.tvToolbarTitle.text = title
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -35,29 +37,33 @@ class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentL
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        openInfoDialog()
+        openInfoDialog(R.string.txt_info_flags)
         return true
     }
 
-    private fun openInfoDialog() {
-        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_flags),false)
-        infoDialog.show(supportFragmentManager, "info dialog")
-    }
-
     private fun initView() {
-        setSupportActionBar(toolbar)
+        binding = ActivityFlagsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         val pagerAdapter = ScreenSlidePagerAdapter(this)
-        pager.adapter = pagerAdapter
-        pager.offscreenPageLimit = 4
-        pager.setPageTransformer(ZoomOutPageTransformer())
+        binding.pager.adapter = pagerAdapter
+        binding.pager.offscreenPageLimit = 4
+        binding.pager.setPageTransformer(ZoomOutPageTransformer())
         val getBundle: Bundle? = this.intent.extras
         val startPosition = getBundle?.getInt(EXTRA_POSITION)
-        startPosition?.let { pager.post { pager.setCurrentItem(it, true) } }
+        startPosition?.let { position ->
+            binding.pager.post {
+                binding.pager.setCurrentItem(
+                    position,
+                    true
+                )
+            }
+        }
         postponeEnterTransition()
     }
 
-    private fun initListeners() = toolbar.setNavigationOnClickListener { onBackPressed() }
+    private fun initListeners() = binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 }

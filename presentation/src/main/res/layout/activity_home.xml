@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel" />
@@ -26,7 +25,7 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
-                android:id="@+id/toolbarLayout"
+                android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black"
@@ -74,6 +73,12 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVisitedCountries"
+            style="@style/RecyclerViewStyle"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <!-- loading progress bar -->
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pb"
             style="@style/ProgressBarStyle"
@@ -82,11 +87,6 @@
             android:layout_marginTop="@dimen/offset_64"
             app:lottie_autoPlay="true"
             app:lottie_rawRes="@raw/anim_flight" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvVisitedCountries"
-            style="@style/RecyclerViewStyle"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatBtnSmall"

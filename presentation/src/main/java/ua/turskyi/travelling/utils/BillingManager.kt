@@ -6,9 +6,9 @@ import com.android.billingclient.api.BillingClient.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import splitties.toast.toast
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.SKU_ID
+import ua.turskyi.travelling.extensions.toast
 import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import java.util.*
@@ -31,10 +31,20 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                 handlePurchase(purchase)
             }
         } else if (billingResult.responseCode == BillingResponseCode.USER_CANCELED) {
-            toast(R.string.toast_error_due_to_canceling_purchase)
+            activity.toast(R.string.msg_error_due_to_canceling_purchase)
         } else {
-            toast(R.string.toast_error_unexpected)
+            activity.toast(R.string.msg_error_unexpected)
         }
+    }
+
+    fun launchBilling() {
+        val billingFlowParams = mSkuDetailsMap[SKU_ID]?.let {sku ->
+            BillingFlowParams.newBuilder().setSkuDetails(sku).build()
+        }
+        billingFlowParams?.let { flowParams ->
+            billingClient.launchBillingFlow(activity, flowParams)
+        }
+        /* after that it goes to onPurchasesUpdated()*/
     }
 
     private fun initBilling() {
@@ -62,7 +72,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                         }
                     }
                 } else {
-                    toast(R.string.toast_connection_billing)
+                    activity.toast(R.string.msg_connection_billing)
                 }
             }
 
@@ -70,7 +80,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                 /* we get here if something goes wrong */
                 /*   Try to restart the connection on the next request to
                     Google Play by calling the startConnection() method.*/
-                toast(R.string.toast_internet_connection_lost)
+                activity.toast(R.string.msg_internet_connection_lost)
             }
 
             private fun queryPurchases(): List<Purchase?>? {
@@ -96,21 +106,6 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
         }
     }
 
-    fun launchBilling() {
-        val billingFlowParams = mSkuDetailsMap[SKU_ID]?.let {
-            BillingFlowParams.newBuilder()
-                .setSkuDetails(it)
-                .build()
-        }
-        billingFlowParams?.let { flowParams ->
-            billingClient.launchBillingFlow(
-                activity,
-                flowParams
-            )
-
-        }
-    }
-
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             /*  Grant the item to the user */
@@ -122,7 +117,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                 activity.launch {
                     withContext(Dispatchers.IO) {
                         val acknowledgePurchaseResponseListener =
-                            AcknowledgePurchaseResponseListener { toast(R.string.toast_purchase_acknowledged) }
+                            AcknowledgePurchaseResponseListener { activity.toast(R.string.msg_purchase_acknowledged) }
                         billingClient.acknowledgePurchase(
                             acknowledgePurchaseParams.build(),
                             acknowledgePurchaseResponseListener
@@ -136,7 +131,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                   are given to them. You can also choose to remind the user in the
                   future to complete the purchase if you detect that it is still
                   pending. */
-            activity.toastLong(R.string.toast_complete_purchase)
+            activity.toastLong(R.string.msg_complete_purchase)
         }
     }
 }

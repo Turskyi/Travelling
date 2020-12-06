@@ -14,10 +14,9 @@ import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.extensions.*
-import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetDialog
+import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetFragment
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
-import ua.turskyi.travelling.utils.PermissionHandler
 import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 
 /**
@@ -54,12 +53,9 @@ class CirclePieChart @JvmOverloads constructor(
         val toolbar: androidx.appcompat.widget.Toolbar = rootView.findViewById(R.id.toolbar)
         toolbar.menu.clear()
         /*----------------*/
-        val bottomSheet = ShareListBottomSheetDialog()
+        val bottomSheet = ShareListBottomSheetFragment()
         context.getFragmentActivity()?.supportFragmentManager?.let { fragmentManager ->
-            bottomSheet.show(
-                fragmentManager,
-                null
-            )
+            bottomSheet.show(fragmentManager, null)
         }
     }
 
@@ -123,13 +119,15 @@ class CirclePieChart @JvmOverloads constructor(
         /* rotate the pie chart to 45 degrees */
         rotationAngle = -10f
 
+        /* init animated background for piechart */
         setBackgroundResource(R.drawable.gradient_list)
         val animationDrawable: AnimationDrawable = background as AnimationDrawable
         animationDrawable.setEnterFadeDuration(2000)
         animationDrawable.setExitFadeDuration(4000)
         animationDrawable.start()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            holeRadius = 80F
+            /* set radius of an open eye */
+            holeRadius = 78F
         } else {
             holeRadius = 20F
             setTransparentCircleColor(Color.BLACK)
@@ -159,7 +157,7 @@ class CirclePieChart @JvmOverloads constructor(
         invalidate()
     }
 
-    fun animatePieChart(){
+    fun animatePieChart() {
         if (isPermissionGranted) {
             /* nice and smooth animation of a chart */
             animateY(1500)

@@ -13,10 +13,10 @@ fun List<CountryModel>.mapModelListToNodeList() = this.mapTo(
     mutableListOf(), { model -> model.mapModelToNode() })
 
 fun CountryModel.mapModelToNode() = VisitedCountry(
-    id = id, title = name, img = flag, visited = visited, selfie = selfie
+    id = id, title = name, img = flag, visited = isVisited, selfie = selfie
 )
 
-fun CountryModel.mapModelToActual() = Country(id, name, flag, visited, selfie)
+fun CountryModel.mapModelToActual() = Country(id, name, flag, isVisited, selfie)
 fun Country.mapActualToModel() = CountryModel(id, name, flag, visited, selfie)
 fun VisitedCountry.mapNodeToActual() = Country(
     id = id, visited = visited, name = title,
