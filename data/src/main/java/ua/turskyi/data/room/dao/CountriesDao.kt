@@ -34,10 +34,10 @@ abstract class CountriesDao {
     abstract fun getVisitedCountries(): List<CountryEntity>
 
     @Query("SELECT * FROM $TABLE_CITIES")
-    abstract fun getCities(): MutableList<CityEntity>
+    abstract fun getCities(): List<CityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertCountry(country: CountryEntity)
+    abstract suspend fun insertCountry(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertCity(city: CityEntity)

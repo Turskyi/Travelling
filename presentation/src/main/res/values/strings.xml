@@ -1,33 +1,66 @@
 <resources>
     <!-- not translatable -->
-    <string name="facebook_app_id" translatable="false">2312394202364807</string>
+    <string name="html_data_flag" translatable="false"><![CDATA[
+    <html>
+    <head>
+    <style type=\'text/css\'>body{margin:auto auto;text-align:center;} img{width:100%%25;}</style>
+    </head>
+    <body><img src=\'%1$s\'/></body>
+    </html>]]></string>
+    <string name="encoding_utf_8" translatable="false">UTF-8</string>
+    <string name="mime_type_txt_html" translatable="false">text/html</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
+    <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
+    <string name="privacy_web_page" translatable="false">https://travelling-the-countries.web.app</string>
+    <string name="android_5_1" translatable="false">5.1</string>
+    <string name="media_providers" translatable="false">com.android.providers.media</string>
+    <string name="image_type" translatable="false">image/jpeg</string>
+    <string name="geo_location" translatable="false">geo:0,0?q=%1$s</string>
+    <!-- for face book sharing -->
+    <string name="facebook_app_id" translatable="false">285452062466394</string>
+    <string name="facebook_package" translatable="false">com.facebook.katana</string>
+    <!-- for facebook auth -->
+    <string name="facebook_application_id" translatable="false">285452062466394</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb285452062466394</string>
+    <!-- end of not translatable strings -->
 
+    <!-- default  strings -->
     <string name="app_name">Travelling</string>
+    <string name="content_description.flag">flag</string>
+    <string name="content_description.item_arrow">arrow</string>
+    <string name="content_description.icon_search">search image</string>
+    <string name="tap_back_button_in_order_to_exit">Click again to exit.</string>
+    <string name="content_description.image">image</string>
+    <string name="dialog_btn_ok">OK</string>
+    <string name="dialog_btn_ok_ready">OK ?</string>
+    <string name="dialog_btn_not_ok">not OK</string>
+    <string name="exception_unsupported_context">you cannot instantiate the context</string>
+    <string name="exception_npe_context">you should init context util first</string>
+    <!-- end of default strings -->
+
+    <!-- home screen -->
     <string name="delete_it">Delete %1$s ?</string>
     <string name="deleted">%1$s deleted</string>
     <string name="yes">YES</string>
-
-    <string name="flag" translatable="false">flag</string>
-    <string name="visitedCountry" translatable="false">Country</string>
-    <string name="ic_item_arrow">arrow</string>
     <string name="dialogue_hint_add_a_city">Add a city</string>
     <string name="dialogue_btn_gps">GPS</string>
     <string name="btn_save">Save</string>
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
     <string name="dialog_hold_on">Hold on a moment, trying to find your location.</string>
-    <string name="dialog_turn_no_internet">TURN ON INTERNET</string>
-    <string name="icon_search">search image</string>
-    <string name="search_country">country</string>
-    <string name="all_countries_no_results">no results</string>
-    <string name="tap_back_button_in_order_to_exit">Click again to exit.</string>
-    <string name="image">image</string>
+    <string name="dialog.no_internet">TURN ON INTERNET</string>
+    <string name="home_dialog_btn_cancel">Cancel</string>
+    <string name="txt_info_billing">Please care to buy the full version of an app,
+        in order to sync your data with server.</string>
+    <string name="share_title">Share How Many Countries You Have Visited</string>
+    <string name="txt_info_home">• Click on \"+\" to add a country.\n• Click on a country to add a
+        city and a month.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
+        you can share it on Facebook or on another platform.\n• Click on a flag to be able to see
+        the flag in full screen and replace it with a photo.\n• Click on the city to be able to see
+        the geographical location of it.
+    </string>
+    <string name="home_city_date">Date</string>
+    <string name="home_city_did_not_save">did not save anything</string>
 
-    <plurals name="numberOfCountriesRemain">
-        <item quantity="one">%d country remains to visit</item>
-        <item quantity="few">%d countries remain to visit</item>
-        <item quantity="other">%d countries remain to visit</item>
-    </plurals>
     <plurals name="numberOfCountriesVisited">
         <item quantity="one">I\'ve been to %d country</item>
         <item quantity="few">I\'ve been to %d countries</item>
@@ -45,40 +78,47 @@
         <item quantity="few">in %d countries</item>
         <item quantity="other">in %d countries</item>
     </plurals>
+    <!-- end of strings for home screen -->
 
-    <string name="share_title">Share How Many Countries You Have Visited</string>
-    <string name="home_dialog_btn_cancel">Cancel</string>
-    <string name="txt_info_home">• Click on \"+\" to add a country.\n• Click on a country to add a
-        city and a month.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
-        you can share it on Facebook or on another platform.\n• Click on a flag to be able to see
-        the flag in full screen and replace it with a photo.\n• Click on the city to be able to see
-        the geographical location of it.
-    </string>
-    <string name="txt_info_flags">• If you press on the flag, you can replace it with a photo.
-        \n• Click on a photo to change it back to flag and vise versa.\n• Swipe
-        left or right to see flags or photos from countries you have visited.
-    </string>
+    <!-- screen with all countries -->
+    <string name="hint.search_country">country</string>
+    <string name="all_countries_no_results">no results</string>
     <string name="txt_info_all_countries">• If you press on a country, you will be able to see
         the geographical location of it
     </string>
 
-    <string name="txt_info_billing">Please care to buy the full version of an app,
-        in order to sync your data with server.</string>
+    <plurals name="numberOfCountriesRemain">
+        <item quantity="one">%d country remains to visit</item>
+        <item quantity="few">%d countries remain to visit</item>
+        <item quantity="other">%d countries remain to visit</item>
+    </plurals>
+    <!-- end of strings for screen with all countries -->
 
+    <!-- flags screen -->
+    <string name="txt_info_flags">• If you press on the flag, you can replace it with a photo.
+        \n• Click on a photo to change it back to flag and vise versa.\n• Swipe
+        left or right to see flags or photos from countries you have visited.
+    </string>
     <string name="flag_chooser_title_complete_using">Complete action using</string>
-    <string name="flag_message_did_not_choose">did not choose anything</string>
-    <string name="home_city_date">Date</string>
-    <string name="home_city_did_not_save">did not save anything</string>
+    <!-- end of strings for the screen of flags -->
 
-    <!-- toast messages -->
-    <string name="toast.no_facebook_app">You do not have Facebook app installed</string>
-    <string name="toast.no_app_installed">No app available to share pie chart</string>
-    <string name="toast_internet_connection_lost">Тhe app is offline.</string>
-    <string name="toast_error_due_to_canceling_purchase">Cancelling the purchase</string>
-    <string name="toast_error_unexpected">unexpected error occurred</string>
-    <string name="toast_complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
-    <string name="toast_purchase_acknowledged">Purchase acknowledged</string>
-
-    <string name="dialog_btn_ok">OK</string>
+    <!-- messages -->
+    <string name="msg.no_facebook_app">You do not have Facebook app installed</string>
+    <string name="msg.no_app_installed">No app available to share pie chart</string>
+    <string name="msg.internet_connection_lost">Тhe app is offline.</string>
+    <string name="msg.connection_billing">Problems with connecting to google play.</string>
+    <string name="msg.error_due_to_canceling_purchase">Cancelling the purchase</string>
+    <string name="msg.error_unexpected">unexpected error occurred</string>
+    <string name="msg.complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
+    <string name="msg.purchase_acknowledged">Purchase acknowledged</string>
+    <string name="msg.gps_permission_denied">GPS permission denied</string>
+    <string name="msg.did_not_choose">did not choose anything</string>
+    <string name="msg.did_not_sign_in">did not sign in</string>
+    <string name="msg.sign_in_cancelled">sign in canceled</string>
+    <string name="msg.no_internet">no internet connection</string>
+    <string name="home_onboarding_title">…loading countries</string>
+    <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
+    <string name="msg.home_country_did_not_added">did not added anything</string>
+    <!-- end of strings for toasts messages -->
 
 </resources>

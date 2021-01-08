@@ -15,7 +15,6 @@ import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
-import kotlinx.android.synthetic.main.item_list_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.VisitedCountry
 
@@ -35,39 +34,39 @@ class CountryNodeProvider : BaseNodeProvider() {
         item: BaseNode
     ) {
         val visitedCountry: VisitedCountry = item as VisitedCountry
-        helper.getView<TextView>(R.id.tvCountry).setOnLongClickListener{
+        helper.getView<TextView>(R.id.tv_country).setOnLongClickListener{
             onLongLickListener?.invoke(visitedCountry)
             true
         }
         showPicturesInSVG(item, helper)
-        helper.setText(R.id.tvCountry, visitedCountry.title)
-        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.ivFlag))
-        helper.getView<ImageView>(R.id.ivFlag).setOnClickListener {
+        helper.setText(R.id.tv_country, visitedCountry.title)
+        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.iv_flag))
+        helper.getView<ImageView>(R.id.iv_flag).setOnClickListener {
             onImageClickListener?.invoke(visitedCountry)
         }
-        setSelectableBorderLessFor(helper.getView<WebView>(R.id.wvFlag))
-        helper.getView<WebView>(R.id.wvFlag).setOnClickListener {
+        setSelectableBorderLessFor(helper.getView<WebView>(R.id.wv_flag))
+        helper.getView<WebView>(R.id.wv_flag).setOnClickListener {
             onImageClickListener?.invoke(visitedCountry)
         }
-        setSelectableBackgroundFor(helper.getView<TextView>(R.id.tvCountry))
-        helper.getView<TextView>(R.id.tvCountry).setOnClickListener {
+        setSelectableBackgroundFor(helper.getView<TextView>(R.id.tv_country))
+        helper.getView<TextView>(R.id.tv_country).setOnClickListener {
             onTextClickListener?.invoke(visitedCountry)
         }
         if (!item.childNode.isNullOrEmpty()) {
             if (visitedCountry.isExpanded) {
                     helper.setImageResource(
-                        R.id.ivMore,
+                        R.id.iv_more,
                         R.drawable.ic_arrow_expandable_up
                     )
                 } else {
                     helper.setImageResource(
-                        R.id.ivMore,
+                        R.id.iv_more,
                         R.drawable.ic_arrow_expandable_down
                     )
                 }
-            helper.setVisible(R.id.ivMore, true)
+            helper.setVisible(R.id.iv_more, true)
         } else {
-            helper.setVisible(R.id.ivMore, false)
+            helper.setVisible(R.id.iv_more, false)
         }
     }
 
@@ -99,27 +98,30 @@ class CountryNodeProvider : BaseNodeProvider() {
                     showPicturesInWebView(holder, visitedCountry)
                 }
                 override fun onResourceReady() {
-                    holder.itemView.ivFlag.visibility = VISIBLE
-                    holder.itemView.wvFlag.visibility = GONE
+                    holder.itemView.findViewById<ImageView>(R.id.iv_flag).visibility = VISIBLE
+                    holder.itemView.findViewById<WebView>(R.id.wv_flag).visibility = GONE
                 }
             })
             .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
-            .load(uri, holder.itemView.ivFlag)
+            .load(uri, holder.itemView.findViewById(R.id.iv_flag))
     }
     private fun showPicturesInWebView(
         holder: BaseViewHolder,
         visitedCountry: VisitedCountry
     ) {
-        holder.itemView.ivFlag.visibility = GONE
-        holder.itemView.wvFlag.webViewClient = WebViewClient()
-        holder.itemView.wvFlag.visibility = VISIBLE
-        holder.itemView.wvFlag.setBackgroundColor(Color.TRANSPARENT)
-        holder.itemView.wvFlag.loadData(
+        holder.itemView.findViewById<ImageView>(R.id.iv_flag).visibility = GONE
+        val wvFlag = holder.itemView.findViewById<WebView>(R.id.wv_flag)
+        wvFlag.apply {
+            webViewClient = WebViewClient()
+            visibility = VISIBLE
+            setBackgroundColor(Color.TRANSPARENT)
+            loadData(
                 "<html><head><style type='text/css'>" +
                         "body{margin:auto auto;text-align:center;} img{width:80%25;}" +
                         " </style></head><body><img src='${visitedCountry.img}'/>" +
                         "</body></html>", "text/html", "UTF-8"
-        )
+            )
+        }
     }
 
     override fun onClick(
@@ -128,7 +130,7 @@ class CountryNodeProvider : BaseNodeProvider() {
         data: BaseNode,
         position: Int
     ) {
-        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.ivMore))
+        setSelectableBorderLessFor(helper.getView<ImageView>(R.id.iv_more))
         getAdapter()?.expandOrCollapse(position)
     }
 }

@@ -1,4 +1,4 @@
-package ua.turskyi.data.constant
+package ua.turskyi.data.constants
 
 class ApiEndpoint {
     companion object {

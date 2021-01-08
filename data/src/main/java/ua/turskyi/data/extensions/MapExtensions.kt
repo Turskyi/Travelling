@@ -1,5 +1,6 @@
 package ua.turskyi.data.extensions
 
+import ua.turskyi.data.entities.firestore.VisitedCountryEntity
 import ua.turskyi.data.entities.network.CountryNet
 import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CountryEntity
@@ -9,7 +10,7 @@ import ua.turskyi.domain.model.CountryModel
 fun List<CountryModel>.mapModelListToEntityList() =
     mapTo(mutableListOf(), { countryModel -> countryModel.mapModelToEntity() })
 
-fun CountryModel.mapModelToEntity() = CountryEntity(id, name, flag, visited, null)
+fun CountryModel.mapModelToEntity() = CountryEntity(id, name, flag, isVisited, null)
 fun CityModel.mapModelToEntity() =
     CityEntity(id = id, name = name, parentId = parentId, month = month)
 
@@ -19,11 +20,14 @@ fun CityEntity.mapEntityToModel() =
 fun List<CountryNet>.mapNetListToModelList() = this.mapTo(
     mutableListOf(), { countryNet -> countryNet.mapNetToEntity() })
 
-fun CountryEntity.mapEntityToModel() = CountryModel(id, name, flag, visited, selfie)
+fun CountryEntity.mapEntityToModel() = CountryModel(id, name, flag, isVisited, selfie)
 fun CountryNet.mapNetToEntity() = CountryModel(id, name, flag, visited, selfie = null)
-fun MutableList<CityEntity>.mapEntitiesToModelList() = mapTo(
+fun List<CityEntity>.mapEntitiesToModelList() = mapTo(
     mutableListOf(), { cityEntity -> cityEntity.mapEntityToModel() })
 
 fun List<CountryEntity>.mapEntityListToModelList() = mapTo(
     mutableListOf(), { countryEntity -> countryEntity.mapEntityToModel() })
+
+fun CountryEntity.mapCountryToVisitedCountry() =
+    VisitedCountryEntity(id = id, name = name, flag = flag, selfie = null, selfieName = null)
 

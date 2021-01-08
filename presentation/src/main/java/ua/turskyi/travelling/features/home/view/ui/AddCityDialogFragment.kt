@@ -22,10 +22,10 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
-import splitties.toast.longToast
-import splitties.toast.toast
-import ua.turskyi.travelling.Constants.ACCESS_LOCATION
+import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.extensions.toast
+import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.utils.isOnline
@@ -83,7 +83,7 @@ class AddCityDialogFragment : DialogFragment() {
          * There is a unique case when particular android version cannot perform location logic
          * and crashing, so here button just used as a cancel button.
          */
-        if (Build.VERSION.RELEASE == "5.1") {
+        if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
             buttonGps.text = getString(R.string.home_dialog_btn_cancel)
             /* Removes CompoundDrawable */
             buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
@@ -116,15 +116,23 @@ class AddCityDialogFragment : DialogFragment() {
                             month = etMonth?.text.toString()
                         ).let { city ->
                             viewModel.insert(
-                                city
+                                city, {
+                                    alertDialog?.dismiss()
+                                }, { exception ->
+                                    toastLong(exception.message)
+                                }
                             )
                         }
                     }
                 } else {
                     arguments?.getInt(ARG_ID)?.let { parentId ->
-                        City(etCity?.text.toString(), parentId).let { city ->
+                        City(name = etCity?.text.toString(), parentId = parentId).let { city ->
                             viewModel.insert(
-                                city
+                                city, {
+                                    alertDialog?.dismiss()
+                                }, { exception ->
+                                    toastLong(exception.message)
+                                }
                             )
                         }
                     }
@@ -141,11 +149,11 @@ class AddCityDialogFragment : DialogFragment() {
              * There is a unique case when particular android version cannot perform location logic
              * and crashing, so here button just used as a cancel button.
              */
-            etCity?.let {
-                if (Build.VERSION.RELEASE == "5.1") {
+            etCity?.let { inputField ->
+                if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
                     alertDialog?.cancel()
                 } else {
-                    checkIfGpsEnabled(it)
+                    checkIfGpsEnabled(inputField)
                 }
             }
         }
@@ -174,10 +182,9 @@ class AddCityDialogFragment : DialogFragment() {
     ) {
         if (requestCode == ACCESS_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                toast("GPS permission granted")
-                etCity?.let { addCityTo(it) }
+                etCity?.let { inputField -> addCityTo(inputField) }
             } else {
-                longToast("GPS permission denied")
+                toastLong(R.string.msg_gps_permission_denied)
             }
         }
     }
@@ -193,7 +200,7 @@ class AddCityDialogFragment : DialogFragment() {
         if (!gpsEnabled) {
             toast(R.string.dialogue_turn_on_gps)
         } else if (!isOnline()) {
-            toast(R.string.dialog_turn_no_internet)
+            toast(R.string.dialog_no_internet)
         } else {
             addCityTo(editText)
         }
@@ -203,8 +210,8 @@ class AddCityDialogFragment : DialogFragment() {
         var gpsEnabled = false
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
         return gpsEnabled
     }
@@ -239,42 +246,40 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    private fun addChangedLocation(editText: LinedEditText) {
-        try {
-            val locationListener: LocationListener = object : LocationListener {
-                override fun onLocationChanged(location: Location) {
-                    val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-                    val addressesChanged: MutableList<Address>? =
-                        location.latitude.let { latitude ->
-                            geoCoder.getFromLocation(
-                                latitude,
-                                location.longitude, 1
-                            )
-                        }
-                    val cityChanged: String? = addressesChanged?.get(0)?.locality
-                    editText.setText(cityChanged)
-                }
-
-                override fun onStatusChanged(
-                    provider: String,
-                    status: Int,
-                    extras: Bundle
-                ) {
-                }
-
-                override fun onProviderEnabled(provider: String) {}
-                override fun onProviderDisabled(provider: String) {}
+    private fun addChangedLocation(editText: LinedEditText) = try {
+        val locationListener: LocationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                val geoCoder = Geocoder(requireContext(), Locale.getDefault())
+                val addressesChanged: MutableList<Address>? =
+                    location.latitude.let { latitude ->
+                        geoCoder.getFromLocation(
+                            latitude,
+                            location.longitude, 1
+                        )
+                    }
+                val cityChanged: String? = addressesChanged?.get(0)?.locality
+                editText.setText(cityChanged)
             }
-            /*      Request location updates */
-            locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                0L,
-                0f,
-                locationListener
-            )
-        } catch (ex: SecurityException) {
-            ex.printStackTrace()
+
+            override fun onStatusChanged(
+                provider: String,
+                status: Int,
+                extras: Bundle
+            ) {
+            }
+
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
         }
+        /*      Request location updates */
+        locationManager.requestLocationUpdates(
+            LocationManager.NETWORK_PROVIDER,
+            0L,
+            0f,
+            locationListener
+        )
+    } catch (exception: SecurityException) {
+        toastLong(exception.message)
     }
 
     private fun addLastLocation(

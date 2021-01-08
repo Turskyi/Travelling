@@ -1,4 +1,4 @@
-package ua.turskyi.travelling
+package ua.turskyi.travelling.common
 
 import ua.turskyi.travelling.BuildConfig.APPLICATION_ID
 
@@ -6,6 +6,8 @@ import ua.turskyi.travelling.BuildConfig.APPLICATION_ID
  * @Description Constants for the app.
  */
 object Constants {
+    const val LOG = "===>"
+
     /* # milliseconds, desired time passed between two back presses. */
     const val TIME_INTERVAL = 2000
 

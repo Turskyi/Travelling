@@ -1,65 +1,107 @@
 package ua.turskyi.travelling.extensions
 
-import android.content.ActivityNotFoundException
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.TypedArray
+import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ImageSpan
 import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
-import androidx.core.content.FileProvider
-import kotlinx.android.synthetic.main.activity_home.*
-import splitties.toast.toast
-import ua.turskyi.travelling.Constants
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
-import java.text.SimpleDateFormat
-import java.util.*
 
-fun Context.isFacebookInstalled(): Boolean {
-    try {
-        packageManager.getPackageInfo("com.facebook.katana", PackageManager.GET_META_DATA)
-    } catch (e: PackageManager.NameNotFoundException) {
-        e.printStackTrace()
-        return false
-    }
-    return true
+/**
+ * Starts the Activity [A], in a more concise way, while still allowing to configure the [Intent] in
+ * the optional [configIntent] lambda.
+ */
+inline fun <reified A : Activity> Context.start(configIntent: Intent.() -> Unit = {}) {
+    startActivity(Intent(this, A::class.java).apply(configIntent))
+}
+
+tailrec fun Context.getActivity(): Activity? = when (this) {
+    is Activity -> this
+    else -> (this as? ContextWrapper)?.baseContext?.getActivity()
+}
+
+fun Context.isFacebookInstalled() = try {
+    packageManager.getPackageInfo(getString(R.string.facebook_package), PackageManager.GET_META_DATA)
+    true
+} catch (e: PackageManager.NameNotFoundException) {
+    false
 }
 
 fun Context.spToPix(@DimenRes sizeRes: Int) =
     resources.getDimension(sizeRes) / resources.displayMetrics.density
 
-fun Context.shareImageViaChooser() {
-    val fileName =
-        "piechart${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())}.jpg"
-    val bitmap = (this as HomeActivity).toolbarLayout.getScreenShot()
-    val file = bitmap?.convertBitmapToFile(this, fileName)
-    val uri = file?.let {
-        FileProvider.getUriForFile(
-            this,
-            this.packageName.toString() + ".provider",
-            it
-        )
+fun Context.getHomeActivity(): HomeActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is HomeActivity) {
+            return context
+        }
+        context = context.baseContext
     }
-
-    val intentImage = Intent()
-    intentImage.action = Intent.ACTION_SEND
-    intentImage.type = "image/*"
-    intentImage.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    intentImage.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name)
-    intentImage.putExtra(
-        Intent.EXTRA_TEXT,
-        "#travelling_the_world \n ${Constants.GOOGLE_PLAY_ADDRESS}"
-    )
-    intentImage.putExtra(Intent.EXTRA_STREAM, uri)
-    try {
-        startActivity(
-            Intent.createChooser(
-                intentImage,
-                getString(R.string.share_title)
-            )
-        )
-    } catch (e: ActivityNotFoundException) {
-        toast(getString(R.string.toast_no_app_installed))
-    }
+    return null
 }
+
+fun Context.getAppCompatActivity(): AppCompatActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is AppCompatActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.getFragmentActivity(): FragmentActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is FragmentActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
+}
+
+fun Context.convertPictureToSpannableString(imgRes: Int): SpannableString {
+    val imageSpan = ImageSpan(this, imgRes)
+    val spannableString = SpannableString(" ")
+    spannableString.setSpan(imageSpan, " ".length - 1, " ".length, 0)
+    return spannableString
+}
+
+fun <T> Context.openActivityWithArgs(destination: Class<T>, extras: Bundle.() -> Unit = {}) {
+    val intent = Intent(this, destination)
+    intent.putExtras(Bundle().apply(extras))
+    startActivity(intent)
+}
+
+fun Context.getToolbarHeight(): Int {
+    val styledAttributes: TypedArray =
+        theme.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))
+    val toolbarHeight = styledAttributes.getDimension(0, 0f).toInt()
+    styledAttributes.recycle()
+    return toolbarHeight
+}
+
+fun Context.toast(
+    @StringRes msgResId: Int
+) = Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+
+fun Context.toastLong(
+    @StringRes msgResId: Int
+) = Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
+
+fun Context.toastLong(
+    msg: String?
+) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()

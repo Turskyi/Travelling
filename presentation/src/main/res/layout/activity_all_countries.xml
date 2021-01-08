@@ -54,23 +54,23 @@
                 app:shadowRadius="@dimen/offset8">
 
                 <ImageButton
-                    android:id="@+id/ibSearch"
+                    android:id="@+id/ib_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/icon_search"
+                    android:contentDescription="@string/content_description.icon_search"
                     android:padding="@dimen/offset8"
                     android:src="@drawable/ic_search" />
 
                 <EditText
-                    android:id="@+id/etSearch"
+                    android:id="@+id/et_search"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:autofillHints="country"
                     android:background="@android:color/transparent"
-                    android:hint="@string/search_country"
+                    android:hint="@string/hint.search_country"
                     android:inputType="textCapSentences"
-                    android:labelFor="@+id/ibSearch"
+                    android:labelFor="@+id/ib_search"
                     android:maxLength="100"
                     android:paddingStart="@dimen/offset8"
                     android:paddingEnd="@dimen/offset8"
@@ -80,12 +80,12 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAllCountries"
+        android:id="@+id/rv_all_countries"
         style="@style/RecyclerViewStyle"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <TextView
-        android:id="@+id/tvNoResults"
+        android:id="@+id/tv_no_results"
         style="@style/TextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -107,11 +107,11 @@
         app:lottie_rawRes="@raw/anim_flight" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatBtnInfo"
+        android:id="@+id/float_btn_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:contentDescription="@string/image"
+        android:contentDescription="@string/content_description.image"
         android:drawingCacheQuality="auto"
         android:fadeScrollbars="true"
         android:focusable="true"
@@ -119,7 +119,7 @@
         app:elevation="@dimen/elevation_4"
         app:fabCustomSize="@dimen/size_all_countries_fab_custom"
         app:fabSize="auto"
-        app:layout_anchor="@id/rvAllCountries"
+        app:layout_anchor="@id/rv_all_countries"
         app:layout_anchorGravity="bottom|end"
         app:maxImageSize="@dimen/size_all_countries_fab_max_image"
         app:srcCompat="@drawable/btn_info_ripple"

@@ -1,6 +1,6 @@
-package ua.turskyi.domain.util
+package ua.turskyi.data.util
 
-import ua.turskyi.domain.exceptions.*
+import ua.turskyi.data.util.exceptions.*
 import java.net.UnknownHostException
 
 /**

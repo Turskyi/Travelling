@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel" />
@@ -26,7 +25,7 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
-                android:id="@+id/toolbarLayout"
+                android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black"
@@ -40,11 +39,11 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
                 app:statusBarScrim="@android:color/black"
-                app:title="...loading countries"
+                app:title="@string/home_onboarding_title"
                 app:toolbarId="@+id/toolbar">
 
                 <FrameLayout
-                    android:id="@+id/flPieChart"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:foreground="?attr/selectableItemBackground"
@@ -53,12 +52,12 @@
                     android:paddingBottom="@dimen/offset_40"
                     app:layout_collapseMode="pin">
 
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/pieChart"
+                    <ua.turskyi.travelling.widgets.CirclePieChart
+                        android:id="@+id/circle_pie_chart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:elevation="@dimen/elevation_4"
-                        android:soundEffectsEnabled="true" />
+                        android:soundEffectsEnabled="true"/>
 
                 </FrameLayout>
 
@@ -74,6 +73,12 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVisitedCountries"
+            style="@style/RecyclerViewStyle"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <!-- loading progress bar -->
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pb"
             style="@style/ProgressBarStyle"
@@ -83,17 +88,12 @@
             app:lottie_autoPlay="true"
             app:lottie_rawRes="@raw/anim_flight" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvVisitedCountries"
-            style="@style/RecyclerViewStyle"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatBtnSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:contentDescription="@string/image"
+            android:contentDescription="@string/content_description.image"
             android:drawingCacheQuality="auto"
             android:fadeScrollbars="true"
             android:focusable="true"
@@ -101,7 +101,7 @@
             android:visibility="gone"
             app:elevation="@dimen/elevation_4"
             app:fabSize="auto"
-            app:layout_anchor="@id/pieChart"
+            app:layout_anchor="@id/circle_pie_chart"
             app:layout_anchorGravity="bottom|end"
             app:layout_behavior=".widgets.FabScrollBehavior"
             app:maxImageSize="@dimen/size_max_float_btn"
@@ -116,7 +116,7 @@
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/offset_64"
             android:clickable="true"
-            android:contentDescription="@string/image"
+            android:contentDescription="@string/content_description.image"
             android:drawingCacheQuality="auto"
             android:elevation="4dp"
             android:fadeScrollbars="true"

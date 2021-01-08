@@ -10,10 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_all_countries.*
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
 import ua.turskyi.travelling.extensions.openInfoDialog
+import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
@@ -21,10 +22,11 @@ import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
 
-class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) {
+class AllCountriesActivity : AppCompatActivity() {
 
     private val viewModel: AllCountriesActivityViewModel by inject()
     private val adapter: AllCountriesAdapter by inject()
+    private lateinit var binding: ActivityAllCountriesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,82 +35,97 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
         initObservers()
     }
 
+    override fun onBackPressed() {
+        setResult(RESULT_CANCELED)
+        super.onBackPressed()
+    }
+
     private fun initView() {
-        etSearch.isFocusableInTouchMode = true
+        binding = ActivityAllCountriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.etSearch.isFocusableInTouchMode = true
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         adapter.submitList(viewModel.pagedList)
         val layoutManager = LinearLayoutManager(this)
-        rvAllCountries.adapter = adapter
-        rvAllCountries.layoutManager = layoutManager
+        binding.rvAllCountries.adapter = adapter
+        binding.rvAllCountries.layoutManager = layoutManager
     }
 
     private fun initListeners() {
-        ibSearch.setOnClickListener {
-            if (it.isSelected) {
+        binding.ibSearch.setOnClickListener { search ->
+            if (search.isSelected) {
                 collapseSearch()
             } else {
                 expandSearch()
             }
         }
-        etSearch.addTextChangedListener {
-            viewModel.searchQuery = "%${it.toString()}%"
+        binding.etSearch.addTextChangedListener { inputText ->
+            viewModel.searchQuery = "%${inputText.toString()}%"
             adapter.submitList(viewModel.pagedList)
         }
 
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         adapter.onCountryClickListener = ::addToVisited
         adapter.onCountryLongClickListener = ::sendToGoogleMapToShowGeographicalLocation
-        rvAllCountries.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvAllCountries.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 when {
-                    dy > 0 -> floatBtnInfo?.show()
-                    dy < 0 -> floatBtnInfo?.hide()
+                    dy > 0 -> binding.floatBtnInfo.show()
+                    dy < 0 -> binding.floatBtnInfo.hide()
                 }
             }
         })
-        floatBtnInfo.setOnClickListener { openInfoDialog(getString(R.string.txt_info_all_countries)) }
-    }
-
-    private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("geo:0,0?q=${country.name}")
-        )
-        startActivity(intent)
-    }
-
-    private fun addToVisited(country: Country) {
-        viewModel.markAsVisited(country)
-        hideKeyboard()
-        onBackPressed()
+        binding.floatBtnInfo.setOnClickListener { openInfoDialog(getString(R.string.txt_info_all_countries)) }
     }
 
     private fun initObservers() {
-        val observer = EmptyListObserver(rvAllCountries, tvNoResults)
+        val observer = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
         adapter.registerAdapterDataObserver(observer)
         viewModel.notVisitedCountriesNumLiveData.observe(this, { notVisitedNum ->
             updateTitle(notVisitedNum)
         })
         viewModel.visibilityLoader.observe(this, { currentVisibility ->
-            pb.visibility = currentVisibility
+            binding.pb.visibility = currentVisibility
+        })
+        viewModel.errorMessage.observe(this, { event ->
+            event.getMessageIfNotHandled()?.let { message ->
+                toastLong(message)
+            }
         })
     }
 
+    private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(getString(R.string.geo_location, country.name))
+        )
+        startActivity(intent)
+    }
+
+    private fun addToVisited(country: Country) {
+        viewModel.markAsVisited(country){
+            hideKeyboard()
+            val intent = Intent()
+            setResult(RESULT_OK, intent)
+            finish()
+        }
+    }
+
     private fun updateTitle(num: Int) {
-        tvToolbarTitle.text =
+        binding.tvToolbarTitle.text =
             resources.getQuantityString(R.plurals.numberOfCountriesRemain, num, num)
     }
 
     private fun collapseSearch() {
-        rvAllCountries.animate()
+        binding.rvAllCountries.animate()
             .translationY((-1 * resources.getDimensionPixelSize(R.dimen.offset_20)).toFloat())
-        ibSearch.isSelected = false
+        binding.ibSearch.isSelected = false
         val width =
-            toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
+            binding.toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
         hideKeyboard()
-        etSearch.setText("")
-        tvToolbarTitle.animate().alpha(1f).duration = 200
-        sllSearch.elevate(
+        binding.etSearch.setText("")
+        binding.tvToolbarTitle.animate().alpha(1f).duration = 200
+        binding.sllSearch.elevate(
             resources.getDimension(R.dimen.elevation_8),
             resources.getDimension(R.dimen.elevation_1),
             100
@@ -118,20 +135,20 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             0
         ).apply {
             addUpdateListener {
-                etSearch.layoutParams.width = animatedValue as Int
-                sllSearch.requestLayout()
-                sllSearch.clearFocus()
+                binding.etSearch.layoutParams.width = animatedValue as Int
+                binding.sllSearch.requestLayout()
+                binding.sllSearch.clearFocus()
             }
             duration = 400
         }.start()
     }
 
     private fun expandSearch() {
-        rvAllCountries.animate().translationY(0f)
-        ibSearch.isSelected = true
-        val width = toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
-        tvToolbarTitle.animate().alpha(0f).duration = 200
-        sllSearch.elevate(
+        binding.rvAllCountries.animate().translationY(0f)
+        binding.ibSearch.isSelected = true
+        val width = binding.toolbar.width - resources.getDimensionPixelSize(R.dimen.offset_16)
+        binding.tvToolbarTitle.animate().alpha(0f).duration = 200
+        binding.sllSearch.elevate(
             resources.getDimension(R.dimen.elevation_1),
             resources.getDimension(R.dimen.elevation_8),
             100
@@ -141,12 +158,12 @@ class AllCountriesActivity : AppCompatActivity(R.layout.activity_all_countries) 
             width
         ).apply {
             addUpdateListener {
-                etSearch.layoutParams.width = animatedValue as Int
-                sllSearch.requestLayout()
+                binding.etSearch.layoutParams.width = animatedValue as Int
+                binding.sllSearch.requestLayout()
             }
             doOnEnd {
-                etSearch.requestFocus()
-                etSearch.setText("")
+                binding.etSearch.requestFocus()
+                binding.etSearch.setText("")
             }
             duration = 400
         }.start()

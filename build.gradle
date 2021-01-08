@@ -1,18 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext.kotlin_version = '1.4.10'
     repositories {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-        /* Google Services plugin */
+        /* Google Services plugin (for firebase) */
         classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,6 +21,8 @@ subprojects {
         dependencies{
             /* Kotlin */
             implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+            /* Add to avoid  w:Kotlin runtime JAR files in the classpath should have the same version */
+            implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
             /* koin */
             implementation "org.koin:koin-androidx-viewmodel:$koin_version"
@@ -42,6 +43,22 @@ subprojects {
 
             /* Paging */
             implementation "androidx.paging:paging-runtime:$paging_version"
+
+            /*  Bill of Materials for the Firebase platform */
+            implementation platform('com.google.firebase:firebase-bom:26.2.0')
+            /* When using the BoM, no need to specify versions in Firebase library dependencies */
+
+            /* Declaring the dependencies for the Crashlytics and Analytics libraries */
+            implementation 'com.google.firebase:firebase-crashlytics-ktx'
+            /* Firebase SDK for Google Analytics */
+            implementation 'com.google.firebase:firebase-analytics-ktx'
+
+            /* Declare the dependency for the Cloud Firestore library */
+            implementation 'com.google.firebase:firebase-firestore-ktx'
+
+            /* Firebase for authentication */
+            implementation 'com.google.firebase:firebase-auth'
+            implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
         }
     }
 }

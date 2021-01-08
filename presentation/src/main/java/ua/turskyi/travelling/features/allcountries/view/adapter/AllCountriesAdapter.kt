@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
-import kotlinx.android.synthetic.main.item_list_country.view.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
@@ -120,10 +119,10 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
     }
 
     inner class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvCountry: TextView = itemView.tvCountry
-        val ivFlag: ImageView = itemView.ivFlag
-        val wvFlag: WebView = itemView.wvFlag
-        val llCountry: LinearLayout = itemView.llCountry
+        val tvCountry: TextView = itemView.findViewById(R.id.tv_country)
+        val ivFlag: ImageView = itemView.findViewById(R.id.iv_flag)
+        val wvFlag: WebView = itemView.findViewById(R.id.wv_flag)
+        val llCountry: LinearLayout = itemView.findViewById(R.id.ll_country)
 
         init {
             itemView.setOnClickListener {

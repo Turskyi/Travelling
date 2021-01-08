@@ -5,27 +5,35 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_flags.*
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
-import ua.turskyi.travelling.features.flags.view.adapter.ScreenSlidePagerAdapter
+import ua.turskyi.travelling.databinding.ActivityFlagsBinding
+import ua.turskyi.travelling.extensions.openInfoDialog
+import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
+import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
+import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
-import ua.turskyi.travelling.common.view.InfoDialog
 
-class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentListener {
+class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener ,
+    FlagsActivityView {
 
-    companion object{
-        const val POSITION = "position"
+    companion object {
+        const val EXTRA_POSITION = "ua.turskyi.travelling.POSITION"
+        const val EXTRA_ITEM_COUNT = "ua.turskyi.travelling.ITEM_COUNT"
     }
+
+    private var getBundle: Bundle? = null
+    private lateinit var binding: ActivityFlagsBinding
+    private lateinit var flagsAdapter: FlagsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
         initListeners()
+        initObserver()
     }
 
     override fun onChangeToolbarTitle(title: String?) {
-        tvToolbarTitle.text = title
+        binding.tvToolbarTitle.text = title
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -35,29 +43,45 @@ class FlagsActivity: AppCompatActivity(R.layout.activity_flags), OnFlagFragmentL
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        openInfoDialog()
+        openInfoDialog(R.string.txt_info_flags)
         return true
     }
 
-    private fun openInfoDialog() {
-        val infoDialog = InfoDialog.newInstance(getString(R.string.txt_info_flags),false)
-        infoDialog.show(supportFragmentManager, "info dialog")
+    override fun getItemCount(): Int {
+        val itemCount: Int? = getBundle?.getInt(EXTRA_ITEM_COUNT)
+        return itemCount ?: 0
+    }
+
+    override fun setLoaderVisibility(currentVisibility: Int) {
+        binding.pb.visibility = currentVisibility
     }
 
     private fun initView() {
-        setSupportActionBar(toolbar)
+        getBundle = this@FlagsActivity.intent.extras
+        binding = ActivityFlagsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
-        pager.adapter = pagerAdapter
-        pager.offscreenPageLimit = 4
-        pager.setPageTransformer(ZoomOutPageTransformer())
-        val getBundle: Bundle? = this.intent.extras
-        val startPosition = getBundle?.getInt(POSITION)
-        startPosition?.let { pager.post { pager.setCurrentItem(it, true) } }
-        postponeEnterTransition()
+        initAdapter()
     }
 
-    private fun initListeners() = toolbar.setNavigationOnClickListener { onBackPressed() }
+    private fun initAdapter() {
+        /* flagsAdapter cannot by implemented in koin modules
+   since "view pager 2" required exact context */
+        flagsAdapter = FlagsAdapter(this)
+        binding.pager.apply {
+            adapter = flagsAdapter
+            offscreenPageLimit = 4
+            setPageTransformer(ZoomOutPageTransformer())
+            val startPosition = getBundle?.getInt(EXTRA_POSITION)
+            startPosition?.let { position ->
+                post { setCurrentItem(position, true) }
+            }
+        }
+    }
+
+    private fun initListeners() = binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+    private fun initObserver() = lifecycle.addObserver(flagsAdapter)
 }

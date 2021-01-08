@@ -1,11 +1,20 @@
 package ua.turskyi.domain.repository
 
+import kotlinx.coroutines.Job
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
+    val isSynchronized: Boolean
+    var isUpgraded: Boolean
+
     suspend fun refreshCountriesInDb(
         onSuccess: () -> Unit,
+        onError: ((Exception) -> Unit?)? = null
+    )
+
+    suspend fun syncVisitedCountries(
+        onSuccess: (Job?) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -16,13 +25,9 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun addModelsToDb(
-        countries: MutableList<CountryModel>,
-        onError: ((Exception) -> Unit?)? = null
-    )
-
     suspend fun markAsVisited(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -32,33 +37,36 @@ interface CountriesRepository {
     )
 
     suspend fun getCities(
-        onSuccess: (MutableList<CityModel>) -> Unit,
+        onSuccess: (List<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun getNumNotVisitedCountries(
+    suspend fun getCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun removeFromVisited(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun removeCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun insertCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun getCountriesByRange(
-        limit: Int,
-        offset: Int,
+        to: Int,
+        from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
