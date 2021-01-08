@@ -15,3 +15,6 @@
 /.idea/
 .idea
 /node_modules/
+node_modules
+/presentation/release/
+presentation/release
