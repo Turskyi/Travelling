@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.extensions.mapToModel
@@ -92,8 +91,8 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         }
 
     fun markAsVisited(country: Country, onSuccess: () -> Unit) {
+        _visibilityLoader.postValue(VISIBLE)
         viewModelScope.launch {
-            _visibilityLoader.postValue(VISIBLE)
             interactor.markAsVisitedCountryModel(country.mapToModel(), {
                 onSuccess()
             }, { exception ->
