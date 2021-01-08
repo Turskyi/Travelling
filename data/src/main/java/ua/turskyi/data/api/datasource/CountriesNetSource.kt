@@ -8,7 +8,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ua.turskyi.data.entities.network.CountryListResponse
 import ua.turskyi.data.entities.network.CountryNet
-import ua.turskyi.domain.util.throwException
+import ua.turskyi.data.util.throwException
 
 class CountriesNetSource(private val countriesApi: CountriesApi) : KoinComponent {
 

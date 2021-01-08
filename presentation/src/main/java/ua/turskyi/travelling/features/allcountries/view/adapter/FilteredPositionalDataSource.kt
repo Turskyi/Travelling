@@ -3,7 +3,7 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapModelListToActualList
+import ua.turskyi.travelling.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import kotlin.coroutines.CoroutineContext
 
@@ -21,12 +21,16 @@ internal class FilteredPositionalDataSource(
     ) {
         launch {
             interactor.loadCountriesByNameAndRange(
-                countryName, params.requestedLoadSize, 0,
+                countryName, params.requestedLoadSize, params.requestedStartPosition,
                 { allCountries ->
-                    callback.onResult(allCountries.mapModelListToActualList(), 0)
+                    callback.onResult(
+                        allCountries.mapModelListToCountryList(),
+                        params.requestedStartPosition
+                    )
                 },
-                {
-                    callback.onResult(emptyList(), 0)
+                { exception ->
+                    exception.printStackTrace()
+                    callback.onResult(emptyList(), params.requestedStartPosition)
                 })
             job.cancel()
         }
@@ -36,13 +40,15 @@ internal class FilteredPositionalDataSource(
         params: LoadRangeParams,
         callback: LoadRangeCallback<Country>
     ) {
-        GlobalScope.launch {
+        launch {
             interactor.loadCountriesByNameAndRange(
-                countryName, params.loadSize, params.startPosition,
+                countryName, params.startPosition + params.loadSize, params.startPosition,
                 { allCountries ->
-                    callback.onResult(allCountries.mapModelListToActualList())
+                    /* on next call result returns nothing since only one page of countries required */
+                    callback.onResult(allCountries.mapModelListToCountryList())
                 },
-                {
+                {exception ->
+                    exception.printStackTrace()
                     callback.onResult(emptyList())
                 })
         }

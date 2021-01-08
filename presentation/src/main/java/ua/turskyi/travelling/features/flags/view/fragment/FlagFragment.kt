@@ -28,9 +28,11 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentFlagBinding
 import ua.turskyi.travelling.extensions.observeOnce
 import ua.turskyi.travelling.extensions.toast
-import ua.turskyi.travelling.features.flags.callback.OnFlagFragmentListener
+import ua.turskyi.travelling.extensions.toastLong
+import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
+import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
-import ua.turskyi.travelling.features.flags.viewmodel.FlagsActivityViewModel
+import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
 
 class FlagFragment : Fragment() {
@@ -38,19 +40,26 @@ class FlagFragment : Fragment() {
     private var _binding: FragmentFlagBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FlagsActivityViewModel by inject()
+    private val viewModel: FlagsFragmentViewModel by inject()
 
-    var mListener: OnFlagFragmentListener? = null
+    var mChangeFlagListener: OnChangeFlagFragmentListener? = null
+    private var flagsActivityViewListener: FlagsActivityView? = null
 
     private lateinit var photoPickerResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         initResultLauncher()
-        if (context is OnFlagFragmentListener) {
-            mListener = context
+        if (context is OnChangeFlagFragmentListener) {
+            mChangeFlagListener = context
         } else {
-            throw RuntimeException("$context must implement OnFlagFragmentListener")
+            throw RuntimeException(getString(R.string.msg_exception_flag_listener, context))
+        }
+        try {
+            flagsActivityViewListener = context as FlagsActivityView?
+        } catch (castException: ClassCastException) {
+            /* in this case the activity does not implement the listener.  */
+            castException.printStackTrace()
         }
     }
 
@@ -70,7 +79,8 @@ class FlagFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        mChangeFlagListener = null
+        flagsActivityViewListener = null
     }
 
     override fun onResume() {
@@ -89,7 +99,7 @@ class FlagFragment : Fragment() {
                 binding.ivEnlargedFlag.visibility = VISIBLE
                 binding.wvFlag.visibility = GONE
                 val selectedImageUri = photoChooserIntent?.data
-                if (selectedImageUri.toString().contains("com.android.providers.media")) {
+                if (selectedImageUri.toString().contains(getString(R.string.media_providers))) {
                     val imageId =
                         selectedImageUri?.lastPathSegment?.takeLastWhile { character -> character.isDigit() }
                             ?.toInt()
@@ -171,7 +181,7 @@ class FlagFragment : Fragment() {
     private fun initPhotoPicker() {
         val action: String = Intent.ACTION_OPEN_DOCUMENT
         val intent = Intent(action)
-        intent.type = "image/jpeg"
+        intent.type = getString(R.string.image_type)
         val intentChooser =
             Intent.createChooser(intent, getString(R.string.flag_chooser_title_complete_using))
         photoPickerResultLauncher.launch(intentChooser)
@@ -184,10 +194,19 @@ class FlagFragment : Fragment() {
     }
 
     private fun initObservers() {
+        lifecycle.addObserver(viewModel)
+        viewModel.errorMessage.observe(this, { event ->
+            event.getMessageIfNotHandled()?.let { message ->
+                toastLong(message)
+            }
+        })
+        viewModel.visibilityLoader.observe(this, { currentVisibility ->
+            flagsActivityViewListener?.setLoaderVisibility(currentVisibility)
+        })
         val visitedCountriesObserver = Observer<List<Country>> { countries ->
             val position = this.arguments?.getInt(EXTRA_POSITION)
             position?.let {
-                mListener?.onChangeToolbarTitle(countries[position].name)
+                mChangeFlagListener?.onChangeToolbarTitle(countries[position].name)
                 if (countries[position].selfie.isNullOrEmpty()) {
                     showTheFlag(countries, position)
                 } else {
@@ -237,7 +256,6 @@ class FlagFragment : Fragment() {
                             fingerState = FINGER_RELEASED
                             /* perform click */
                             showSelfie(countries, position)
-//                            TODO: check if it is working
                             view.performClick()
                             /* return first clickListener */
                             binding.ivEnlargedFlag.setOnClickListener(
@@ -312,10 +330,9 @@ class FlagFragment : Fragment() {
                             wvFlag.visibility = VISIBLE
                             wvFlag.setBackgroundColor(TRANSPARENT)
                             wvFlag.loadData(
-                                "<html><head><style type='text/css'>" +
-                                        "body{margin:auto auto;text-align:center;} img{width:100%25;}" +
-                                        " </style></head><body><img src='${countries[position].flag}'/>" +
-                                        "</body></html>", "text/html", "UTF-8"
+                                getString(R.string.html_data_flag, countries[position].flag),
+                                getString(R.string.mime_type_txt_html),
+                                getString(R.string.encoding_utf_8)
                             )
                         }
                     }

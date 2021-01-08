@@ -1,6 +1,6 @@
-package ua.turskyi.travelling.features.flags.callback
+package ua.turskyi.travelling.features.flags.callbacks
 
 /* This interface implemented by the Activity */
-interface OnFlagFragmentListener {
+interface OnChangeFlagFragmentListener {
     fun onChangeToolbarTitle(title: String?)
 }

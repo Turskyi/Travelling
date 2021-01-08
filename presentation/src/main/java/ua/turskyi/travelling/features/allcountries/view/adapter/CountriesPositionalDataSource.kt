@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapModelListToActualList
+import ua.turskyi.travelling.extensions.log
+import ua.turskyi.travelling.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import java.util.*
 import kotlin.concurrent.schedule
@@ -27,20 +28,22 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.getCountriesByRange(params.requestedLoadSize, 0,
+            interactor.getCountriesByRange(params.requestedLoadSize,  params.requestedStartPosition,
                 { initCountries ->
-                    callback.onResult(initCountries.mapModelListToActualList(), 0)
-                 /* a little bit delay of stopping animation */
-                    Timer().schedule(2000) {
+                    callback.onResult(
+                        initCountries.mapModelListToCountryList(),
+                        params.requestedStartPosition
+                    )
+                    /* creating a little delay of stopping animation for smooth loading*/
+                    Timer().schedule(1500) {
                         _visibilityLoader.postValue(GONE)
                     }
                 },
-                {
-                    it.printStackTrace()
-                    callback.onResult(emptyList(), 0)
+                { exception ->
+                    exception.printStackTrace()
+                    callback.onResult(emptyList(), params.requestedStartPosition)
                     _visibilityLoader.postValue(GONE)
                 })
-            job.cancel()
         }
     }
 
@@ -49,12 +52,13 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         callback: LoadRangeCallback<Country>
     ) {
         GlobalScope.launch {
-            interactor.getCountriesByRange(params.loadSize, params.startPosition,
+            interactor.getCountriesByRange(params.startPosition + params.loadSize,
+                params.startPosition,
                 { allCountries ->
-                    callback.onResult(allCountries.mapModelListToActualList())
+                    callback.onResult(allCountries.mapModelListToCountryList())
                 },
-                {
-                    it.printStackTrace()
+                { exception ->
+                    exception.printStackTrace()
                     callback.onResult(emptyList())
                     _visibilityLoader.postValue(GONE)
                 })

@@ -7,14 +7,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import androidx.core.widget.addTextChangedListener
 import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
 import ua.turskyi.travelling.extensions.openInfoDialog
-import ua.turskyi.travelling.extensions.toast
+import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
@@ -33,6 +33,11 @@ class AllCountriesActivity : AppCompatActivity() {
         initView()
         initListeners()
         initObservers()
+    }
+
+    override fun onBackPressed() {
+        setResult(RESULT_CANCELED)
+        super.onBackPressed()
     }
 
     private fun initView() {
@@ -84,7 +89,7 @@ class AllCountriesActivity : AppCompatActivity() {
         })
         viewModel.errorMessage.observe(this, { event ->
             event.getMessageIfNotHandled()?.let { message ->
-                toast(message)
+                toastLong(message)
             }
         })
     }
@@ -92,15 +97,18 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("geo:0,0?q=${country.name}")
+            Uri.parse(getString(R.string.geo_location, country.name))
         )
         startActivity(intent)
     }
 
     private fun addToVisited(country: Country) {
-        viewModel.markAsVisited(country)
-        hideKeyboard()
-        onBackPressed()
+        viewModel.markAsVisited(country){
+            hideKeyboard()
+            val intent = Intent()
+            setResult(RESULT_OK, intent)
+            finish()
+        }
     }
 
     private fun updateTitle(num: Int) {

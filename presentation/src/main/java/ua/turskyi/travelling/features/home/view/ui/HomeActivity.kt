@@ -1,26 +1,19 @@
 package ua.turskyi.travelling.features.home.view.ui
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.Gravity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.IdpResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
@@ -30,42 +23,44 @@ import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_ITEM_COUNT
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
-import ua.turskyi.travelling.utils.BillingManager
 import ua.turskyi.travelling.utils.PermissionHandler
 import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 import ua.turskyi.travelling.utils.PermissionHandler.requestPermission
 import java.util.*
-import kotlin.concurrent.schedule
-import kotlin.coroutines.CoroutineContext
 
-class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDismissListener,
-    SyncDialog.SyncListener {
+class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
+//for future release
+/*, SyncDialog.SyncListener*/ {
 
+    //    for future release
+//    private lateinit var billingManager: BillingManager
+//    private lateinit var authorizationResultLauncher: ActivityResultLauncher<Intent>
+
+    private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var binding: ActivityHomeBinding
 
-    private lateinit var billingManager: BillingManager
-    private lateinit var authorizationResultLauncher: ActivityResultLauncher<Intent>
     private var backPressedTiming: Long = 0
     private var mLastClickTime: Long = 0
+
     private val viewModel by inject<HomeActivityViewModel>()
     private val homeAdapter by inject<HomeAdapter>()
-
-    private var job: Job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        registerAuthorization()
+        registerAllCountriesActivityResultLauncher()
         PermissionHandler.checkPermission(this@HomeActivity)
-        billingManager = BillingManager(this@HomeActivity)
+        initView()
+//        for future release
+//        registerAuthorization()
+//        billingManager = BillingManager(this@HomeActivity)
         initListeners()
     }
 
@@ -73,41 +68,31 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         super.onResume()
         /* makes info icon visible */
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        launch { viewModel.initListOfCountries() }
-
-        binding.circlePieChart.animatePieChart()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        if (!viewModel.isSynchronized) {
-            /* makes sync icon visible */
-            val inflater = menuInflater
-            inflater.inflate(R.menu.menu_sync, menu)
-        }
-        return true
-    }
+//    for future release
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        if (!viewModel.isSynchronized) {
+//            /* makes sync icon visible */
+//            val inflater = menuInflater
+//            inflater.inflate(R.menu.menu_sync, menu)
+//        }
+//        return true
+//    }
 
     /**
      * Calling when "add city dialogue" dismissed.
      */
-    override fun onDismiss(dialogInterface: DialogInterface?) {
-        launch { viewModel.initListOfCountries() }
-    }
+    override fun onDismiss(dialogInterface: DialogInterface?) = viewModel.showListOfCountries()
 
-    /**
-     * Calling when user clicks "ok" button in "sync dialogue".
-     */
-    override fun initSynchronization() {
-        /** faking billing query */
-//        TODO:remove before uploading on play market
-        Timer().schedule(2000) {
-            setUpgradedVersion()
-        }
-        /*___________________*/
 
-        billingManager.launchBilling()
-    }
+//    for future release
+//    /**
+//     * Calling when user clicks "ok" button in "sync dialogue".
+//     */
+//    override fun initSynchronization() {
+//        billingManager.launchBilling()
+//    }
 
     override fun onBackPressed() {
         if (backPressedTiming + TIME_INTERVAL > System.currentTimeMillis()) {
@@ -125,21 +110,17 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 openInfoDialog(R.string.txt_info_home)
                 true
             }
-            R.id.action_sync -> {
-                if (viewModel.isUpgraded) {
-                    viewModel.syncDatabaseWithFireStore()
-                } else {
-                    openSyncDialog(R.string.txt_info_billing)
-                }
-                true
-            }
+//            for future release
+//            R.id.action_sync -> {
+//                if (viewModel.isUpgraded) {
+//                    viewModel.syncDatabaseWithFireStore()
+//                } else {
+//                    openSyncDialog(R.string.txt_info_billing)
+//                }
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
     }
 
     override fun onRequestPermissionsResult(
@@ -149,20 +130,19 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResult)
         when (requestCode) {
-            ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> {
-                if ((grantResult.isNotEmpty() && grantResult[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
-                    isPermissionGranted = true
-                    initView()
-                    initObservers()
-                } else {
-                    requestPermission(this)
-                }
+            ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> if ((grantResult.isNotEmpty()
+                        && grantResult[0] == PackageManager.PERMISSION_GRANTED)
+            ) {
+                /** we got here the first time, when permission is received */
+                isPermissionGranted = true
+                initObservers()
+            } else {
+                requestPermission(this)
             }
         }
     }
 
-    fun initView() {
+    private fun initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.viewModel = this.viewModel
         binding.lifecycleOwner = this
@@ -193,6 +173,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
+                        viewModel.visitedCountries.value?.size?.let { itemCount ->
+                            putInt(EXTRA_ITEM_COUNT, itemCount)
+                        }
                     }
                 }
                 mLastClickTime = SystemClock.elapsedRealtime()
@@ -225,22 +208,16 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
     }
 
     fun initObservers() {
-        /*  here could be a more efficient way to handle a click to open activity,
-        * but it is made on purpose of demonstration databinding */
-        viewModel.navigateToAllCountries.observe(this, { shouldNavigate ->
-            if (shouldNavigate == true) {
-                start<AllCountriesActivity>()
-                viewModel.onNavigatedToAllCountries()
-            }
-        })
+        viewModel.showListOfCountries()
         viewModel.visitedCountriesWithCities.observe(this, { visitedCountries ->
-            updateAdapterWith(visitedCountries)
             initTitleWithNumberOf(visitedCountries)
+            updateAdapterWith(visitedCountries)
         })
         viewModel.visitedCountries.observe(this, { visitedCountries ->
             binding.circlePieChart.apply {
                 initPieChart()
                 createPieChartWith(visitedCountries, viewModel.notVisitedCountriesCount)
+                binding.circlePieChart.animatePieChart()
             }
             showFloatBtn(visitedCountries)
         })
@@ -250,43 +227,72 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
         viewModel.errorMessage.observe(this, { event ->
             event.getMessageIfNotHandled()?.let { message ->
-                toast(message)
+                toastLong(message)
+            }
+        })
+        /*  here could be a more efficient way to handle a click to open activity,
+         * but it is made on purpose of demonstration databinding */
+        viewModel.navigateToAllCountries.observe(this, { shouldNavigate ->
+            if (shouldNavigate == true) {
+                allCountriesResultLauncher.launch(Intent(this, AllCountriesActivity::class.java))
+                viewModel.onNavigatedToAllCountries()
             }
         })
     }
 
-    fun setUpgradedVersion() = viewModel.upgradeAndSync(authorizationResultLauncher)
+//    for future release
+//    fun setUpgradedVersion() = viewModel.upgradeAndSync(authorizationResultLauncher)
 
-    fun setTitle() {
-        if (viewModel.citiesCount > 0) {
-            showTitleWithCitiesAndCountries()
-        } else {
-            showTitleWithOnlyCountries()
-        }
+    fun setTitle() = if (viewModel.citiesCount > 0) {
+        showTitleWithCitiesAndCountries()
+    } else {
+        showTitleWithOnlyCountries()
     }
 
-    private fun registerAuthorization() {
-        authorizationResultLauncher = registerForActivityResult(
+//    for future release
+//    private fun registerAuthorization() {
+//        authorizationResultLauncher = registerForActivityResult(
+//            ActivityResultContracts.StartActivityForResult()
+//        ) { result ->
+//            val response = IdpResponse.fromResultIntent(result.data)
+//            /* Successfully signed in */
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                viewModel.syncDatabaseWithFireStore()
+//            } else {
+//                /* Sign in failed */
+//                when {
+//                    response == null -> {
+//                        /* User pressed back button */
+//                        showSnackbar(R.string.msg_sign_in_cancelled)
+//                        return@registerForActivityResult
+//                    }
+//                    response.error?.errorCode == ErrorCodes.NO_NETWORK -> {
+//                        showSnackbar(R.string.msg_no_internet)
+//                        return@registerForActivityResult
+//                    }
+//                    else -> {
+//                        toast(R.string.msg_did_not_sign_in)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    private fun registerAllCountriesActivityResultLauncher() {
+        allCountriesResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            val response = IdpResponse.fromResultIntent(result.data)
-            /* Successfully signed in */
-            if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.syncDatabaseWithFireStore()
+        ) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                /* New Country is added to list of visited countries */
+                binding.floatBtnLarge.hide()
+                viewModel.showListOfCountries()
             } else {
-                /* Sign in failed */
-                when {
-                    response == null -> {
+                /* did not added country to visited list */
+                when (result.resultCode) {
+                    RESULT_CANCELED -> {
                         /* User pressed back button */
-                        showSnackbar(R.string.msg_sign_in_cancelled)
+                        toast(R.string.msg_home_country_did_not_added)
                         return@registerForActivityResult
-                    }
-                    response.error?.errorCode == ErrorCodes.NO_NETWORK -> {
-                        showSnackbar(R.string.msg_no_internet)
-                        return@registerForActivityResult
-                    }
-                    else -> {
-                        toast(R.string.msg_did_not_sign_in)
                     }
                 }
             }
@@ -299,7 +305,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
 
     private fun removeCityOnLongClick(city: City) = viewModel.removeCity(city)
 
-    private fun showFloatBtn(visitedCountries: List<Country>?) {
+    private fun showFloatBtn(visitedCountries: List<Country>?) =
         if (visitedCountries.isNullOrEmpty()) {
             binding.floatBtnLarge.show()
             binding.floatBtnSmall.visibility = View.GONE
@@ -307,7 +313,6 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
             binding.floatBtnLarge.hide()
             binding.floatBtnSmall.show()
         }
-    }
 
     private fun updateAdapterWith(visitedCountries: List<VisitedCountry>) {
         for (countryNode in visitedCountries) {
@@ -316,7 +321,7 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
         homeAdapter.setList(visitedCountries)
     }
 
-    private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) {
+    private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) =
         if (viewModel.citiesCount == 0) {
             binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
@@ -352,9 +357,8 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 }"
             }
         }
-    }
 
-    private fun showTitleWithCitiesAndCountries() {
+    private fun showTitleWithCitiesAndCountries() =
         viewModel.visitedCountriesWithCities.observe(this, { countries ->
             if (viewModel.citiesCount > countries.size) {
                 binding.toolbarLayout.title = "${
@@ -384,9 +388,9 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 }"
             }
         })
-    }
 
-    fun showTitleWithOnlyCountries() {
+    /** must be open to use it in custom "circle pie chart" widget */
+    fun showTitleWithOnlyCountries() =
         viewModel.visitedCountriesWithCities.observe(this, { countryList ->
             binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
@@ -394,5 +398,4 @@ class HomeActivity : AppCompatActivity(), CoroutineScope, DialogInterface.OnDism
                 countryList.size
             )
         })
-    }
 }

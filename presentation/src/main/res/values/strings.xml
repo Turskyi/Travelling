@@ -1,14 +1,27 @@
 <resources>
     <!-- not translatable -->
+    <string name="html_data_flag" translatable="false"><![CDATA[
+    <html>
+    <head>
+    <style type=\'text/css\'>body{margin:auto auto;text-align:center;} img{width:100%%25;}</style>
+    </head>
+    <body><img src=\'%1$s\'/></body>
+    </html>]]></string>
+    <string name="encoding_utf_8" translatable="false">UTF-8</string>
+    <string name="mime_type_txt_html" translatable="false">text/html</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
     <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
     <string name="privacy_web_page" translatable="false">https://travelling-the-countries.web.app</string>
+    <string name="android_5_1" translatable="false">5.1</string>
+    <string name="media_providers" translatable="false">com.android.providers.media</string>
+    <string name="image_type" translatable="false">image/jpeg</string>
+    <string name="geo_location" translatable="false">geo:0,0?q=%1$s</string>
     <!-- for face book sharing -->
-    <string name="facebook_app_id" translatable="false">2312394202364807</string>
+    <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
     <!-- for facebook auth -->
-    <string name="facebook_application_id" translatable="false">2312394202364807</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb2312394202364807</string>
+    <string name="facebook_application_id" translatable="false">285452062466394</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb285452062466394</string>
     <!-- end of not translatable strings -->
 
     <!-- default  strings -->
@@ -103,6 +116,9 @@
     <string name="msg.did_not_sign_in">did not sign in</string>
     <string name="msg.sign_in_cancelled">sign in canceled</string>
     <string name="msg.no_internet">no internet connection</string>
+    <string name="home_onboarding_title">…loading countries</string>
+    <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
+    <string name="msg.home_country_did_not_added">did not added anything</string>
     <!-- end of strings for toasts messages -->
 
 </resources>

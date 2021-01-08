@@ -11,10 +11,20 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
 data class CountryEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) var id: Int,
     @ColumnInfo(name = COLUMN_NAME) val name: String,
-    @ColumnInfo(name = COLUMN_FLAG)  val flag: String,
-    @ColumnInfo(name = COLUMN_VISITED) var visited: Boolean?,
+    @ColumnInfo(name = COLUMN_FLAG) val flag: String,
+    @ColumnInfo(name = COLUMN_VISITED) var isVisited: Boolean?,
     @ColumnInfo(name = COLUMN_SELFIE) var selfie: String?
 ) {
+    /* required empty constructor for firestore serialization */
+    constructor() : this(0, "", "", null, null)
+    constructor(id: Int, name: String, flag: String, isVisited: Boolean?) : this(
+        id,
+        name,
+        flag,
+        isVisited,
+        null
+    )
+
     companion object {
         const val TABLE_COUNTRIES = "Countries"
         const val COLUMN_ID = "id"

@@ -23,17 +23,6 @@ class SyncDialog : AppCompatDialogFragment() {
 
     private lateinit var listener: SyncListener
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setMessage(arguments?.getString(ARG_INFO))
-            .setPositiveButton(getString(R.string.dialog_btn_ok_ready)) { _, _ ->
-                listener.initSynchronization()
-            }.setNegativeButton(getString(R.string.dialog_btn_not_ok)) { _, _ ->
-                dismiss()
-            }
-        return builder.create()
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = try {
@@ -43,6 +32,17 @@ class SyncDialog : AppCompatDialogFragment() {
                 context.toString() + "must implement SyncListener"
             )
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setMessage(arguments?.getString(ARG_INFO))
+            .setPositiveButton(getString(R.string.dialog_btn_ok_ready)) { _, _ ->
+                listener.initSynchronization()
+            }.setNegativeButton(getString(R.string.dialog_btn_not_ok)) { _, _ ->
+                dismiss()
+            }
+        return builder.create()
     }
 
     interface SyncListener {

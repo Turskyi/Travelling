@@ -14,7 +14,7 @@ class CountriesDbSource(private val countriesDao: CountriesDao) {
     fun getCountNotVisitedCountries() = countriesDao.getNumNotVisitedCountries()
     fun getVisitedLocalCountriesFromDb() = countriesDao.getVisitedCountries()
     fun getCities():List<CityEntity> = countriesDao.getCities()
-    fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
+    suspend fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
     fun insertAllCountries(countries: List<CountryEntity>) =
         countriesDao.insertAllCountries(countries)
 

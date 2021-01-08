@@ -3,9 +3,6 @@ package ua.turskyi.travelling.utils
 import android.text.TextUtils
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.SKU_ID
 import ua.turskyi.travelling.extensions.toast
@@ -13,6 +10,7 @@ import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import java.util.*
 
+//for future release
 class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListener {
     private lateinit var billingClient: BillingClient
     private val mSkuDetailsMap: MutableMap<String, SkuDetails> = HashMap()
@@ -67,7 +65,8 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                         for (i in 0 until it) {
                             val purchaseId = purchasesList[i]?.sku
                             if (TextUtils.equals(SKU_ID, purchaseId)) {
-                                activity.setUpgradedVersion()
+//                                for future release
+//                                activity.setUpgradedVersion()
                             }
                         }
                     }
@@ -109,21 +108,23 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             /*  Grant the item to the user */
-            activity.setUpgradedVersion()
+//                for future release
+//            activity.setUpgradedVersion()
             /* acknowledge the purchase */
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
-                activity.launch {
-                    withContext(Dispatchers.IO) {
-                        val acknowledgePurchaseResponseListener =
-                            AcknowledgePurchaseResponseListener { activity.toast(R.string.msg_purchase_acknowledged) }
-                        billingClient.acknowledgePurchase(
-                            acknowledgePurchaseParams.build(),
-                            acknowledgePurchaseResponseListener
-                        )
-                    }
-                }
+//                for future release
+//                activity.launch {
+//                    withContext(Dispatchers.IO) {
+//                        val acknowledgePurchaseResponseListener =
+//                            AcknowledgePurchaseResponseListener { activity.toast(R.string.msg_purchase_acknowledged) }
+//                        billingClient.acknowledgePurchase(
+//                            acknowledgePurchaseParams.build(),
+//                            acknowledgePurchaseResponseListener
+//                        )
+//                    }
+//                }
             }
         } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
             /*      Here we can confirm to the user that they've started the pending

@@ -1,5 +1,6 @@
 package ua.turskyi.domain.repository
 
+import kotlinx.coroutines.Job
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
@@ -13,7 +14,7 @@ interface CountriesRepository {
     )
 
     suspend fun syncVisitedCountries(
-        onSuccess: () -> Unit,
+        onSuccess: (Job?) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -26,6 +27,7 @@ interface CountriesRepository {
 
     suspend fun markAsVisited(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
@@ -46,16 +48,19 @@ interface CountriesRepository {
 
     suspend fun removeFromVisited(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun removeCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 
     suspend fun insertCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
 

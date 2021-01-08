@@ -1,5 +1,6 @@
 package ua.turskyi.domain.interactor
 
+import kotlinx.coroutines.Job
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import ua.turskyi.domain.model.CityModel
@@ -38,13 +39,13 @@ class CountriesInteractor : KoinComponent {
         onError: ((Exception) -> Unit?)?
     ) = repository.getCountriesByRange(limit, offset, onSusses, onError)
 
-    suspend fun refreshCountries(
+    suspend fun downloadCountries(
         onSusses: () -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = repository.refreshCountriesInDb(onSusses, onError)
 
     suspend fun syncVisitedCountries(
-        onSusses: () -> Unit,
+        onSusses: (Job?) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = repository.syncVisitedCountries(onSusses, onError)
 
@@ -54,9 +55,9 @@ class CountriesInteractor : KoinComponent {
     ) = repository.getCountNotVisitedCountries(onSusses, onError)
 
     suspend fun getVisitedModelCountries(
-        onSusses: (List<CountryModel>) -> Unit,
+        onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
-    ) = repository.getVisitedModelCountriesFromDb(onSusses, onError)
+    ) = repository.getVisitedModelCountriesFromDb(onSuccess, onError)
 
     suspend fun getCities(
         onSusses: (List<CityModel>) -> Unit,
@@ -65,21 +66,25 @@ class CountriesInteractor : KoinComponent {
 
     suspend fun markAsVisitedCountryModel(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
-    ) = repository.markAsVisited(country, onError = onError)
+    ) = repository.markAsVisited(country, onSuccess = onSuccess, onError = onError)
 
     suspend fun removeCountryModelFromVisitedList(
         country: CountryModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
-    ) = repository.removeFromVisited(country, onError = onError)
+    ) = repository.removeFromVisited(country, onSuccess = onSuccess, onError = onError)
 
     suspend fun removeCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
-    ) = repository.removeCity(city, onError = onError)
+    ) = repository.removeCity(city, onSuccess = onSuccess, onError = onError)
 
     suspend fun insertCity(
         city: CityModel,
+        onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
-    ) = repository.insertCity(city, onError = onError)
+    ) = repository.insertCity(city, onSuccess = onSuccess, onError = onError)
 }

@@ -1,7 +1,6 @@
 package ua.turskyi.travelling.utils
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,17 +17,16 @@ object PermissionHandler {
         )
         val externalStoragePermission =
             ContextCompat.checkSelfPermission(
-               activity,
+                activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
-        if (locationPermission != PackageManager.PERMISSION_GRANTED && externalStoragePermission != PackageManager.PERMISSION_GRANTED) {
+        if (locationPermission != PackageManager.PERMISSION_GRANTED
+            && externalStoragePermission != PackageManager.PERMISSION_GRANTED
+        ) {
             requestPermission(activity)
         } else {
             isPermissionGranted = true
-            activity.getHomeActivity()?.apply {
-                initView()
-                initObservers()
-            }
+            activity.getHomeActivity()?.initObservers()
         }
     }
 
