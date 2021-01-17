@@ -22,6 +22,7 @@
     <!-- for facebook auth -->
     <string name="facebook_application_id" translatable="false">285452062466394</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb285452062466394</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb285452062466394</string>
     <!-- end of not translatable strings -->
 
     <!-- default  strings -->
