@@ -3,6 +3,8 @@ package ua.turskyi.di
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,7 +25,7 @@ import ua.turskyi.data.room.datasource.CountriesDbSource
 import ua.turskyi.domain.repository.CountriesRepository
 
 val repositoriesModule = module {
-    factory<CountriesRepository> { CountriesRepositoryImpl() }
+    factory<CountriesRepository> { CountriesRepositoryImpl(CoroutineScope(SupervisorJob())) }
 }
 
 val dataProvidersModule = module {
