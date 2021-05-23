@@ -24,8 +24,6 @@ jobs:
       run: ./gradlew assembleRelease
 
 # Run tests
-    - name: Run Kotlin Linter
-      run: ./gradlew ktlintStagingDebugCheck
 
     - name: Run Unit Tests
       run: ./gradlew testStagingDebugUnitTest
