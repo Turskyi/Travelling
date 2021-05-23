@@ -3,8 +3,11 @@ package ua.turskyi.di
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -23,7 +26,7 @@ import ua.turskyi.data.room.datasource.CountriesDbSource
 import ua.turskyi.domain.repository.CountriesRepository
 
 val repositoriesModule = module {
-    factory<CountriesRepository> { CountriesRepositoryImpl() }
+    factory<CountriesRepository> { CountriesRepositoryImpl(CoroutineScope(SupervisorJob())) }
 }
 
 val dataProvidersModule = module {
@@ -37,17 +40,18 @@ val dataProvidersModule = module {
         OkHttpClient.Builder()
             .cache(get<Cache>())
             .addInterceptor { chain ->
-                var request = chain.request()
-                request = if (hasNetwork(androidContext()))
+                var request: Request = chain.request()
+                request = if (hasNetwork(androidContext())) {
                     request.newBuilder().header(
                         "Cache-Control",
                         "public, max-age=" + 5
                     ).build()
-                else
+                } else {
                     request.newBuilder().header(
                         "Cache-Control",
                         "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
                     ).build()
+                }
                 chain.proceed(request)
             }.addInterceptor(get<HttpLoggingInterceptor>())
             .build()
@@ -65,7 +69,7 @@ val dataProvidersModule = module {
     }
 
     single {
-        val cacheSize = (5 * 1024 * 1024).toLong()
+        val cacheSize: Long = (5 * 1024 * 1024).toLong()
         Cache(androidContext().cacheDir, cacheSize)
     }
     single<Retrofit> {

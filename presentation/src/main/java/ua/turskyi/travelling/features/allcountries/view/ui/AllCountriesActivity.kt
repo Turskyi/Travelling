@@ -103,11 +103,13 @@ class AllCountriesActivity : AppCompatActivity() {
     }
 
     private fun addToVisited(country: Country) {
-        viewModel.markAsVisited(country){
-            hideKeyboard()
-            val intent = Intent()
-            setResult(RESULT_OK, intent)
-            finish()
+        viewModel.markAsVisited(country) {
+            runOnUiThread {
+                hideKeyboard()
+                val intent = Intent()
+                setResult(RESULT_OK, intent)
+                finish()
+            }
         }
     }
 

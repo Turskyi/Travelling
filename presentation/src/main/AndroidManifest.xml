@@ -53,8 +53,9 @@
         </provider>
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider285452062466394"
+            android:authorities="@string/content_provider"
             android:exported="true"
+            tools:replace="android:authorities"
             tools:ignore="ExportedContentProvider" />
 
         <meta-data

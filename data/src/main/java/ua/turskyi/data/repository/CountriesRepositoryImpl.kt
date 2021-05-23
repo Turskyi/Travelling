@@ -12,7 +12,7 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
 
-class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
+class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : CountriesRepository, KoinComponent {
 
     private val netSource: CountriesNetSource by inject()
     private val dbSource: CountriesDbSource by inject()
@@ -31,7 +31,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             prefs.isUpgraded = isUpgraded
         }
 
-    override suspend fun refreshCountriesInDb(
+    override suspend fun refreshCountries(
         onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = netSource.getCountryNetList({ countryNetList ->
@@ -45,7 +45,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         onError: ((Exception) -> Unit?)?
     ) {
         onSuccess(GlobalScope.launch {
-            refreshCountriesInDb({
+            refreshCountries({
                 dbSource.getVisitedLocalCountriesFromDb().forEach { country ->
                     GlobalScope.launch {
                         markAsVisited(country.mapEntityToModel(), {
@@ -56,7 +56,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                     }
                 }
                 dbSource.getCities().forEach { city ->
-                    GlobalScope.launch {
+                    applicationScope.launch {
                         insertCity(city.mapEntityToModel(),{
 //                            implement check if last then call success in feature release
                         }, { exception ->
@@ -80,7 +80,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
         if (prefs.isSynchronized) {
             firebaseSource.updateSelfie(id.toString(), selfie)
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 dbSource.updateSelfie(id, selfie)
                 onSuccess(dbSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
             }
@@ -97,7 +97,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                 country.mapModelToEntity(), { onSuccess() },
                 { exception -> onError?.invoke(exception) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 try {
                     val countryLocal = country.mapModelToEntity()
                     countryLocal.isVisited = true
@@ -119,7 +119,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             firebaseSource.removeFromVisited(country.name, country.id, { onSuccess() },
                 { exception -> onError?.invoke(exception) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 try {
                     val countryLocal = country.mapModelToEntity()
                     countryLocal.isVisited = false
@@ -142,7 +142,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             firebaseSource.insertCity(city.mapModelToEntity(), { onSuccess() },
                 { exception -> onError?.invoke(exception) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 try {
                     dbSource.insertCity(city.mapModelToEntity())
                     onSuccess()
@@ -162,7 +162,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             firebaseSource.removeCity(city.name, { onSuccess() },
                 { exception -> onError?.invoke(exception) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 try {
                     withContext(Dispatchers.Default) {
                         val cityLocal = city.mapModelToEntity()
@@ -186,7 +186,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                 countries.mapModelListToEntityList(), { onSuccess() },
                 { exception -> onError?.invoke(exception) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 try {
                     dbSource.insertAllCountries(countries.mapModelListToEntityList())
                     onSuccess()
@@ -208,7 +208,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                 onError?.invoke(exception)
             })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 onSuccess(
                     dbSource.getVisitedLocalCountriesFromDb()
                         .mapEntityListToModelList()
@@ -228,7 +228,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                 onError?.invoke(exception)
             })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 onSuccess(
                     dbSource.getCities().mapEntitiesToModelList()
                 )
@@ -244,7 +244,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             firebaseSource.getCountNotVisitedCountries({ count -> onSuccess(count) },
                 { onError?.invoke(it) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 onSuccess(dbSource.getCountNotVisitedCountries())
             }
         }
@@ -260,7 +260,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
             firebaseSource.getCountriesByRange(to, from, { list -> onSuccess(list) },
                 { onError?.invoke(it) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 onSuccess(
                     dbSource.getLocalCountriesByRange(to, from)
                         .mapEntityListToModelList()
@@ -283,7 +283,7 @@ class CountriesRepositoryImpl : CountriesRepository, KoinComponent {
                 { list -> onSuccess(list) },
                 { onError?.invoke(it) })
         } else {
-            GlobalScope.launch {
+            applicationScope.launch {
                 onSuccess(
                     dbSource.loadCountriesByNameAndRange(name, limit, offset)
                         .mapEntityListToModelList()
