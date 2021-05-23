@@ -42,7 +42,7 @@ class CountriesInteractor : KoinComponent {
     suspend fun downloadCountries(
         onSusses: () -> Unit,
         onError: ((Exception) -> Unit?)?
-    ) = repository.refreshCountriesInDb(onSusses, onError)
+    ) = repository.refreshCountries(onSusses, onError)
 
     suspend fun syncVisitedCountries(
         onSusses: (Job?) -> Unit,

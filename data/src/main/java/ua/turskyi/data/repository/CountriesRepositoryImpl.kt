@@ -31,7 +31,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
             prefs.isUpgraded = isUpgraded
         }
 
-    override suspend fun refreshCountriesInDb(
+    override suspend fun refreshCountries(
         onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = netSource.getCountryNetList({ countryNetList ->
@@ -45,7 +45,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         onError: ((Exception) -> Unit?)?
     ) {
         onSuccess(GlobalScope.launch {
-            refreshCountriesInDb({
+            refreshCountries({
                 dbSource.getVisitedLocalCountriesFromDb().forEach { country ->
                     GlobalScope.launch {
                         markAsVisited(country.mapEntityToModel(), {

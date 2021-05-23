@@ -20,7 +20,6 @@ class App : Application() {
     override fun onCreate() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         super.onCreate()
-
         /* allows using cached data while offline */
         if (FirebaseApp.getApps(this).isNotEmpty()) {
             /**

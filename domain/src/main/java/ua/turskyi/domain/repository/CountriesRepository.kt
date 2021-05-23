@@ -8,7 +8,7 @@ interface CountriesRepository {
     val isSynchronized: Boolean
     var isUpgraded: Boolean
 
-    suspend fun refreshCountriesInDb(
+    suspend fun refreshCountries(
         onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )
