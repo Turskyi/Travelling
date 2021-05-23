@@ -23,20 +23,6 @@ jobs:
     - name: Generate Release APK
       run: ./gradlew assembleRelease
 
-# Run tests
-
-    - name: Run Unit Tests
-      run: ./gradlew testStagingDebugUnitTest
-
-    - name: upload artifact to Firebase App Distribution
-      uses: wzieba/Firebase-Distribution-Github-Action@v1
-      with:
-        appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-        token: ${{secrets.FIREBASE_TOKEN}}
-        groups: testers
-        releaseNotes: "App Build"
-        file: presentation/build/outputs/apk/release/presentation-release.apk
-
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       # ID used to access action output
@@ -79,4 +65,13 @@ jobs:
           track: internal
           userFraction: 0.50
           mappingFile: mapping.txt
+
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_ANDROID_APPID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: testers
+          releaseNotes: "App Build"
+          file: presentation/build/outputs/apk/release/presentation-release.apk
 
