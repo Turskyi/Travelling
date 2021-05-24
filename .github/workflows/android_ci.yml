@@ -36,10 +36,16 @@ jobs:
       env:
         BUILD_TOOLS_VERSION: "30.0.2"
 
-    - uses: actions/upload-artifact@master
+    - name: Upload APK
+      uses: actions/upload-artifact@v2.2.0
       with:
-        name: presentation-release.apk
-        path: ${{steps.sign_app.outputs.signedReleaseFile}}
+        name: Release artifact
+        path: presentation/build/outputs/apk/release/release/presentation-artifact-*.apk
+
+#    - uses: actions/upload-artifact@master
+#      with:
+#        name: Signed app bundle
+#        path: ${{steps.sign_app.outputs.signedReleaseFile}}
     - uses: actions/upload-artifact@master
       with:
         name: mapping.txt
