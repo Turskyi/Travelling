@@ -40,25 +40,25 @@ jobs:
       uses: actions/upload-artifact@v2.2.0
       with:
         name: Release artifact
-        path: presentation/build/outputs/apk/release/release/presentation-artifact-*.apk
+        path: presentation/build/outputs/apk/release/presentation-release.apk
 
 #    - uses: actions/upload-artifact@master
 #      with:
 #        name: Signed app bundle
 #        path: ${{steps.sign_app.outputs.signedReleaseFile}}
-    - uses: actions/upload-artifact@master
-      with:
-        name: mapping.txt
-        path: presentation/build/outputs/mapping/release/mapping.txt
+#    - uses: actions/upload-artifact@master
+#      with:
+#        name: mapping.txt
+#        path: presentation/build/outputs/mapping/release/mapping.txt
 
-    - name: upload artifact to Firebase App Distribution
-      uses: wzieba/Firebase-Distribution-Github-Action@v1
-      with:
-        appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-        token: ${{secrets.FIREBASE_TOKEN}}
-        groups: testers
-        releaseNotes: "App Build"
-        file: presentation/build/outputs/apk/release/presentation-release.apk
+#    - name: upload artifact to Firebase App Distribution
+#      uses: wzieba/Firebase-Distribution-Github-Action@v1
+#      with:
+#        appId: ${{secrets.FIREBASE_ANDROID_APPID}}
+#        token: ${{secrets.FIREBASE_TOKEN}}
+#        groups: testers
+#        releaseNotes: "App Build"
+#        file: presentation/build/outputs/apk/release/presentation-release.apk
 
   deploy-play-store:
     needs: [ build ]
@@ -68,9 +68,9 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: presentation-release.apk
-      - uses: actions/download-artifact@master
-        with:
-          name: mapping.txt
+#      - uses: actions/download-artifact@master
+#        with:
+#          name: mapping.txt
       # 2
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
@@ -81,5 +81,5 @@ jobs:
           releaseFile: presentation/build/outputs/apk/release/presentation-release.apk
           track: internal
           userFraction: 0.50
-          mappingFile: mapping.txt
+#          mappingFile: mapping.txt
 
