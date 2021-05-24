@@ -39,12 +39,18 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v2.2.0
       with:
-        name: Release artifact
+        name: release.apk
         path: presentation/build/outputs/apk/release/presentation-release.apk
+
+    - name: Upload mapping
+      uses: actions/upload-artifact@v2.2.0
+      with:
+        name: mapping.txt
+        path: presentation/build/outputs/mapping/release/mapping.txt
 
 #    - uses: actions/upload-artifact@master
 #      with:
-#        name: Signed app bundle
+#        name: release.apk
 #        path: ${{steps.sign_app.outputs.signedReleaseFile}}
 #    - uses: actions/upload-artifact@master
 #      with:
@@ -65,12 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 1
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v2
         with:
-          name: presentation-release.apk
-#      - uses: actions/download-artifact@master
-#        with:
-#          name: mapping.txt
+          name: release.apk
+      - uses: actions/download-artifact@v2
+        with:
+          name: mapping.txt
       # 2
       - name: Publish to Play Store internal test track
         uses: r0adkll/upload-google-play@v1
@@ -81,5 +87,5 @@ jobs:
           releaseFile: presentation/build/outputs/apk/release/presentation-release.apk
           track: internal
           userFraction: 0.50
-#          mappingFile: mapping.txt
+          mappingFile: mapping.txt
 
