@@ -59,11 +59,11 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                     querySkuDetails()
 
                     /* purchase request */
-                    val purchasesList = queryPurchases()
+                    val purchasesList: List<Purchase?>? = queryPurchases()
                     /* if the product has already been purchased, provide it to the user */
                     purchasesList?.size?.let {
                         for (i in 0 until it) {
-                            val purchaseId = purchasesList[i]?.sku
+                            val purchaseId = purchasesList[i]?.orderId
                             if (TextUtils.equals(SKU_ID, purchaseId)) {
 //                                for future release
 //                                activity.setUpgradedVersion()

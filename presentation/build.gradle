@@ -21,7 +21,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        /* to ensure that the translations of Firebase library are relevant to the application */
+        // to ensure that the translations of Firebase library are relevant to the application
         resConfigs "en"
     }
 
@@ -42,7 +42,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-/** used in manifest provider authorities */
+// used in manifest provider authorities
             resValue "string", "content_provider",
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
@@ -51,9 +51,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
             signingConfig signingConfigs.release
-            /** used in manifest provider authorities */
+            // used in manifest provider authorities
             resValue "string", "content_provider",
                     "com.facebook.app.FacebookContentProvider285452062466394"
+        }
+    }
+    // for ci to publish on google play market
+    flavorDimensions "distribute"
+    productFlavors {
+        appCenter {
+            dimension "distribute"
+        }
+        googlePlay {
+            dimension "distribute"
         }
     }
     compileOptions {
@@ -71,69 +81,69 @@ dependencies {
     implementation project(":domain")
     implementation project(":di")
 
-    /* kotlin */
+    // kotlin
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    /* koin */
+    // koin
     api "org.koin:koin-androidx-viewmodel:$koin_version"
     api "org.koin:koin-core:$koin_version"
     api "org.koin:koin-androidx-scope:$koin_version"
 
-    /* design components */
+    // design components
     implementation "com.google.android.material:material:$material"
 
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "androidx.activity:activity-ktx:$activity_version"
 
-    /* android */
+    // android
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'com.android.billingclient:billing:3.0.3'
+    implementation 'androidx.core:core-ktx:1.5.0'
+    implementation 'com.android.billingclient:billing:4.0.0'
     implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
 
-    /* ViewModel and LiveData */
+    // ViewModel and LiveData
     def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
-    /* Glide (Image caching and management) */
+    // Glide (Image caching and management)
     def glideVersion = "4.11.0"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
 
-    /* Displaying SVG images */
+    // Displaying SVG images
     implementation 'com.github.corouteam:GlideToVectorYou:2.0.0'
 
-    /* BaseRecyclerViewAdapterHelper */
+    // BaseRecyclerViewAdapterHelper
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
 
-    /* Recyclerview */
+    // Recyclerview
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
 
-    /* CardView */
+    // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    /* Android chart view / graph view library */
+    // Android chart view / graph view library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    /* multiline-collapsingtoolbar */
+    // multiline-collapsingtoolbar
     implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
 
     /* ViewPager2 */
-    implementation "androidx.viewpager2:viewpager2:1.1.0-alpha01"
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 
-    /* PhotoView */
+    // PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    /* Location */
+    // Location
     implementation "com.google.android.gms:play-services-location:18.0.0"
 
-    /* Facebook SDK */
+    // Facebook SDK
     def facebookVersion = "8.1.0"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
@@ -142,11 +152,18 @@ dependencies {
     def lottieVersion = "3.4.4"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
-    /* test */
+    // for ci to publish on google play market
+    def appCenterSdkVersion = '4.1.0'
+    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+    appCenterImplementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+    googlePlayImplementation "com.microsoft.appcenter:appcenter-distribute-play:${appCenterSdkVersion}"
+
+    // test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    def junitVersion = "5.7.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }

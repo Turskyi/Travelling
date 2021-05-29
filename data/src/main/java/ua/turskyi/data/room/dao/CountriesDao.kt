@@ -11,43 +11,43 @@ import ua.turskyi.data.entities.room.CountryEntity.Companion.COLUMN_SELFIE
 import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
 
 @Dao
-abstract class CountriesDao {
+interface CountriesDao {
 
     @Query("SELECT * FROM  $TABLE_COUNTRIES WHERE $COLUMN_NAME LIKE :name LIMIT :limit OFFSET :offset")
-    abstract fun loadAllCountriesByNameAndRange(
+    fun loadAllCountriesByNameAndRange(
         name: String?,
         limit: Int,
         offset: Int
     ): MutableList<CountryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertAllCountries(countries: List<CountryEntity>?)
+    fun insertAllCountries(countries: List<CountryEntity>?)
 
     /* using in paging adapters */
     @Query("SELECT * FROM $TABLE_COUNTRIES LIMIT :limit OFFSET :offset")
-    abstract fun getCountriesByRange(limit: Int, offset: Int): List<CountryEntity>
+    fun getCountriesByRange(limit: Int, offset: Int): List<CountryEntity>
 
     @Query("SELECT COUNT($COLUMN_ID) FROM $TABLE_COUNTRIES WHERE ${CountryEntity.COLUMN_VISITED} IS null OR ${CountryEntity.COLUMN_VISITED} = 0")
-    abstract fun getNumNotVisitedCountries(): Int
+    fun getNumNotVisitedCountries(): Int
 
     @Query("SELECT * FROM $TABLE_COUNTRIES WHERE ${CountryEntity.COLUMN_VISITED} = 1")
-    abstract fun getVisitedCountries(): List<CountryEntity>
+    fun getVisitedCountries(): List<CountryEntity>
 
     @Query("SELECT * FROM $TABLE_CITIES")
-    abstract fun getCities(): List<CityEntity>
+    fun getCities(): List<CityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertCountry(country: CountryEntity)
+    fun insertCountry(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertCity(city: CityEntity)
+    fun insertCity(city: CityEntity)
 
     @Delete
-    abstract fun delete(city: CityEntity)
+    fun delete(city: CityEntity)
 
     @Query("DELETE FROM $TABLE_CITIES WHERE $COLUMN_PARENT_ID = :parentId")
-    abstract suspend fun removeCitiesByCountry(parentId: Int)
+    fun removeCitiesByCountry(parentId: Int)
 
     @Query("UPDATE $TABLE_COUNTRIES SET $COLUMN_SELFIE = :selfie WHERE $COLUMN_ID = :id")
-    abstract suspend fun updateSelfie(id: Int, selfie: String)
+    fun updateSelfie(id: Int, selfie: String)
 }
