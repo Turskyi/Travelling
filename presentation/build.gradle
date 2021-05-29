@@ -56,6 +56,16 @@ android {
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
     }
+    // for ci to publish on google play market
+    flavorDimensions "distribute"
+    productFlavors {
+        appCenter {
+            dimension "distribute"
+        }
+        googlePlay {
+            dimension "distribute"
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -141,6 +151,12 @@ dependencies {
 
     def lottieVersion = "3.4.4"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    // for ci to publish on google play market
+    def appCenterSdkVersion = '4.1.0'
+    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+    appCenterImplementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+    googlePlayImplementation "com.microsoft.appcenter:appcenter-distribute-play:${appCenterSdkVersion}"
 
     // test
     testImplementation 'junit:junit:4.13.2'
