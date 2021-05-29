@@ -14,8 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.distribute.Distribute
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
@@ -57,12 +55,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        // for ci to publish on google play market
-        AppCenter.start(
-            application,
-            "63bec796-45ec-465f-8b0e-47272a0acaa6",
-            Distribute::class.java,
-        )
+
         registerAllCountriesActivityResultLauncher()
         PermissionHandler.checkPermission(this@HomeActivity)
         initView()
