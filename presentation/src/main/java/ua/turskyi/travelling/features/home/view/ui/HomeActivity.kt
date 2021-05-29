@@ -14,7 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.util.DeviceProperties
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.distribute.Distribute
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
@@ -37,10 +38,10 @@ import ua.turskyi.travelling.utils.PermissionHandler.requestPermission
 import java.util.*
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
-//for future release
+//TODO: for future release
 /*, SyncDialog.SyncListener*/ {
 
-    //    for future release
+    //  TODO:  for future release
 //    private lateinit var billingManager: BillingManager
 //    private lateinit var authorizationResultLauncher: ActivityResultLauncher<Intent>
 
@@ -56,10 +57,16 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+        // for ci to publish on google play market
+        AppCenter.start(
+            application,
+            "63bec796-45ec-465f-8b0e-47272a0acaa6",
+            Distribute::class.java,
+        )
         registerAllCountriesActivityResultLauncher()
         PermissionHandler.checkPermission(this@HomeActivity)
         initView()
-//        for future release
+//      TODO:  for future release
 //        registerAuthorization()
 //        billingManager = BillingManager(this@HomeActivity)
         initListeners()
@@ -67,11 +74,11 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
 
     override fun onResume() {
         super.onResume()
-        /* makes info icon visible */
+        // makes info icon visible
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-//    for future release
+//   TODO: for future release
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 //        if (!viewModel.isSynchronized) {
 //            /* makes sync icon visible */
@@ -87,7 +94,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
     override fun onDismiss(dialogInterface: DialogInterface?) = viewModel.showListOfCountries()
 
 
-//    for future release
+//   TODO: for future release
 //    /**
 //     * Calling when user clicks "ok" button in "sync dialogue".
 //     */
@@ -111,7 +118,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
                 openInfoDialog(R.string.txt_info_home)
                 true
             }
-//            for future release
+//      TODO:      for future release
 //            R.id.action_sync -> {
 //                if (viewModel.isUpgraded) {
 //                    viewModel.syncDatabaseWithFireStore()
@@ -170,7 +177,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
     private fun initListeners() {
         homeAdapter.apply {
             onFlagClickListener = { country ->
-                /* mis-clicking prevention, using threshold of 1000 ms */
+                // mis-clicking prevention, using threshold of 1000 ms
                 if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
@@ -241,7 +248,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         })
     }
 
-//    for future release
+//  TODO:  for future release
 //    fun setUpgradedVersion() = viewModel.upgradeAndSync(authorizationResultLauncher)
 
     fun setTitle() = if (viewModel.citiesCount > 0) {
@@ -250,7 +257,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         showTitleWithOnlyCountries()
     }
 
-//    for future release
+//  TODO:  for future release
 //    private fun registerAuthorization() {
 //        authorizationResultLauncher = registerForActivityResult(
 //            ActivityResultContracts.StartActivityForResult()
