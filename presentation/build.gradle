@@ -153,8 +153,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // for ci to publish on google play market
-    def appCenterSdkVersion = '4.1.0'
-    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+    def appCenterSdkVersion = "3.3.0"
     appCenterImplementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
     googlePlayImplementation "com.microsoft.appcenter:appcenter-distribute-play:${appCenterSdkVersion}"
 
