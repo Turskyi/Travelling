@@ -1,8 +1,11 @@
 # Travelling
+
 A convenient way to collect all countries that you have visited.  
 
-Showcase for using Room, view-model, clean-architecture, koin and coroutines.
-  
+Showcase for using Room, view-model, clean-architecture, koin and coroutines.  
+
+[Project on Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling)  
+
 ## PROJECT SPECIFICATION  
 
 • Programming language: **Kotlin**;  
