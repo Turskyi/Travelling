@@ -10,7 +10,7 @@ Showcase for using Room, view-model, clean-architecture, koin and coroutines.
 
 • Programming language: **Kotlin**;  
 
-• Structural design pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
+• Structural design patterns: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
 
 • Architecture Components: [Paging](https://developer.android.com/topic/libraries/architecture/paging), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata),
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
