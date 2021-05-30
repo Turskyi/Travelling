@@ -15,7 +15,7 @@ Showcase for using Room, view-model, clean-architecture, koin and coroutines.
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new APK to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the dev branch,
 [Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to master branch;
 
-•  Database: [Room](https://developer.android.com/training/data-storage/room)
+• Database: [Room](https://developer.android.com/training/data-storage/room)
 
 • Dependency injection: [Koin](https://insert-koin.io/docs/reference/introduction)
 
