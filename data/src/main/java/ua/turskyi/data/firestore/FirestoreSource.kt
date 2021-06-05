@@ -1,4 +1,4 @@
-package ua.turskyi.data.firestoreSource
+package ua.turskyi.data.firestore
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth

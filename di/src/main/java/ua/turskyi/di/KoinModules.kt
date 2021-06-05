@@ -16,13 +16,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ua.turskyi.data.BuildConfig.DATABASE_NAME
 import ua.turskyi.data.BuildConfig.HOST_URL
 import ua.turskyi.data.Prefs
-import ua.turskyi.data.api.datasource.CountriesNetSource
-import ua.turskyi.data.api.service.CountriesApi
-import ua.turskyi.data.firestoreSource.FirestoreSource
+import ua.turskyi.data.network.datasource.CountriesNetSource
+import ua.turskyi.data.network.service.CountriesApi
+import ua.turskyi.data.firestore.FirestoreSource
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.data.repository.CountriesRepositoryImpl
-import ua.turskyi.data.room.Database
-import ua.turskyi.data.room.datasource.CountriesDbSource
+import ua.turskyi.data.database.Database
+import ua.turskyi.data.database.datasource.CountriesDbSource
 import ua.turskyi.domain.repository.CountriesRepository
 
 val repositoriesModule = module {

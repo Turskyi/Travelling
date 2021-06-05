@@ -1,4 +1,4 @@
-package ua.turskyi.data.room
+package ua.turskyi.data.database
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

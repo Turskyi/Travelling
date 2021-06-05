@@ -4,10 +4,10 @@ import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import ua.turskyi.data.Prefs
-import ua.turskyi.data.api.datasource.CountriesNetSource
+import ua.turskyi.data.network.datasource.CountriesNetSource
 import ua.turskyi.data.extensions.*
-import ua.turskyi.data.firestoreSource.FirestoreSource
-import ua.turskyi.data.room.datasource.CountriesDbSource
+import ua.turskyi.data.firestore.FirestoreSource
+import ua.turskyi.data.database.datasource.CountriesDbSource
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository

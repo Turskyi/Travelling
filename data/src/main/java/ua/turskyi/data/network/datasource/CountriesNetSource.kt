@@ -1,7 +1,7 @@
-package ua.turskyi.data.api.datasource
+package ua.turskyi.data.network.datasource
 
 import android.accounts.NetworkErrorException
-import ua.turskyi.data.api.service.CountriesApi
+import ua.turskyi.data.network.service.CountriesApi
 import org.koin.core.KoinComponent
 import retrofit2.Call
 import retrofit2.Callback
