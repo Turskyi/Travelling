@@ -91,7 +91,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation 'androidx.core:core-ktx:1.5.0'
     implementation 'com.android.billingclient:billing:4.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.0.1'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
 
@@ -114,7 +114,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
 
     // Recyclerview
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
