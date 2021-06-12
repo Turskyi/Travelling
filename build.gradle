@@ -18,7 +18,7 @@ buildscript {
 }
 subprojects {
     afterEvaluate {
-        dependencies{
+        dependencies {
             // Kotlin
             implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
             // Add to avoid  w:Kotlin runtime JAR files in the classpath should have the same version
@@ -82,7 +82,7 @@ ext {
         return value
     }
     HOST_URL = getParam("HOST_URL")
-    DATABASE_NAME= getParam("DATABASE_NAME")
+    DATABASE_NAME = getParam("DATABASE_NAME")
 
     SIGNING_KEY_DEBUG_PASSWORD = getParam("SIGNING_KEY_DEBUG_PASSWORD")
     SIGNING_KEY_DEBUG_KEY_PASSWORD = getParam("SIGNING_KEY_DEBUG_KEY_PASSWORD")

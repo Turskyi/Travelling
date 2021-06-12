@@ -30,12 +30,7 @@ val repositoriesModule = module {
 }
 
 val dataProvidersModule = module {
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            Database::class.java, DATABASE_NAME
-        ).build()
-    }
+    single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
     single {
         OkHttpClient.Builder()
             .cache(get<Cache>())
