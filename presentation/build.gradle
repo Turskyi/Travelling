@@ -69,7 +69,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(":domain")
-    implementation project(":di")
+    implementation project(':data')
 
     // kotlin
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
