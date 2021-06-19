@@ -11,8 +11,10 @@ android {
         targetSdkVersion rootProject.target_sdk_version
         versionCode rootProject.version_code
         versionName rootProject.version_name
+
         buildConfigField "String", "HOST_URL", "\"${rootProject.HOST_URL}\""
         buildConfigField "String", "DATABASE_NAME", "\"${rootProject.DATABASE_NAME}\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
@@ -40,7 +42,7 @@ dependencies {
     implementation project(':domain')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     //   app does not work with koin version 2.2.2
@@ -54,11 +56,11 @@ dependencies {
     api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    api 'com.google.code.gson:gson:2.8.6'
-    api 'com.auth0:java-jwt:3.11.0'
+    api "com.google.code.gson:gson:$gson_version"
+    api "com.auth0:java-jwt:$jwt_version"
 
 //    app does not work with room version 2.3.0
-    // room
+    // database
     api "androidx.room:room-runtime:$room_version"
     api "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

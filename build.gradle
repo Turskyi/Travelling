@@ -16,12 +16,13 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath "com.android.tools.build:gradle:$build_gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
         // Google Services plugin (for firebase)
-        classpath 'com.google.gms:google-services:4.3.8'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
+        classpath "com.google.gms:google-services:$google_services_version"
+        // Crashlytics Gradle plugin
+        classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_crashlytics_gradle_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -55,7 +56,7 @@ subprojects {
             implementation "androidx.paging:paging-runtime:$paging_version"
 
             //  Bill of Materials for the Firebase platform
-            implementation platform('com.google.firebase:firebase-bom:26.2.0')
+            implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
             // When using the BoM, no need to specify versions in Firebase library dependencies
 
             // Declaring the dependencies for the Crashlytics and Analytics libraries
@@ -68,7 +69,7 @@ subprojects {
 
             // Firebase for authentication
             implementation 'com.google.firebase:firebase-auth'
-            implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+            implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_auth_version"
         }
     }
 }
