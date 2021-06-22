@@ -6,7 +6,10 @@ Showcase for using Room, view-model, clean-architecture, koin and coroutines.
 
 [Project on Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling)  
 
-## PROJECT SPECIFICATION  
+## PROJECT SPECIFICATION
+
+• CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new APK to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the dev branch,
+[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to master branch;
 
 • Programming language: **Kotlin**;  
 
@@ -14,9 +17,6 @@ Showcase for using Room, view-model, clean-architecture, koin and coroutines.
 
 • Architecture Components: [Paging](https://developer.android.com/topic/libraries/architecture/paging), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata),
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
-
-• CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new APK to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the dev branch,
-[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to master branch;
 
 • Database: [Room](https://developer.android.com/training/data-storage/room);
 

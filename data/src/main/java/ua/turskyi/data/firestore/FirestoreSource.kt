@@ -7,14 +7,6 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.WriteBatch
 import org.koin.core.KoinComponent
-import ua.turskyi.data.constants.Constants.KEY_IS_VISITED
-import ua.turskyi.data.constants.Constants.KEY_PARENT_ID
-import ua.turskyi.data.constants.Constants.KEY_SELFIE
-import ua.turskyi.data.constants.Constants.LOG
-import ua.turskyi.data.constants.Constants.REF_CITIES
-import ua.turskyi.data.constants.Constants.REF_COUNTRIES
-import ua.turskyi.data.constants.Constants.REF_USERS
-import ua.turskyi.data.constants.Constants.REF_VISITED_COUNTRIES
 import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.extensions.mapCountryToVisitedCountry
@@ -22,7 +14,18 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 class FirestoreSource : KoinComponent {
-    /* init Authentication */
+    companion object {
+        const val LOG = "===>"
+        // constants for firestore
+        const val REF_USERS = "users"
+        const val REF_COUNTRIES = "countries"
+        const val REF_VISITED_COUNTRIES = "visited_countries"
+        const val REF_CITIES = "cities"
+        const val KEY_IS_VISITED = "isVisited"
+        const val KEY_SELFIE = "selfie"
+        const val KEY_PARENT_ID = "parentId"
+    }
+    //init Authentication
     var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private val db = FirebaseFirestore.getInstance()
