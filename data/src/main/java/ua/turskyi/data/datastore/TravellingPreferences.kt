@@ -1,9 +1,9 @@
-package ua.turskyi.data
+package ua.turskyi.data.datastore
 
 import android.content.Context
 import android.content.SharedPreferences
 
-class Prefs (context: Context) {
+class TravellingPreferences (context: Context) {
     companion object {
         const val PREFS_FILENAME = "ua.turskyi.travelling.prefs"
         const val IS_UPGRADED = "IS_UPGRADED"

@@ -1,12 +1,12 @@
 package ua.turskyi.travelling.common.di
-import ua.turskyi.data.Prefs
+import ua.turskyi.data.datastore.TravellingPreferences
 import ua.turskyi.data.network.datasource.CountriesNetSource
 import ua.turskyi.data.network.service.CountriesApi
 import ua.turskyi.data.firestore.FirestoreSource
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.data.repository.CountriesRepositoryImpl
-import ua.turskyi.data.database.Database
-import ua.turskyi.data.database.datasource.CountriesDbSource
+import ua.turskyi.data.datastore.room.Database
+import ua.turskyi.data.datastore.room.datasource.CountriesDbSource
 import ua.turskyi.domain.repository.CountriesRepository
 import androidx.room.Room
 import com.google.gson.Gson
@@ -112,7 +112,7 @@ val sourcesModule = module {
 }
 
 val managersModule = module {
-    single { Prefs(androidContext()) }
+    single { TravellingPreferences(androidContext()) }
 }
 
 

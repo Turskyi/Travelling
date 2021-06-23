@@ -3,11 +3,11 @@ package ua.turskyi.data.repository
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import ua.turskyi.data.Prefs
+import ua.turskyi.data.datastore.TravellingPreferences
 import ua.turskyi.data.network.datasource.CountriesNetSource
 import ua.turskyi.data.extensions.*
 import ua.turskyi.data.firestore.FirestoreSource
-import ua.turskyi.data.database.datasource.CountriesDbSource
+import ua.turskyi.data.datastore.room.datasource.CountriesDbSource
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
@@ -17,7 +17,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     private val netSource: CountriesNetSource by inject()
     private val dbSource: CountriesDbSource by inject()
     private val firebaseSource: FirestoreSource by inject()
-    private val prefs: Prefs by inject()
+    private val prefs: TravellingPreferences by inject()
 
     override var isSynchronized: Boolean
         get() = prefs.isSynchronized
