@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.extensions
+package ua.turskyi.travelling.utils.extensions
 
 import android.content.ActivityNotFoundException
 import android.content.Intent

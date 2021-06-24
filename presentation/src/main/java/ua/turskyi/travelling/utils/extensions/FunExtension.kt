@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.extensions
+package ua.turskyi.travelling.utils.extensions
 
 import android.util.Log
 import ua.turskyi.travelling.common.Constants.LOG

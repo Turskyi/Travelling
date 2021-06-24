@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapToModel
+import ua.turskyi.travelling.utils.extensions.mapToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource
 import ua.turskyi.travelling.models.Country

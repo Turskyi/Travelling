@@ -13,7 +13,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.extensions.*
+import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetFragment
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter

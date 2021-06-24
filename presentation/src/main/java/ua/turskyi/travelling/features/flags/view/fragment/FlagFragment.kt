@@ -26,9 +26,9 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentFlagBinding
-import ua.turskyi.travelling.extensions.observeOnce
-import ua.turskyi.travelling.extensions.toast
-import ua.turskyi.travelling.extensions.toastLong
+import ua.turskyi.travelling.utils.extensions.observeOnce
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION

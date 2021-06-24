@@ -1,4 +1,4 @@
-package ua.turskyi.travelling.extensions
+package ua.turskyi.travelling.utils.extensions
 
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel

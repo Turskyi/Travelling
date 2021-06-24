@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import ua.turskyi.travelling.common.Constants
-import ua.turskyi.travelling.extensions.getHomeActivity
+import ua.turskyi.travelling.utils.extensions.getHomeActivity
 
 object PermissionHandler {
     var isPermissionGranted = false

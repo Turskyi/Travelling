@@ -6,7 +6,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import ua.turskyi.travelling.extensions.getToolbarHeight
+import ua.turskyi.travelling.utils.extensions.getToolbarHeight
 
 class FabScrollBehavior(context: Context, attrs: AttributeSet?) :
     CoordinatorLayout.Behavior<FloatingActionButton?>(context, attrs) {

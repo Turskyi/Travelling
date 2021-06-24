@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapModelListToCountryList
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 

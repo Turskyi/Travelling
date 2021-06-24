@@ -20,7 +20,7 @@ import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORA
 import ua.turskyi.travelling.common.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
-import ua.turskyi.travelling.extensions.*
+import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_ITEM_COUNT
@@ -134,7 +134,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
             ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> if ((grantResult.isNotEmpty()
                         && grantResult[0] == PackageManager.PERMISSION_GRANTED)
             ) {
-                /** we got here the first time, when permission is received */
+                // we got here the first time, when permission is received
                 isPermissionGranted = true
                 initObservers()
             } else {

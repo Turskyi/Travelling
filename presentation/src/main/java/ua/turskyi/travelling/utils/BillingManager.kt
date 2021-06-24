@@ -5,8 +5,8 @@ import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.SKU_ID
-import ua.turskyi.travelling.extensions.toast
-import ua.turskyi.travelling.extensions.toastLong
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import java.util.*
 

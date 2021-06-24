@@ -11,7 +11,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.domain.model.CountryModel
-import ua.turskyi.travelling.extensions.*
+import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
@@ -88,15 +88,15 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     val getCountries: () -> Unit = {
         _visibilityLoader.postValue(VISIBLE)
         viewModelScope.launch {
-            /** loading count of not visited countries */
+            // loading count of not visited countries
             interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
                 notVisitedCountriesCount = notVisitedCountriesNum.toFloat()
-                /** loading visited countries*/
+                // loading visited countries
                 getVisitedCountries(notVisitedCountriesNum)
             }, { exception ->
                 _errorMessage.run {
                     exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
+                        // Trigger the event by setting a new Event as a new value
                         postValue(Event(message))
                     }
                 }
