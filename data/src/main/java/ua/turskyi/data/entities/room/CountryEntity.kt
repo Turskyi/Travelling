@@ -13,7 +13,9 @@ data class CountryEntity(
     @ColumnInfo(name = COLUMN_SELFIE) var selfie: String?
 ) {
     // required empty constructor for firestore serialization
+    @Ignore
     constructor() : this(0, "", "", null, null)
+    @Ignore
     constructor(id: Int, name: String, flag: String, isVisited: Boolean?) : this(
         id,
         name,

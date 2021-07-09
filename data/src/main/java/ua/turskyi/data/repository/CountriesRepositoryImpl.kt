@@ -1,8 +1,8 @@
 package ua.turskyi.data.repository
 
 import kotlinx.coroutines.*
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ua.turskyi.data.datastore.TravellingPreferences
 import ua.turskyi.data.network.datasource.CountriesNetSource
 import ua.turskyi.data.extensions.*
@@ -12,7 +12,8 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
 
-class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : CountriesRepository, KoinComponent {
+class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : CountriesRepository,
+    KoinComponent {
 
     private val netSource: CountriesNetSource by inject()
     private val dbSource: CountriesDbSource by inject()

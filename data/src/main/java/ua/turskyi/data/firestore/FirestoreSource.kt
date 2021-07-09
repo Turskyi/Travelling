@@ -1,12 +1,11 @@
 package ua.turskyi.data.firestore
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.WriteBatch
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import ua.turskyi.data.entities.room.CityEntity
 import ua.turskyi.data.entities.room.CountryEntity
 import ua.turskyi.data.extensions.mapCountryToVisitedCountry
@@ -15,7 +14,6 @@ import ua.turskyi.domain.model.CountryModel
 
 class FirestoreSource : KoinComponent {
     companion object {
-        const val LOG = "===>"
         // constants for firestore
         const val REF_USERS = "users"
         const val REF_COUNTRIES = "countries"
@@ -121,8 +119,8 @@ class FirestoreSource : KoinComponent {
         val countryRef = usersRef.document("${mFirebaseAuth.currentUser?.email}")
             .collection(REF_COUNTRIES).document(id)
         countryRef.update(KEY_SELFIE, selfie)
-            .addOnSuccessListener { Log.d(LOG, "selfie successfully updated!") }
-            .addOnFailureListener { e -> Log.d(LOG, "Error updating selfie", e) }
+            .addOnSuccessListener {  }
+            .addOnFailureListener { }
     }
 
     fun insertCity(city: CityEntity,
@@ -165,7 +163,6 @@ class FirestoreSource : KoinComponent {
             }
             .addOnFailureListener { e ->
                 onError?.invoke(e)
-                Log.d(LOG, "Error getting visited countries", e)
             }
     }
 
@@ -185,7 +182,6 @@ class FirestoreSource : KoinComponent {
             }
             .addOnFailureListener { e ->
                 onError?.invoke(e)
-                Log.d(LOG, "Error getting cities", e)
             }
     }
 
@@ -200,16 +196,13 @@ class FirestoreSource : KoinComponent {
         countriesRef.get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d(LOG, task.result?.size().toString() + "")
                     task.result?.size()?.let { onSuccess(it) }
                 } else {
-                    Log.d(LOG, "Error getting count of not visited countries: ", task.exception)
                     task.exception?.let { onError?.invoke(it) }
                 }
             }
             .addOnFailureListener { e ->
                 onError?.invoke(e)
-                Log.d(LOG, "Error getting count of not visited countries: ", e)
             }
     }
 
@@ -232,7 +225,6 @@ class FirestoreSource : KoinComponent {
             }
             .addOnFailureListener { e ->
                 onError?.invoke(e)
-                Log.d(LOG, "Error getting paged countries", e)
             }
     }
 
@@ -257,7 +249,6 @@ class FirestoreSource : KoinComponent {
             }
             .addOnFailureListener { e ->
                 onError?.invoke(e)
-                Log.d(LOG, "Error getting paged countries", e)
             }
     }
 }

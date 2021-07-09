@@ -45,11 +45,10 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    //   app does not work with koin version 2.2.2
-    // koin
-    api "org.koin:koin-androidx-viewmodel:$koin_version"
-    api "org.koin:koin-core:$koin_version"
-    api "org.koin:koin-androidx-scope:$koin_version"
+    // Koin for Android
+    implementation ("io.insert-koin:koin-android:$insert_koin_version")
+    // Koin core features
+    implementation ("io.insert-koin:koin-core:$insert_koin_version")
 
     // network
     api "com.squareup.okhttp3:okhttp:$okhttp_version"

@@ -75,12 +75,6 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-//   app does not work with koin version 2.2.2
-    // koin
-    api "org.koin:koin-androidx-viewmodel:$koin_version"
-    api "org.koin:koin-core:$koin_version"
-    api "org.koin:koin-androidx-scope:$koin_version"
-
     // design components
     implementation "com.google.android.material:material:$material"
 
@@ -89,11 +83,11 @@ dependencies {
 
     // android
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'androidx.core:core-ktx:1.5.0'
+    implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'com.android.billingclient:billing:4.0.0'
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics:18.0.1'
+    implementation 'com.google.firebase:firebase-crashlytics:18.1.0'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
 
@@ -148,6 +142,12 @@ dependencies {
     // for ci to publish on google play market
     def appCenterSdkVersion = '4.1.0'
     implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
+
+    // Koin for Android
+    implementation ("io.insert-koin:koin-android:$insert_koin_version")
+
+    // Koin core features
+    implementation ("io.insert-koin:koin-core:$insert_koin_version")
 
     // test
     testImplementation "junit:junit:$junit_version"
