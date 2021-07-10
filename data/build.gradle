@@ -1,6 +1,8 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
 
 android {
     compileSdkVersion rootProject.compile_sdk_version
@@ -46,9 +48,9 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Koin for Android
-    implementation ("io.insert-koin:koin-android:$insert_koin_version")
+    api ("io.insert-koin:koin-android:$insert_koin_version")
     // Koin core features
-    implementation ("io.insert-koin:koin-core:$insert_koin_version")
+    api ("io.insert-koin:koin-core:$insert_koin_version")
 
     // network
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
