@@ -76,8 +76,6 @@ subprojects {
 allprojects {
     repositories {
         google()
-//        jcenter is required for firebase-ui-auth
-        jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.google.com" }

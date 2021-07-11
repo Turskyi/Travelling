@@ -26,6 +26,7 @@ import androidx.core.util.ObjectsCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsCompat.CONSUMED
 import com.google.android.material.appbar.AppBarLayout
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.widgets.multilinecollapsingtoolbar.CollapsingToolbarLayoutExtension.LayoutParams
@@ -161,8 +162,8 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
         // Add an OnOffsetChangedListener if possible
         val parent = parent
         if (parent is AppBarLayout) {
-            // Copy over from the ABL whether we should fit system windows
-            ViewCompat.setFitsSystemWindows(this, ViewCompat.getFitsSystemWindows(parent as View))
+
+            fitsSystemWindows = true
             if (mOnOffsetChangedListener == null) {
                 mOnOffsetChangedListener = OffsetUpdateListener()
             }
@@ -197,14 +198,14 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
 
         /* Consume the insets. This is done so that child views with fitSystemWindows=true do not
          * get the default padding functionality from View */
-        return insets.consumeSystemWindowInsets()
+        return CONSUMED
     }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 
-        // If we don't have a toolbar, the scrim will be not be drawn in drawChild() below.
-        // Instead, we draw it here, before our collapsing text.
+        /* If we don't have a toolbar, the scrim will be not be drawn in drawChild() below.
+         * Instead, we draw it here, before our collapsing text. */
         ensureToolbar()
         if (mToolbar == null && mContentScrim != null && mScrimAlpha > 0) {
             mContentScrim!!.mutate().alpha = mScrimAlpha
@@ -218,7 +219,8 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
 
         // Now draw the status bar scrim
         if (mStatusBarScrim != null && mScrimAlpha > 0) {
-            val topInset = if (mLastInsets != null) mLastInsets!!.systemWindowInsetTop else 0
+            val topInset =
+                if (mLastInsets != null) mLastInsets!!.getInsets(WindowInsetsCompat.Type.systemBars()).top else 0
             if (topInset > 0) {
                 mStatusBarScrim!!.setBounds(
                     0, -mCurrentOffset, width,
@@ -332,7 +334,8 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
         ensureToolbar()
         super.onMeasure(widthMeasureSpec, mHeightMeasureSpec)
         val mode = MeasureSpec.getMode(mHeightMeasureSpec)
-        val topInset = if (mLastInsets != null) mLastInsets!!.systemWindowInsetTop else 0
+        val topInset: Int =
+            if (mLastInsets != null) mLastInsets!!.getInsets(WindowInsetsCompat.Type.systemBars()).top else 0
         if (mode == MeasureSpec.UNSPECIFIED && topInset > 0) {
             /* If we have a top inset and we're set to wrap_content height we need to make sure
              * we add the top inset to our height, therefore we re-measure */
@@ -347,7 +350,7 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
         super.onLayout(changed, left, top, right, bottom)
         if (mLastInsets != null) {
             // Shift down any views which are not set to fit system windows
-            val insetTop: Int = mLastInsets!!.systemWindowInsetTop
+            val insetTop: Int = mLastInsets!!.getInsets(WindowInsetsCompat.Type.systemBars()).top
             var i = 0
             val z = childCount
             while (i < z) {
@@ -929,7 +932,8 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
             }
 
             // Otherwise we'll use the default computed value
-            val insetTop = if (mLastInsets != null) mLastInsets!!.systemWindowInsetTop else 0
+            val insetTop =
+                if (mLastInsets != null) mLastInsets!!.getInsets(WindowInsetsCompat.Type.systemBars()).top else 0
             val minHeight: Int = ViewCompat.getMinimumHeight(this)
             return if (minHeight > 0) {
                 // If we have a minHeight set, lets use 2 * minHeight (capped at our height)
@@ -1001,8 +1005,9 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
          */
         var parallaxMultiplier = DEFAULT_PARALLAX_MULTIPLIER
 
-        constructor(c: Context, attrs: AttributeSet?) : super(c, attrs) {
-            val typedArray: TypedArray = c.obtainStyledAttributes(
+        @SuppressLint("CustomViewStyleable")
+        constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+            val typedArray: TypedArray = context.obtainStyledAttributes(
                 attrs,
                 R.styleable.CollapsingToolbarLayout_Layout
             )
@@ -1065,7 +1070,8 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
     private inner class OffsetUpdateListener : AppBarLayout.OnOffsetChangedListener {
         override fun onOffsetChanged(layout: AppBarLayout?, verticalOffset: Int) {
             mCurrentOffset = verticalOffset
-            val insetTop: Int = if (mLastInsets != null) mLastInsets!!.systemWindowInsetTop else 0
+            val insetTop: Int =
+                if (mLastInsets != null) mLastInsets!!.getInsets(WindowInsetsCompat.Type.systemBars()).top else 0
             var i = 0
             val z = childCount
             while (i < z) {
@@ -1127,17 +1133,17 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
         mCollapsingTextHelper.setTextSizeInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR)
 
         // use own default style
+        @SuppressLint("CustomViewStyleable")
         val mTypedArray: TypedArray = context.obtainStyledAttributes(
             attrs,
             R.styleable.CollapsingToolbarLayout, defStyleAttr,
             R.style.Widget_Design_MultilineCollapsingToolbar
         )
 
-        mCollapsingTextHelper.expandedTextGravity =
-            mTypedArray.getInt(
-                R.styleable.CollapsingToolbarLayout_expandedTitleGravity,
-                GravityCompat.START or Gravity.BOTTOM
-            )
+        mCollapsingTextHelper.expandedTextGravity = mTypedArray.getInt(
+            R.styleable.CollapsingToolbarLayout_expandedTitleGravity,
+            GravityCompat.START or Gravity.BOTTOM
+        )
         mCollapsingTextHelper.collapsedTextGravity =
             mTypedArray.getInt(
                 R.styleable.CollapsingToolbarLayout_collapsedTitleGravity,
