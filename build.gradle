@@ -20,7 +20,6 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-        classpath "io.insert-koin:koin-core-jvm:$insert_koin_version"
         // Google Services plugin (for firebase)
         classpath "com.google.gms:google-services:$google_services_version"
         // Crashlytics Gradle plugin
@@ -66,8 +65,8 @@ subprojects {
             implementation 'com.google.firebase:firebase-firestore-ktx'
             implementation "com.google.firebase:firebase-storage-ktx:$firebase_storage_version"
 
-            // FirebaseUI for authentication
-            implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_auth_version"
+            // authentication
+            implementation "com.google.firebase:firebase-auth"
 
             // avoids "Service not registered" exception
             implementation "com.google.android.gms:play-services-basement:$play_services_basement_version"

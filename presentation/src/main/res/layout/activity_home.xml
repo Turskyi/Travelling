@@ -24,7 +24,7 @@
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+            <ua.turskyi.travelling.widgets.multilinecollapsingtoolbar.CollapsingToolbarLayoutExtension
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -69,7 +69,7 @@
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
+            </ua.turskyi.travelling.widgets.multilinecollapsingtoolbar.CollapsingToolbarLayoutExtension>
 
         </com.google.android.material.appbar.AppBarLayout>
 

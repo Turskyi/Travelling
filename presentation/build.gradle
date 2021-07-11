@@ -74,7 +74,7 @@ dependencies {
     implementation project(':data')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // design components
@@ -92,6 +92,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:18.1.0'
     implementation 'com.google.firebase:firebase-analytics:19.0.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
+    implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_auth_version"
 
     // ViewModel and LiveData
     def lifecycle_version = "2.3.1"
@@ -119,9 +120,6 @@ dependencies {
 
     // Android chart view / graph view library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // multiline-collapsingtoolbar
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
 
     // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
