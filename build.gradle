@@ -45,8 +45,7 @@ subprojects {
             implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
             implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-            // Room DB
-            implementation "androidx.room:room-runtime:$room_version"
+//            Room Database
             kapt "androidx.room:room-compiler:$room_version"
 
             // Paging

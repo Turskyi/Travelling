@@ -5,9 +5,9 @@ import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.*
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.SKU_ID
+import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
-import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 import java.util.*
 
 //for future release
@@ -36,7 +36,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
     }
 
     fun launchBilling() {
-        val billingFlowParams = mSkuDetailsMap[SKU_ID]?.let {sku ->
+        val billingFlowParams = mSkuDetailsMap[SKU_ID]?.let { sku ->
             BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         }
         billingFlowParams?.let { flowParams ->
@@ -55,21 +55,30 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                     /* The BillingClient is ready. Query purchases here. */
                     /* here we can request information about purchases */
 
-                    /* Sku request */
+                    // Sku request
                     querySkuDetails()
 
-                    /* purchase request */
-                    val purchasesList: List<Purchase?>? = queryPurchases()
-                    /* if the product has already been purchased, provide it to the user */
-                    purchasesList?.size?.let {
-                        for (i in 0 until it) {
-                            val purchaseId = purchasesList[i]?.orderId
+//                    // purchase request
+//                    val purchasesList: List<Purchase?>? = queryPurchases()
+
+                    billingClient.queryPurchasesAsync(
+                        SkuType.SUBS
+                    ) { _, list ->
+
+                        // purchase request
+                        val purchasesList: List<Purchase?> = list
+
+                        // if the product has already been purchased, provide it to the user
+                        for (element in purchasesList) {
+                            val purchaseId = element?.orderId
                             if (TextUtils.equals(SKU_ID, purchaseId)) {
-//                                for future release
-//                                activity.setUpgradedVersion()
+                                //                                for future release
+                                //                                activity.setUpgradedVersion()
                             }
                         }
                     }
+
+
                 } else {
                     activity.toast(R.string.msg_connection_billing)
                 }
@@ -80,12 +89,6 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                 /*   Try to restart the connection on the next request to
                     Google Play by calling the startConnection() method.*/
                 activity.toast(R.string.msg_internet_connection_lost)
-            }
-
-            private fun queryPurchases(): List<Purchase?>? {
-                val purchasesResult: Purchase.PurchasesResult =
-                    billingClient.queryPurchases(SkuType.INAPP)
-                return purchasesResult.purchasesList
             }
         })
     }
@@ -107,24 +110,23 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
 
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            /*  Grant the item to the user */
-//                for future release
-//            activity.setUpgradedVersion()
-            /* acknowledge the purchase */
+            /*  Grant the item to the user
+                for future release
+            activity.setUpgradedVersion()
+            acknowledge the purchase */
             if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken)
+                val acknowledgePurchaseParams: AcknowledgePurchaseParams.Builder =
+                    AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(purchase.purchaseToken)
 //                for future release
-//                activity.launch {
-//                    withContext(Dispatchers.IO) {
-//                        val acknowledgePurchaseResponseListener =
-//                            AcknowledgePurchaseResponseListener { activity.toast(R.string.msg_purchase_acknowledged) }
-//                        billingClient.acknowledgePurchase(
-//                            acknowledgePurchaseParams.build(),
-//                            acknowledgePurchaseResponseListener
-//                        )
-//                    }
-//                }
+                val acknowledgePurchaseResponseListener = AcknowledgePurchaseResponseListener {
+                    activity.toast(R.string.msg_purchase_acknowledged)
+                }
+                billingClient.acknowledgePurchase(
+                    acknowledgePurchaseParams.build(),
+                    acknowledgePurchaseResponseListener
+                )
+
             }
         } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
             /*      Here we can confirm to the user that they've started the pending
