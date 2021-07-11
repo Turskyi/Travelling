@@ -45,10 +45,10 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         onSuccess: (Job?) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
-        onSuccess(GlobalScope.launch {
+        onSuccess(applicationScope.launch {
             refreshCountries({
                 dbSource.getVisitedLocalCountriesFromDb().forEach { country ->
-                    GlobalScope.launch {
+                    applicationScope.launch {
                         markAsVisited(country.mapEntityToModel(), {
 //                            implement check if last then call success in feature release
                         }, { exception ->

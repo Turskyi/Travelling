@@ -13,7 +13,7 @@ import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListen
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 
-class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener ,
+class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener,
     FlagsActivityView {
 
     companion object {

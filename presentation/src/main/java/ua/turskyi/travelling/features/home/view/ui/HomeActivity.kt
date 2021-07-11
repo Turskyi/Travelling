@@ -1,19 +1,20 @@
 package ua.turskyi.travelling.features.home.view.ui
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.Gravity
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.auth.ErrorCodes
+import com.firebase.ui.auth.IdpResponse
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
@@ -30,18 +31,17 @@ import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.BillingManager
 import ua.turskyi.travelling.utils.PermissionHandler
 import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 import ua.turskyi.travelling.utils.PermissionHandler.requestPermission
 import java.util.*
 
-class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
-//TODO: for future release
-/*, SyncDialog.SyncListener*/ {
+class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
+    SyncDialog.SyncListener {
 
-    //  TODO:  for future release
-//    private lateinit var billingManager: BillingManager
-//    private lateinit var authorizationResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var billingManager: BillingManager
+    private lateinit var authorizationResultLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var binding: ActivityHomeBinding
@@ -59,9 +59,8 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         registerAllCountriesActivityResultLauncher()
         PermissionHandler.checkPermission(this@HomeActivity)
         initView()
-//      TODO:  for future release
-//        registerAuthorization()
-//        billingManager = BillingManager(this@HomeActivity)
+        registerAuthorization()
+        billingManager = BillingManager(this@HomeActivity)
         initListeners()
     }
 
@@ -71,29 +70,24 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-//   TODO: for future release
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        if (!viewModel.isSynchronized) {
-//            /* makes sync icon visible */
-//            val inflater = menuInflater
-//            inflater.inflate(R.menu.menu_sync, menu)
-//        }
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (!viewModel.isSynchronized) {
+            // makes sync icon visible
+            val inflater: MenuInflater = menuInflater
+            inflater.inflate(R.menu.menu_sync, menu)
+        }
+        return true
+    }
 
     /**
      * Calling when "add city dialogue" dismissed.
      */
     override fun onDismiss(dialogInterface: DialogInterface?) = viewModel.showListOfCountries()
 
-
-//   TODO: for future release
-//    /**
-//     * Calling when user clicks "ok" button in "sync dialogue".
-//     */
-//    override fun initSynchronization() {
-//        billingManager.launchBilling()
-//    }
+    /**
+     * Calling when user clicks "ok" button in "sync dialogue".
+     */
+    override fun initSynchronization() = billingManager.launchBilling()
 
     override fun onBackPressed() {
         if (backPressedTiming + TIME_INTERVAL > System.currentTimeMillis()) {
@@ -111,15 +105,14 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
                 openInfoDialog(R.string.txt_info_home)
                 true
             }
-//      TODO:      for future release
-//            R.id.action_sync -> {
-//                if (viewModel.isUpgraded) {
-//                    viewModel.syncDatabaseWithFireStore()
-//                } else {
-//                    openSyncDialog(R.string.txt_info_billing)
-//                }
-//                true
-//            }
+            R.id.action_sync -> {
+                if (viewModel.isUpgraded) {
+                    viewModel.syncLocalDatabaseWithNetStore()
+                } else {
+                    openSyncDialog(R.string.txt_info_billing)
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -241,8 +234,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         })
     }
 
-//  TODO:  for future release
-//    fun setUpgradedVersion() = viewModel.upgradeAndSync(authorizationResultLauncher)
+    fun setUpgradedVersion() = viewModel.upgradeAndSync(authorizationResultLauncher)
 
     fun setTitle() = if (viewModel.citiesCount > 0) {
         showTitleWithCitiesAndCountries()
@@ -250,48 +242,45 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
         showTitleWithOnlyCountries()
     }
 
-//  TODO:  for future release
-//    private fun registerAuthorization() {
-//        authorizationResultLauncher = registerForActivityResult(
-//            ActivityResultContracts.StartActivityForResult()
-//        ) { result ->
-//            val response = IdpResponse.fromResultIntent(result.data)
-//            /* Successfully signed in */
-//            if (result.resultCode == Activity.RESULT_OK) {
-//                viewModel.syncDatabaseWithFireStore()
-//            } else {
-//                /* Sign in failed */
-//                when {
-//                    response == null -> {
-//                        /* User pressed back button */
-//                        showSnackbar(R.string.msg_sign_in_cancelled)
-//                        return@registerForActivityResult
-//                    }
-//                    response.error?.errorCode == ErrorCodes.NO_NETWORK -> {
-//                        showSnackbar(R.string.msg_no_internet)
-//                        return@registerForActivityResult
-//                    }
-//                    else -> {
-//                        toast(R.string.msg_did_not_sign_in)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun registerAuthorization() {
+        authorizationResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            val response: IdpResponse? = IdpResponse.fromResultIntent(result.data)
+            // Successfully signed in
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.syncLocalDatabaseWithNetStore()
+            } else {
+                // Sign in failed
+                when {
+                    response == null -> {
+                        // User pressed back button
+                        showSnackbar(R.string.msg_sign_in_cancelled)
+                        return@registerForActivityResult
+                    }
+                    response.error?.errorCode == ErrorCodes.NO_NETWORK -> {
+                        showSnackbar(R.string.msg_no_internet)
+                        return@registerForActivityResult
+                    }
+                    else -> toast(R.string.msg_did_not_sign_in)
+                }
+            }
+        }
+    }
 
     private fun registerAllCountriesActivityResultLauncher() {
         allCountriesResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                /* New Country is added to list of visited countries */
+                // New Country is added to list of visited countries
                 binding.floatBtnLarge.hide()
                 viewModel.showListOfCountries()
             } else {
-                /* did not added country to visited list */
+                // did not added country to visited list
                 when (result.resultCode) {
                     RESULT_CANCELED -> {
-                        /* User pressed back button */
+                        // User pressed back button
                         toast(R.string.msg_home_country_did_not_added)
                         return@registerForActivityResult
                     }
@@ -390,7 +379,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener
             }
         })
 
-    /** must be open to use it in custom "circle pie chart" widget */
+    /** [showTitleWithOnlyCountries] must be open to use it in custom "circle pie chart" widget */
     fun showTitleWithOnlyCountries() =
         viewModel.visitedCountriesWithCities.observe(this, { countryList ->
             binding.toolbarLayout.title = resources.getQuantityString(

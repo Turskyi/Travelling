@@ -1,21 +1,27 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
 import android.app.Application
+import android.content.Intent
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
+import com.firebase.ui.auth.AuthUI
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.domain.model.CountryModel
+import ua.turskyi.travelling.R
+import ua.turskyi.travelling.common.App
 import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Event
+import java.util.ArrayList
 
 class HomeActivityViewModel(private val interactor: CountriesInteractor, application: Application) :
     AndroidViewModel(application) {
@@ -23,11 +29,9 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     var notVisitedCountriesCount: Float = 0F
     var citiesCount = 0
 
-    //    for future release
     val isSynchronized: Boolean
         get() = interactor.isSynchronized
 
-    //    for future release
     val isUpgraded: Boolean
         get() = interactor.isUpgraded
 
@@ -55,35 +59,34 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
         _visibilityLoader.postValue(VISIBLE)
     }
 
-//    for future release
-//    fun upgradeAndSync(authorizationResultLauncher: ActivityResultLauncher<Intent>) {
-//        _visibilityLoader.postValue(VISIBLE)
-//        interactor.isUpgraded = true
-//        if (!interactor.isSynchronized) {
-//            authorizationResultLauncher.launch(getAuthorizationIntent())
-//        }
-//        _visibilityLoader.postValue(GONE)
-//    }
-//
-//    private fun getAuthorizationIntent(): Intent {
-//        /** Choosing authentication providers */
-//        val providers = arrayListOf(
-//            AuthUI.IdpConfig.GoogleBuilder().build(),
-//            AuthUI.IdpConfig.FacebookBuilder().build()
-//        )
-//        return AuthUI.getInstance()
-//            .createSignInIntentBuilder()
-//            .setAvailableProviders(providers)
-//            /** Set logo drawable */
-//            .setLogo(R.drawable.pic_logo)
-//            .setTheme(R.style.AuthTheme)
-//            .setTosAndPrivacyPolicyUrls(
-////                TODO: replace with Terms of service
-//                getApplication<App>().getString(R.string.privacy_web_page),
-//                getApplication<App>().getString(R.string.privacy_web_page)
-//            )
-//            .build()
-//    }
+    fun upgradeAndSync(authorizationResultLauncher: ActivityResultLauncher<Intent>) {
+        _visibilityLoader.postValue(VISIBLE)
+        interactor.isUpgraded = true
+        if (!interactor.isSynchronized) {
+            authorizationResultLauncher.launch(getAuthorizationIntent())
+        }
+        _visibilityLoader.postValue(GONE)
+    }
+
+    private fun getAuthorizationIntent(): Intent {
+        // Choosing authentication providers
+        val providers: ArrayList<AuthUI.IdpConfig> = arrayListOf(
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build()
+        )
+        return AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            // Set logo drawable
+            .setLogo(R.drawable.pic_logo)
+            .setTheme(R.style.AuthTheme)
+            .setTosAndPrivacyPolicyUrls(
+//                TODO: replace with Terms of service
+                getApplication<App>().getString(R.string.privacy_web_page),
+                getApplication<App>().getString(R.string.privacy_web_page)
+            )
+            .build()
+    }
 
     val getCountries: () -> Unit = {
         _visibilityLoader.postValue(VISIBLE)
@@ -219,22 +222,21 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
             })
         }
 
-    //    for future release
-//    fun syncDatabaseWithFireStore() {
-//        _visibilityLoader.postValue(VISIBLE)
-//        viewModelScope.launch {
-//            interactor.syncVisitedCountries({
-//                interactor.isSynchronized = true
-//                _visibilityLoader.postValue(GONE)
-//            }, { exception ->
-//                _visibilityLoader.postValue(GONE)
-//                _errorMessage.run {
-//                    exception.message?.let { message ->
-//                        /* Trigger the event by setting a new Event as a new value */
-//                        postValue(Event(message))
-//                    }
-//                }
-//            })
-//        }
-//    }
+    fun syncLocalDatabaseWithNetStore() {
+        _visibilityLoader.postValue(VISIBLE)
+        viewModelScope.launch {
+            interactor.syncVisitedCountries({
+                interactor.isSynchronized = true
+                _visibilityLoader.postValue(GONE)
+            }, { exception ->
+                _visibilityLoader.postValue(GONE)
+                _errorMessage.run {
+                    exception.message?.let { message ->
+                        // Trigger the event by setting a new Event as a new value
+                        postValue(Event(message))
+                    }
+                }
+            })
+        }
+    }
 }

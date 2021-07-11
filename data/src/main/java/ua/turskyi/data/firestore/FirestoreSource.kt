@@ -57,7 +57,7 @@ class FirestoreSource : KoinComponent {
         onSuccess: () -> Unit,
         onError: ((Exception) -> Unit?)?
     ) {
-        /** set mark "isVisited = true" in list of all countries */
+        // set mark "isVisited = true" in list of all countries
         val countryRef: DocumentReference = usersRef.document("${mFirebaseAuth.currentUser?.uid}")
             .collection(REF_COUNTRIES).document(countryEntity.name)
         countryRef.update(KEY_IS_VISITED, true)

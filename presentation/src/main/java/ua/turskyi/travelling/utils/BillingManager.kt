@@ -10,7 +10,6 @@ import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
 import java.util.*
 
-//for future release
 class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListener {
     private lateinit var billingClient: BillingClient
     private val mSkuDetailsMap: MutableMap<String, SkuDetails> = HashMap()
@@ -24,7 +23,7 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
         purchases: MutableList<Purchase>?
     ) {
         if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
-            /*     we will get here after the purchase is made */
+            //     we will get here after the purchase is made
             for (purchase in purchases) {
                 handlePurchase(purchase)
             }
@@ -35,14 +34,14 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
         }
     }
 
+    /** after fun [launchBilling]  it goes to [onPurchasesUpdated] */
     fun launchBilling() {
-        val billingFlowParams = mSkuDetailsMap[SKU_ID]?.let { sku ->
+        val billingFlowParams: BillingFlowParams? = mSkuDetailsMap[SKU_ID]?.let { sku ->
             BillingFlowParams.newBuilder().setSkuDetails(sku).build()
         }
         billingFlowParams?.let { flowParams ->
             billingClient.launchBillingFlow(activity, flowParams)
         }
-        /* after that it goes to onPurchasesUpdated()*/
     }
 
     private fun initBilling() {
@@ -52,18 +51,14 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingResponseCode.OK) {
-                    /* The BillingClient is ready. Query purchases here. */
-                    /* here we can request information about purchases */
+                    /* The BillingClient is ready. Query purchases here.
+                       here we can request information about purchases */
 
                     // Sku request
                     querySkuDetails()
 
 //                    // purchase request
-//                    val purchasesList: List<Purchase?>? = queryPurchases()
-
-                    billingClient.queryPurchasesAsync(
-                        SkuType.SUBS
-                    ) { _, list ->
+                    billingClient.queryPurchasesAsync(SkuType.SUBS) { _, list ->
 
                         // purchase request
                         val purchasesList: List<Purchase?> = list
@@ -72,21 +67,18 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
                         for (element in purchasesList) {
                             val purchaseId = element?.orderId
                             if (TextUtils.equals(SKU_ID, purchaseId)) {
-                                //                                for future release
-                                //                                activity.setUpgradedVersion()
+                                activity.setUpgradedVersion()
                             }
                         }
                     }
-
-
                 } else {
                     activity.toast(R.string.msg_connection_billing)
                 }
             }
 
             override fun onBillingServiceDisconnected() {
-                /* we get here if something goes wrong */
-                /*   Try to restart the connection on the next request to
+                /* We get here if something goes wrong.
+                  Try to restart the connection on the next request to
                     Google Play by calling the startConnection() method.*/
                 activity.toast(R.string.msg_internet_connection_lost)
             }
@@ -96,10 +88,12 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
     private fun querySkuDetails() {
         val skuDetailsParamsBuilder = SkuDetailsParams.newBuilder()
         val skuList: MutableList<String> = ArrayList()
-        /* here we are adding the product id from the Play Console */
+        // here we are adding the product id from the Play Console
         skuList.add(SKU_ID)
         skuDetailsParamsBuilder.setSkusList(skuList).setType(SkuType.INAPP)
-        billingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build()) { billingResult, purchases ->
+        billingClient.querySkuDetailsAsync(
+            skuDetailsParamsBuilder.build()
+        ) { billingResult, purchases ->
             if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
                 for (skuDetails in purchases) {
                     mSkuDetailsMap[skuDetails.sku] = skuDetails
@@ -110,15 +104,11 @@ class BillingManager(private val activity: HomeActivity) : PurchasesUpdatedListe
 
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            /*  Grant the item to the user
-                for future release
+            /*  Grant the item to the user  acknowledge the purchase */
             activity.setUpgradedVersion()
-            acknowledge the purchase */
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams: AcknowledgePurchaseParams.Builder =
-                    AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.purchaseToken)
-//                for future release
+                    AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
                 val acknowledgePurchaseResponseListener = AcknowledgePurchaseResponseListener {
                     activity.toast(R.string.msg_purchase_acknowledged)
                 }
