@@ -13,11 +13,10 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.extensions.*
+import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetFragment
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
-import ua.turskyi.travelling.utils.PermissionHandler.isPermissionGranted
 
 /**
  * This custom view is a convenient way to incapsulate all logic related to pie chart to a separate
@@ -88,18 +87,18 @@ class CirclePieChart @JvmOverloads constructor(
         me2: MotionEvent?,
         velocityX: Float,
         velocityY: Float
-    ) { /* nothing has to be here */
+    ) { // nothing has to be here
     }
 
     override fun onChartScale(
         me: MotionEvent?,
         scaleX: Float,
         scaleY: Float
-    ) {/* nothing has to be here */
+    ) {// nothing has to be here
     }
 
     override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
-/* nothing has to be here */
+// nothing has to be here
     }
 
     fun initPieChart() {
@@ -158,8 +157,8 @@ class CirclePieChart @JvmOverloads constructor(
     }
 
     fun animatePieChart() {
-        if (isPermissionGranted) {
-            /* nice and smooth animation of a chart */
+        if (context.getHomeActivity()?.isPermissionGranted == true) {
+            // nice and smooth animation of a chart
             animateY(1500)
         }
     }

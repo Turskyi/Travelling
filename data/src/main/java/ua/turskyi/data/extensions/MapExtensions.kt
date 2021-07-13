@@ -1,9 +1,8 @@
 package ua.turskyi.data.extensions
 
-import ua.turskyi.data.entities.firestore.VisitedCountryEntity
 import ua.turskyi.data.entities.network.CountryNet
-import ua.turskyi.data.entities.room.CityEntity
-import ua.turskyi.data.entities.room.CountryEntity
+import ua.turskyi.data.entities.local.CityEntity
+import ua.turskyi.data.entities.local.CountryEntity
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
@@ -27,7 +26,4 @@ fun List<CityEntity>.mapEntitiesToModelList() = mapTo(
 
 fun List<CountryEntity>.mapEntityListToModelList() = mapTo(
     mutableListOf(), { countryEntity -> countryEntity.mapEntityToModel() })
-
-fun CountryEntity.mapCountryToVisitedCountry() =
-    VisitedCountryEntity(id = id, name = name, flag = flag, selfie = null, selfieName = null)
 

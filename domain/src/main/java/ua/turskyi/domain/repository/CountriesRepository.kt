@@ -1,22 +1,11 @@
 package ua.turskyi.domain.repository
 
-import kotlinx.coroutines.Job
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
-    val isSynchronized: Boolean
-    var isUpgraded: Boolean
 
-    suspend fun refreshCountries(
-        onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
-
-    suspend fun syncVisitedCountries(
-        onSuccess: (Job?) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
+    suspend fun refreshCountries(onSuccess: () -> Unit, onError: ((Exception) -> Unit?)? = null)
 
     suspend fun updateSelfie(
         id: Int,
@@ -41,7 +30,7 @@ interface CountriesRepository {
         onError: ((Exception) -> Unit?)? = null
     )
 
-    suspend fun getCountNotVisitedCountries(
+    suspend fun setCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
         onError: ((Exception) -> Unit?)? = null
     )

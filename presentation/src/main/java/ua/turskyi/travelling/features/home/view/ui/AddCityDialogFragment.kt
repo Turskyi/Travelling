@@ -24,8 +24,8 @@ import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.extensions.toast
-import ua.turskyi.travelling.extensions.toastLong
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.utils.isOnline
