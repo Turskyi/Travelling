@@ -1,7 +1,7 @@
 package ua.turskyi.data.datastore.room.datasource
 
-import ua.turskyi.data.entities.room.CityEntity
-import ua.turskyi.data.entities.room.CountryEntity
+import ua.turskyi.data.entities.local.CityEntity
+import ua.turskyi.data.entities.local.CountryEntity
 import ua.turskyi.data.datastore.room.dao.CountriesDao
 
 class CountriesDbSource(private val countriesDao: CountriesDao) {

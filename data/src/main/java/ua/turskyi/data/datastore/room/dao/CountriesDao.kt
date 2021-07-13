@@ -1,14 +1,14 @@
 package ua.turskyi.data.datastore.room.dao
 
 import androidx.room.*
-import ua.turskyi.data.entities.room.CityEntity
-import ua.turskyi.data.entities.room.CityEntity.Companion.COLUMN_PARENT_ID
-import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
-import ua.turskyi.data.entities.room.CountryEntity
-import ua.turskyi.data.entities.room.CountryEntity.Companion.COLUMN_ID
-import ua.turskyi.data.entities.room.CountryEntity.Companion.COLUMN_NAME
-import ua.turskyi.data.entities.room.CountryEntity.Companion.COLUMN_SELFIE
-import ua.turskyi.data.entities.room.CountryEntity.Companion.TABLE_COUNTRIES
+import ua.turskyi.data.entities.local.CityEntity
+import ua.turskyi.data.entities.local.CityEntity.Companion.COLUMN_PARENT_ID
+import ua.turskyi.data.entities.local.CityEntity.Companion.TABLE_CITIES
+import ua.turskyi.data.entities.local.CountryEntity
+import ua.turskyi.data.entities.local.CountryEntity.Companion.COLUMN_ID
+import ua.turskyi.data.entities.local.CountryEntity.Companion.COLUMN_NAME
+import ua.turskyi.data.entities.local.CountryEntity.Companion.COLUMN_SELFIE
+import ua.turskyi.data.entities.local.CountryEntity.Companion.TABLE_COUNTRIES
 
 @Dao
 interface CountriesDao {

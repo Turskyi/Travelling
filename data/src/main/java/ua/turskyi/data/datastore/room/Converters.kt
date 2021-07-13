@@ -3,7 +3,7 @@ package ua.turskyi.data.datastore.room
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ua.turskyi.data.entities.room.CityEntity
+import ua.turskyi.data.entities.local.CityEntity
 
 class Converters {
     @TypeConverter

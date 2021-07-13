@@ -1,6 +1,5 @@
 package ua.turskyi.domain.interactor
 
-import kotlinx.coroutines.Job
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ua.turskyi.domain.model.CityModel
@@ -9,13 +8,6 @@ import ua.turskyi.domain.repository.CountriesRepository
 
 class CountriesInteractor : KoinComponent {
     private val repository: CountriesRepository by inject()
-
-    var isSynchronized = repository.isSynchronized
-    var isUpgraded: Boolean
-        get() = repository.isUpgraded
-        set(isSynchronized) {
-            repository.isUpgraded = isSynchronized
-        }
 
     suspend fun loadCountriesByNameAndRange(
         name: String?,
@@ -44,21 +36,17 @@ class CountriesInteractor : KoinComponent {
         onError: ((Exception) -> Unit?)?
     ) = repository.refreshCountries(onSusses, onError)
 
-    suspend fun syncVisitedCountries(onSusses: (Job?) -> Unit, onError: ((Exception) -> Unit?)?) {
-        repository.syncVisitedCountries(onSusses, onError)
-    }
-
-    suspend fun getNotVisitedCountriesNum(
+    suspend fun setNotVisitedCountriesNum(
         onSusses: (Int) -> Unit,
         onError: ((Exception) -> Unit?)?
-    ) = repository.getCountNotVisitedCountries(onSusses, onError)
+    ) = repository.setCountNotVisitedCountries(onSusses, onError)
 
-    suspend fun getVisitedModelCountries(
+    suspend fun setVisitedModelCountries(
         onSuccess: (List<CountryModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = repository.getVisitedModelCountriesFromDb(onSuccess, onError)
 
-    suspend fun getCities(
+    suspend fun setCities(
         onSusses: (List<CityModel>) -> Unit,
         onError: ((Exception) -> Unit?)?
     ) = repository.getCities(onSusses, onError)

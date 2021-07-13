@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkInfo
 import android.os.Build
+import java.io.IOException
 
 fun hasNetwork(context: Context): Boolean {
     if (context.getSystemService(Context.CONNECTIVITY_SERVICE) is ConnectivityManager) {
@@ -22,19 +22,17 @@ fun hasNetwork(context: Context): Boolean {
                 } else false
             } else false
         } else {
-            // Initial Value
-            var isConnected = false
-
-            val connectivityManager: ConnectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-            @Suppress("DEPRECATION")
-            val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-            @Suppress("DEPRECATION")
-            if (activeNetwork != null && activeNetwork.isConnected) {
-                isConnected = true
+            val runtime: Runtime = Runtime.getRuntime()
+            try {
+                val ipProcess: Process = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+                val exitValue: Int = ipProcess.waitFor()
+                return exitValue == 0
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
             }
-            return isConnected
+            return false
         }
     } else {
         return false

@@ -1,8 +1,7 @@
 package ua.turskyi.travelling.common.di
-import ua.turskyi.data.datastore.TravellingPreferences
+
 import ua.turskyi.data.network.datasource.CountriesNetSource
 import ua.turskyi.data.network.service.CountriesApi
-import ua.turskyi.data.firestore.FirestoreSource
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.data.repository.CountriesRepositoryImpl
 import ua.turskyi.data.datastore.room.Database
@@ -86,9 +85,7 @@ val dataProvidersModule = module {
     }
 
     single<Gson> {
-        GsonBuilder()
-            .setLenient()
-            .create()
+        GsonBuilder().setLenient().create()
     }
 
     single {
@@ -108,11 +105,6 @@ val sourcesModule = module {
     single { get<Retrofit>().create(CountriesApi::class.java) }
     single { CountriesDbSource(get()) }
     single { CountriesNetSource(get()) }
-    single { FirestoreSource() }
-}
-
-val managersModule = module {
-    single { TravellingPreferences(androidContext()) }
 }
 
 

@@ -22,24 +22,6 @@
         <item name="android:navigationBarColor">@android:color/black</item>
     </style>
 
-    <!-- AppTheme for firebase authentication -->
-    <style name="AuthTheme" parent="FirebaseUI">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!-- app bar -->
-        <item name="colorControlNormal">@android:color/transparent</item>
-        <!-- color of progress bar -->
-        <item name="colorControlActivated">@android:color/white</item>
-        <!-- ripple effect -->
-        <item name="colorControlHighlight">@android:color/white</item>
-        <!-- Required for sign-in flow styling -->
-        <!-- app bar -->
-        <item name="colorPrimary">@android:color/transparent</item>
-        <!-- status bar -->
-        <item name="colorPrimaryDark">@android:color/transparent</item>
-        <!-- Hyperlink color -->
-        <item name="colorAccent">@android:color/white</item>
-    </style>
-
     <style name="RecyclerViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

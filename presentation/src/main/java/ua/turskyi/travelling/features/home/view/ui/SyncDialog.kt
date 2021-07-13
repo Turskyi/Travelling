@@ -34,7 +34,7 @@ class SyncDialog : AppCompatDialogFragment() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         builder.setMessage(arguments?.getString(ARG_INFO))
             .setPositiveButton(getString(R.string.dialog_btn_ok_ready)) { _, _ ->
-                listener.initSynchronization()
+                listener.showTravellingPro()
             }.setNegativeButton(getString(R.string.dialog_btn_not_ok)) { _, _ ->
                 dismiss()
             }
@@ -42,6 +42,6 @@ class SyncDialog : AppCompatDialogFragment() {
     }
 
     interface SyncListener {
-        fun initSynchronization()
+        fun showTravellingPro()
     }
 }

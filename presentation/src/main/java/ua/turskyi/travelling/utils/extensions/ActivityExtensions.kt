@@ -25,7 +25,7 @@ fun AppCompatActivity.openInfoDialog(@StringRes info: Int) {
 }
 
 fun AppCompatActivity.openSyncDialog(@StringRes info: Int) {
-    val infoDialog = SyncDialog.newInstance(getString(info))
+    val infoDialog: SyncDialog = SyncDialog.newInstance(getString(info))
     infoDialog.show(this.supportFragmentManager, "sync dialog")
 }
 

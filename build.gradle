@@ -60,13 +60,6 @@ subprojects {
             // Firebase SDK for Google Analytics
             implementation 'com.google.firebase:firebase-analytics-ktx'
 
-            // Declare the dependency for the Cloud Firestore library
-            implementation 'com.google.firebase:firebase-firestore-ktx'
-            implementation "com.google.firebase:firebase-storage-ktx:$firebase_storage_version"
-
-            // authentication
-            implementation "com.google.firebase:firebase-auth"
-
             // avoids "Service not registered" exception
             implementation "com.google.android.gms:play-services-basement:$play_services_basement_version"
         }

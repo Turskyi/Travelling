@@ -1,11 +1,11 @@
-package ua.turskyi.data.entities.room
+package ua.turskyi.data.entities.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import ua.turskyi.data.entities.room.CityEntity.Companion.COLUMN_ID
-import ua.turskyi.data.entities.room.CityEntity.Companion.TABLE_CITIES
+import ua.turskyi.data.entities.local.CityEntity.Companion.COLUMN_ID
+import ua.turskyi.data.entities.local.CityEntity.Companion.TABLE_CITIES
 
 @Entity(tableName = TABLE_CITIES , indices = [Index(value = [COLUMN_ID], unique = true)])
 data class CityEntity(
