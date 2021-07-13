@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentShareListBottomSheetBinding
-import ua.turskyi.travelling.extensions.isFacebookInstalled
-import ua.turskyi.travelling.extensions.shareImageViaChooser
-import ua.turskyi.travelling.extensions.shareViaFacebook
-import ua.turskyi.travelling.extensions.toast
+import ua.turskyi.travelling.utils.extensions.isFacebookInstalled
+import ua.turskyi.travelling.utils.extensions.shareImageViaChooser
+import ua.turskyi.travelling.utils.extensions.shareViaFacebook
+import ua.turskyi.travelling.utils.extensions.toast
 
 class ShareListBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentShareListBottomSheetBinding? = null

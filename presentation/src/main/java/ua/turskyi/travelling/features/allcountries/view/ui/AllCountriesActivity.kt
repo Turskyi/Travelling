@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
-import ua.turskyi.travelling.extensions.openInfoDialog
-import ua.turskyi.travelling.extensions.toastLong
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel

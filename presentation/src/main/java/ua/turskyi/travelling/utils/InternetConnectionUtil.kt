@@ -7,10 +7,10 @@ import java.io.IOException
  * Checks if device is online or not
  */
 fun isOnline(): Boolean {
-    val runtime = Runtime.getRuntime()
+    val runtime: Runtime = Runtime.getRuntime()
     try {
-        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
-        val exitValue = ipProcess.waitFor()
+        val ipProcess: Process = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+        val exitValue: Int = ipProcess.waitFor()
         return exitValue == 0
     } catch (e: IOException) {
         e.printStackTrace()

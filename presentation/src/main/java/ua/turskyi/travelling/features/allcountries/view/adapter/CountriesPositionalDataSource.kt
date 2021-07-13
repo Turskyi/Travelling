@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.*
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.log
-import ua.turskyi.travelling.extensions.mapModelListToCountryList
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import java.util.*
 import kotlin.concurrent.schedule

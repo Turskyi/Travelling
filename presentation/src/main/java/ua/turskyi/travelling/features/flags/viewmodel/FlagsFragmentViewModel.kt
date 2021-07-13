@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.mapModelListToCountryList
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 
@@ -28,7 +28,7 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun getVisitedCountriesFromDB() {
         viewModelScope.launch {
-            interactor.getVisitedModelCountries({ countries ->
+            interactor.setVisitedModelCountries({ countries ->
                 visitedCount = countries.size
                 _visitedCountries.run { postValue(countries.mapModelListToCountryList()) }
                 _visibilityLoader.postValue(View.GONE)
