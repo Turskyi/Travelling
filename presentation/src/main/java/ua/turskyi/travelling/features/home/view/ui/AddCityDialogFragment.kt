@@ -271,7 +271,7 @@ class AddCityDialogFragment : DialogFragment() {
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }
-        /*      Request location updates */
+        //      Request location updates
         locationManager.requestLocationUpdates(
             LocationManager.NETWORK_PROVIDER,
             0L,
@@ -287,12 +287,16 @@ class AddCityDialogFragment : DialogFragment() {
         editText: LinedEditText
     ) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
-            location.latitude,
-            location.longitude, 1
-        )
 
-        val cityName: String? = addresses?.get(0)?.locality
-        editText.setText(cityName)
+        try {
+            val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+                location.latitude,
+                location.longitude, 1
+            )
+            val cityName: String? = addresses?.get(0)?.locality
+            editText.setText(cityName)
+        } catch (exception: RuntimeException) {
+            toastLong(exception.message)
+        }
     }
 }
