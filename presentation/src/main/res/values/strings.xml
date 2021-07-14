@@ -121,5 +121,5 @@
     <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
     <string name="msg.home_country_did_not_added">did not added anything</string>
     <!-- end of strings for toasts messages -->
-
+    <string name="default_notification_channel_id">Notifications from Travelling application.</string>
 </resources>
