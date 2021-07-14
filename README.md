@@ -30,6 +30,8 @@ Showcase for using Room, view-model, clean-architecture, koin and coroutines.
 
 • Embeded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
 
+• Cloud services: [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging);
+
 • UI components: [Lottie](https://lottiefiles.com/what-is-lottie), [PhotoView](https://github.com/Baseflow/PhotoView), [ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2),
-[multiline-collapsingtoolbar](https://github.com/opacapp/multiline-collapsingtoolbar), [data chart](https://weeklycoding.com/mpandroidchart/), [RecyclerView](http://www.recyclerview.org/),
+[data chart](https://weeklycoding.com/mpandroidchart/), [RecyclerView](http://www.recyclerview.org/),
 [Loading SVG](https://github.com/corouteam/GlideToVectorYou), [Glide](https://bumptech.github.io/glide/), [Data Binding](https://developer.android.com/topic/libraries/data-binding).
