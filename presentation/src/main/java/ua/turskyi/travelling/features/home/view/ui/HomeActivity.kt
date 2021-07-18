@@ -39,14 +39,14 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     private val viewModel by inject<HomeActivityViewModel>()
     private val homeAdapter by inject<HomeAdapter>()
 
-    private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         registerAllCountriesActivityResultLauncher()
-        checkPermission(this@HomeActivity)
+        checkPermissionAndInitObservers(this@HomeActivity)
         initView()
         initListeners()
     }
@@ -67,7 +67,9 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     /**
      * Calling when "add city dialogue" dismissed.
      */
-    override fun onDismiss(dialogInterface: DialogInterface?) = viewModel.showListOfCountries()
+    override fun onDismiss(dialogInterface: DialogInterface?) {
+        viewModel.showListOfVisitedCountries()
+    }
 
     /**
      * Calling when user clicks "ok" button in "sync dialogue".
@@ -158,14 +160,14 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             )
         }
         initGravityForTitle()
-        viewModel.showListOfCountries()
+        viewModel.showListOfVisitedCountries()
     }
 
     private fun initListeners() {
         homeAdapter.apply {
             onFlagClickListener = { country ->
                 // mis-clicking prevention, using threshold of 1000 ms
-                if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > 1000) {
+                if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > resources.getInteger(R.integer.click_interval)) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
                         viewModel.visitedCountries.value?.size?.let { itemCount ->
@@ -248,7 +250,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             if (result.resultCode == RESULT_OK) {
                 // New Country is added to list of visited countries
                 binding.floatBtnLarge.hide()
-                viewModel.showListOfCountries()
+                viewModel.showListOfVisitedCountries()
             } else {
                 // did not added country to visited list
                 when (result.resultCode) {
@@ -363,7 +365,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         })
     }
 
-    private fun checkPermission(activity: AppCompatActivity) {
+    private fun checkPermissionAndInitObservers(activity: AppCompatActivity) {
         val locationPermission: Int = ContextCompat.checkSelfPermission(
             activity,
             Manifest.permission.ACCESS_FINE_LOCATION

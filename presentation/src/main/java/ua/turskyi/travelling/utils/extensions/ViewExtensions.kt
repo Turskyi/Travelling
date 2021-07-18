@@ -114,7 +114,7 @@ fun View.shareViaFacebook(fragment: Fragment) {
         ShareHashtag.Builder()
             .setHashtag(resources.getString(R.string.share_massage, APPLICATION_ID))
             .build()
-    val bitmap = getScreenShot()
+    val bitmap: Bitmap? = getScreenShot()
     val sharePhoto: SharePhoto = SharePhoto.Builder().setBitmap(bitmap).setCaption(
         resources.getString(
             R.string.picture_name, SimpleDateFormat(
@@ -124,7 +124,7 @@ fun View.shareViaFacebook(fragment: Fragment) {
         )
     )
         .build()
-    val mediaContent = ShareMediaContent.Builder()
+    val mediaContent: ShareMediaContent = ShareMediaContent.Builder()
         .addMedium(sharePhoto)
         .setShareHashtag(webAddress)
         .build()
