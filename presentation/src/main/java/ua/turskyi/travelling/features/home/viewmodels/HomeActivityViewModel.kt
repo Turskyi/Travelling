@@ -22,6 +22,9 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
 
     var notVisitedCountriesCount: Float = 0F
     var citiesCount = 0
+    var isPermissionGranted: Boolean = false
+    var backPressedTiming: Long = 0
+    var mLastClickTime: Long = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>

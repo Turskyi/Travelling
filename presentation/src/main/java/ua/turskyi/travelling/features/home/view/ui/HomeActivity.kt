@@ -19,8 +19,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION_AND_EXTERNAL_STORAGE
-import ua.turskyi.travelling.common.Constants.TIME_INTERVAL
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
 import ua.turskyi.travelling.decoration.SectionAverageGapItemDecoration
 import ua.turskyi.travelling.features.allcountries.view.ui.AllCountriesActivity
@@ -38,15 +36,11 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
-    /** [isPermissionGranted] must be public since it used in [CirclePieChart]*/
-    var isPermissionGranted: Boolean = false
+    private val viewModel by inject<HomeActivityViewModel>()
+    private val homeAdapter by inject<HomeAdapter>()
 
     private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var binding: ActivityHomeBinding
-    private var backPressedTiming: Long = 0
-    private var mLastClickTime: Long = 0
-    private val viewModel by inject<HomeActivityViewModel>()
-    private val homeAdapter by inject<HomeAdapter>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
@@ -80,20 +74,33 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
      */
     override fun showTravellingPro() {
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=io.github.turskyi.travellingpro")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(resources.getString(R.string.play_market_app_link_to_pro_version))
+                )
+            )
         } catch (e: ActivityNotFoundException) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=io.github.turskyi.travellingpro")))
+            if(e.localizedMessage != null){
+                toast(e.localizedMessage!!)
+            }
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(resources.getString(R.string.play_market_web_link_to_pro_version))
+                )
+            )
         }
     }
 
     override fun onBackPressed() {
-        if (backPressedTiming + TIME_INTERVAL > System.currentTimeMillis()) {
+        if (viewModel.backPressedTiming + resources.getInteger(R.integer.desired_time_interval) > System.currentTimeMillis()) {
             super.onBackPressed()
             return
         } else {
             binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
         }
-        backPressedTiming = System.currentTimeMillis()
+        viewModel.backPressedTiming = System.currentTimeMillis()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -117,11 +124,11 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResult)
         when (requestCode) {
-            ACCESS_LOCATION_AND_EXTERNAL_STORAGE -> if ((grantResult.isNotEmpty()
+            resources.getInteger(R.integer.location_and_storage_request_code) -> if ((grantResult.isNotEmpty()
                         && grantResult[0] == PackageManager.PERMISSION_GRANTED)
             ) {
                 // we got here the first time, when permission is received
-                isPermissionGranted = true
+                viewModel.isPermissionGranted = true
                 initObservers()
             } else {
                 requestPermission(this)
@@ -158,7 +165,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         homeAdapter.apply {
             onFlagClickListener = { country ->
                 // mis-clicking prevention, using threshold of 1000 ms
-                if (SystemClock.elapsedRealtime() - mLastClickTime > 1000) {
+                if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > 1000) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
                         viewModel.visitedCountries.value?.size?.let { itemCount ->
@@ -166,7 +173,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                         }
                     }
                 }
-                mLastClickTime = SystemClock.elapsedRealtime()
+                viewModel.mLastClickTime = SystemClock.elapsedRealtime()
             }
             onLongClickListener = { countryNode ->
                 val country: Country = countryNode.mapNodeToActual()
@@ -373,7 +380,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         } else {
             /* we are getting here every time except the first time,
              * since permission is already received */
-            isPermissionGranted = true
+            viewModel.isPermissionGranted = true
             initObservers()
         }
     }
@@ -384,6 +391,6 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ).toTypedArray(),
-        ACCESS_LOCATION_AND_EXTERNAL_STORAGE
+        resources.getInteger(R.integer.location_and_storage_request_code)
     )
 }

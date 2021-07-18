@@ -36,22 +36,22 @@ class CirclePieChart @JvmOverloads constructor(
     override fun onChartGestureStart(
         me: MotionEvent?,
         lastPerformedGesture: ChartTouchListener.ChartGesture?
-    ) { /* nothing has to be here */
+    ) { // nothing has to be here
     }
 
     override fun onChartGestureEnd(
         me: MotionEvent?,
         lastPerformedGesture: ChartTouchListener.ChartGesture?
-    ) { /* nothing has to be here */
+    ) { // nothing has to be here
     }
 
     override fun onChartLongPressed(me: MotionEvent?) {
-        /* hide info icon */
+        // hide info icon
         context.getAppCompatActivity()?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        /* hide sync icon */
+        // hide sync icon
         val toolbar: androidx.appcompat.widget.Toolbar = rootView.findViewById(R.id.toolbar)
         toolbar.menu.clear()
-        /*----------------*/
+        //----------------
         val bottomSheet = ShareListBottomSheetFragment()
         context.getFragmentActivity()?.supportFragmentManager?.let { fragmentManager ->
             bottomSheet.show(fragmentManager, null)
@@ -59,7 +59,7 @@ class CirclePieChart @JvmOverloads constructor(
     }
 
     override fun onChartDoubleTapped(me: MotionEvent?) {
-        /* nothing has to be here */
+        // nothing has to be here
     }
 
     override fun onChartSingleTapped(me: MotionEvent?) {
@@ -104,28 +104,28 @@ class CirclePieChart @JvmOverloads constructor(
     fun initPieChart() {
         description.isEnabled = false
 
-        /* work around instead of click listener */
+        // work around instead of click listener
         onChartGestureListener = this
 
         if (!isCenterPieChartEnabled) {
-            /* remove hole inside */
+            // remove hole inside
             isDrawHoleEnabled = false
         }
 
-        /* removes color squares */
+        // removes color squares
         legend.isEnabled = false
 
-        /* rotate the pie chart to 45 degrees */
+        // rotate the pie chart to 45 degrees
         rotationAngle = -10f
 
-        /* init animated background for piechart */
+        // init animated background for piechart
         setBackgroundResource(R.drawable.gradient_list)
         val animationDrawable: AnimationDrawable = background as AnimationDrawable
         animationDrawable.setEnterFadeDuration(2000)
         animationDrawable.setExitFadeDuration(4000)
         animationDrawable.start()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            /* set radius of an open eye */
+            // set radius of an open eye
             holeRadius = 78F
         } else {
             holeRadius = 20F
@@ -152,14 +152,12 @@ class CirclePieChart @JvmOverloads constructor(
         pieData.setValueTextColor(Color.WHITE)
 
         data = pieData
-        /* updates data in pieChart every time */
+        // updates data in pieChart every time
         invalidate()
     }
 
     fun animatePieChart() {
-        if (context.getHomeActivity()?.isPermissionGranted == true) {
-            // nice and smooth animation of a chart
-            animateY(1500)
-        }
+        // nice and smooth animation of a chart
+        animateY(1500)
     }
 }
