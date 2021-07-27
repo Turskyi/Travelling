@@ -10,7 +10,7 @@ import ua.turskyi.data.entities.network.CountryListResponse
 import ua.turskyi.data.entities.network.CountryNet
 import ua.turskyi.data.util.throwException
 
-class CountriesNetSource(private val countriesApi: CountriesApi) : KoinComponent {
+class NetSource(private val countriesApi: CountriesApi) : KoinComponent {
 
     fun getCountryNetList(
         onComplete: (List<CountryNet>?) -> Unit,
