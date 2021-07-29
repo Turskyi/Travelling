@@ -60,7 +60,7 @@ val dataProvidersModule = module {
     single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
     single {
         OkHttpClient.Builder()
-            .cache(get<Cache>())
+            .cache(get())
             .addInterceptor { chain ->
                 var request: Request = chain.request()
                 request = if (hasNetwork(androidContext())) {
