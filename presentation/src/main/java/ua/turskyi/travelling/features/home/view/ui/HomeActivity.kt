@@ -83,9 +83,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 )
             )
         } catch (e: ActivityNotFoundException) {
-            if(e.localizedMessage != null){
-                toast(e.localizedMessage!!)
-            }
+            toast(e.localizedMessage ?: e.stackTraceToString())
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -112,7 +110,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 true
             }
             R.id.action_sync -> {
-                openSyncDialog(R.string.txt_info_billing)
+                val infoDialog: SyncDialog = SyncDialog.newInstance(
+                    getString(R.string.txt_info_billing)
+                )
+                infoDialog.show(this.supportFragmentManager, "sync dialog")
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -167,7 +168,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         homeAdapter.apply {
             onFlagClickListener = { country ->
                 // mis-clicking prevention, using threshold of 1000 ms
-                if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > resources.getInteger(R.integer.click_interval)) {
+                if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > resources.getInteger(
+                        R.integer.click_interval
+                    )
+                ) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
                         viewModel.visitedCountries.value?.size?.let { itemCount ->
