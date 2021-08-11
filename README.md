@@ -17,7 +17,7 @@ An Android mobile application, which gives a convenient way to collect all count
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the dev branch,
 [Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to master branch;
 
-• Structural design patterns: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
+• Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
 
 • Architecture Components: [Paging](https://developer.android.com/topic/libraries/architecture/paging), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata),
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
