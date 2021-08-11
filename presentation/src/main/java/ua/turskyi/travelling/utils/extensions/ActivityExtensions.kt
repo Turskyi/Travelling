@@ -24,11 +24,6 @@ fun AppCompatActivity.openInfoDialog(@StringRes info: Int) {
     infoDialog.show(this.supportFragmentManager, "info dialog")
 }
 
-fun AppCompatActivity.openSyncDialog(@StringRes info: Int) {
-    val infoDialog: SyncDialog = SyncDialog.newInstance(getString(info))
-    infoDialog.show(this.supportFragmentManager, "sync dialog")
-}
-
 fun Activity.getScreenWidth() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
     val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
     val insets: Insets = windowMetrics.windowInsets

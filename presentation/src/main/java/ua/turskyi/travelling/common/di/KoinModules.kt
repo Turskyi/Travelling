@@ -1,11 +1,11 @@
 package ua.turskyi.travelling.common.di
 
-import ua.turskyi.data.network.datasource.CountriesNetSource
+import ua.turskyi.data.network.datasource.NetSource
 import ua.turskyi.data.network.service.CountriesApi
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.data.repository.CountriesRepositoryImpl
-import ua.turskyi.data.datastore.room.Database
-import ua.turskyi.data.datastore.room.datasource.CountriesDbSource
+import ua.turskyi.data.database.room.Database
+import ua.turskyi.data.database.room.datasource.DatabaseSource
 import ua.turskyi.domain.repository.CountriesRepository
 import androidx.room.Room
 import com.google.gson.Gson
@@ -60,7 +60,7 @@ val dataProvidersModule = module {
     single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
     single {
         OkHttpClient.Builder()
-            .cache(get<Cache>())
+            .cache(get())
             .addInterceptor { chain ->
                 var request: Request = chain.request()
                 request = if (hasNetwork(androidContext())) {
@@ -103,8 +103,8 @@ val dataProvidersModule = module {
 val sourcesModule = module {
     single { get<Database>().countriesDao() }
     single { get<Retrofit>().create(CountriesApi::class.java) }
-    single { CountriesDbSource(get()) }
-    single { CountriesNetSource(get()) }
+    single { DatabaseSource(get()) }
+    single { NetSource(get()) }
 }
 
 

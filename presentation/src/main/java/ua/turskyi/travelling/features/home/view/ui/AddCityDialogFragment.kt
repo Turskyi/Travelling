@@ -22,7 +22,6 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
-import ua.turskyi.travelling.common.Constants.ACCESS_LOCATION
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
@@ -30,6 +29,7 @@ import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
+import java.io.IOException
 import java.util.*
 
 class AddCityDialogFragment : DialogFragment() {
@@ -180,7 +180,7 @@ class AddCityDialogFragment : DialogFragment() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        if (requestCode == ACCESS_LOCATION) {
+        if (requestCode == resources.getInteger(R.integer.location_access_request_code)) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 etCity?.let { inputField -> addCityTo(inputField) }
             } else {
@@ -231,7 +231,7 @@ class AddCityDialogFragment : DialogFragment() {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ),
-                ACCESS_LOCATION
+                resources.getInteger(R.integer.location_access_request_code)
             )
         } else {
             val findLastLocationTask = fusedLocationClient.lastLocation
@@ -295,7 +295,7 @@ class AddCityDialogFragment : DialogFragment() {
             )
             val cityName: String? = addresses?.get(0)?.locality
             editText.setText(cityName)
-        } catch (exception: RuntimeException) {
+        } catch (exception: IOException) {
             toastLong(exception.message)
         }
     }

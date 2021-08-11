@@ -1,18 +1,17 @@
 package ua.turskyi.data.entities.local
 
 import androidx.room.*
-import ua.turskyi.data.entities.local.CountryEntity.Companion.COLUMN_NAME
-import ua.turskyi.data.entities.local.CountryEntity.Companion.TABLE_COUNTRIES
+import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_NAME
+import ua.turskyi.data.entities.local.CountryEntity.Companion.COLLECTION_COUNTRIES
 
-@Entity(tableName = TABLE_COUNTRIES, indices = [Index(value = [COLUMN_NAME], unique = true)])
+@Entity(tableName = COLLECTION_COUNTRIES, indices = [Index(value = [PARAM_NAME], unique = true)])
 data class CountryEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = COLUMN_ID) var id: Int,
-    @ColumnInfo(name = COLUMN_NAME) var name: String,
-    @ColumnInfo(name = COLUMN_FLAG) var flag: String,
-    @ColumnInfo(name = COLUMN_VISITED) var isVisited: Boolean?,
-    @ColumnInfo(name = COLUMN_SELFIE) var selfie: String?
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int,
+    @ColumnInfo(name = PARAM_NAME) var name: String,
+    @ColumnInfo(name = PARAM_FLAG) var flag: String,
+    @ColumnInfo(name = PARAM_VISITED) var isVisited: Boolean?,
+    @ColumnInfo(name = PARAM_SELFIE) var selfie: String?
 ) {
-    // required empty constructor for firestore serialization
     @Ignore
     constructor() : this(0, "", "", null, null)
     @Ignore
@@ -25,11 +24,11 @@ data class CountryEntity(
     )
 
     companion object {
-        const val TABLE_COUNTRIES = "Countries"
-        const val COLUMN_ID = "id"
-        const val COLUMN_NAME = "name"
-        const val COLUMN_FLAG = "flag"
-        const val COLUMN_VISITED = "visited"
-        const val COLUMN_SELFIE = "selfie"
+        const val COLLECTION_COUNTRIES = "Countries"
+        const val PARAM_ID = "id"
+        const val PARAM_NAME = "name"
+        const val PARAM_FLAG = "flag"
+        const val PARAM_VISITED = "visited"
+        const val PARAM_SELFIE = "selfie"
     }
 }

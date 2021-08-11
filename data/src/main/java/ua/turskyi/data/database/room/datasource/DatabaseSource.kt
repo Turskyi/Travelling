@@ -1,10 +1,10 @@
-package ua.turskyi.data.datastore.room.datasource
+package ua.turskyi.data.database.room.datasource
 
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
-import ua.turskyi.data.datastore.room.dao.CountriesDao
+import ua.turskyi.data.database.room.dao.CountriesDao
 
-class CountriesDbSource(private val countriesDao: CountriesDao) {
+class DatabaseSource(private val countriesDao: CountriesDao) {
     fun loadCountriesByNameAndRange(name: String?, limit: Int, offset: Int) =
         countriesDao.loadAllCountriesByNameAndRange(name, limit, offset)
 

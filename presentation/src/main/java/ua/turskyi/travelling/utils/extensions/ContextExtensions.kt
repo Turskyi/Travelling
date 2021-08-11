@@ -37,8 +37,9 @@ fun Context.isFacebookInstalled() = try {
     false
 }
 
-fun Context.spToPix(@DimenRes sizeRes: Int) =
-    resources.getDimension(sizeRes) / resources.displayMetrics.density
+fun Context.spToPix(@DimenRes sizeRes: Int): Float {
+    return resources.getDimension(sizeRes) / resources.displayMetrics.density
+}
 
 fun Context.getHomeActivity(): HomeActivity? {
     var context = this

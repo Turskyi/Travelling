@@ -22,6 +22,9 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
 
     var notVisitedCountriesCount: Float = 0F
     var citiesCount = 0
+    var isPermissionGranted: Boolean = false
+    var backPressedTiming: Long = 0
+    var mLastClickTime: Long = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
@@ -43,7 +46,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     val navigateToAllCountries: LiveData<Boolean>
         get() = _navigateToAllCountries
 
-    fun showListOfCountries() {
+    fun showListOfVisitedCountries() {
         _visibilityLoader.postValue(VISIBLE)
         viewModelScope.launch {
             // loading count of not visited countries
@@ -125,7 +128,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     }
 
     private suspend fun downloadCountries() =
-        interactor.downloadCountries({ showListOfCountries() }, { exception ->
+        interactor.downloadCountries({ showListOfVisitedCountries() }, { exception ->
             _visibilityLoader.postValue(GONE)
             _errorMessage.run {
                 exception.message?.let { message ->
@@ -146,7 +149,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     fun removeFromVisited(country: Country) = viewModelScope.launch {
         _visibilityLoader.postValue(VISIBLE)
         interactor.removeCountryModelFromVisitedList(country.mapToModel(), {
-            showListOfCountries()
+            showListOfVisitedCountries()
         }, { exception ->
             _visibilityLoader.postValue(GONE)
             _errorMessage.run {
@@ -161,7 +164,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     fun removeCity(city: City) = viewModelScope.launch {
         _visibilityLoader.postValue(VISIBLE)
         interactor.removeCity(city.mapNodeToModel(), {
-            showListOfCountries()
+            showListOfVisitedCountries()
         }, { exception ->
             _visibilityLoader.postValue(GONE)
             _errorMessage.run {
