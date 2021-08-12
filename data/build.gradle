@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility = 11
+        targetCompatibility = 11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 }
 
@@ -42,13 +42,12 @@ dependencies {
     implementation project(':domain')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // Koin for Android
-    api ("io.insert-koin:koin-android:$insert_koin_version")
+    api("io.insert-koin:koin-android:$insert_koin_version")
     // Koin core features
-    api ("io.insert-koin:koin-core:$insert_koin_version")
+    api("io.insert-koin:koin-core:$insert_koin_version")
 
     // network
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
