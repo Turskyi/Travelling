@@ -15,7 +15,6 @@ import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -75,18 +74,10 @@ val dataProvidersModule = module {
                     ).build()
                 }
                 chain.proceed(request)
-            }.addInterceptor(get<HttpLoggingInterceptor>())
-            .build()
+            }.build()
     }
 
-    single {
-        HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-
-    single<Gson> {
-        GsonBuilder().setLenient().create()
-    }
+    single<Gson> { GsonBuilder().setLenient().create() }
 
     single {
         val cacheSize: Long = (5 * 1024 * 1024).toLong()
@@ -95,8 +86,8 @@ val dataProvidersModule = module {
     single<Retrofit> {
         Retrofit.Builder()
             .baseUrl(HOST_URL)
-            .client(get<OkHttpClient>())
-            .addConverterFactory(GsonConverterFactory.create(get<Gson>())).build()
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create(get())).build()
     }
 }
 
