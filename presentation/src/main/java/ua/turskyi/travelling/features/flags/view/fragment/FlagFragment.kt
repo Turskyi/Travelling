@@ -44,7 +44,7 @@ class FlagFragment : Fragment() {
 
     private val viewModel: FlagsFragmentViewModel by inject()
 
-    var mChangeFlagListener: OnChangeFlagFragmentListener? = null
+    private var mChangeFlagListener: OnChangeFlagFragmentListener? = null
     private var flagsActivityViewListener: FlagsActivityView? = null
 
     private lateinit var photoPickerResultLauncher: ActivityResultLauncher<Intent>
@@ -60,7 +60,7 @@ class FlagFragment : Fragment() {
         try {
             flagsActivityViewListener = context as FlagsActivityView?
         } catch (castException: ClassCastException) {
-            /* in this case the activity does not implement the listener.  */
+            // in this case the activity does not implement the listener.
             castException.printStackTrace()
         }
     }

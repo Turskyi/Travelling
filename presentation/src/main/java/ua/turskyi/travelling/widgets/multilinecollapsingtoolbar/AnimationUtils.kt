@@ -9,7 +9,6 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import kotlin.math.roundToInt
 
 internal object AnimationUtils {
-    val LINEAR_INTERPOLATOR: Interpolator = LinearInterpolator()
     val FAST_OUT_SLOW_IN_INTERPOLATOR: Interpolator = FastOutSlowInInterpolator()
     val FAST_OUT_LINEAR_IN_INTERPOLATOR: Interpolator = FastOutLinearInInterpolator()
     val LINEAR_OUT_SLOW_IN_INTERPOLATOR: Interpolator = LinearOutSlowInInterpolator()
@@ -20,9 +19,5 @@ internal object AnimationUtils {
      */
     fun lerp(startValue: Float, endValue: Float, fraction: Float): Float {
         return startValue + fraction * (endValue - startValue)
-    }
-
-    fun lerp(startValue: Int, endValue: Int, fraction: Float): Int {
-        return startValue + (fraction * (endValue - startValue)).roundToInt()
     }
 }

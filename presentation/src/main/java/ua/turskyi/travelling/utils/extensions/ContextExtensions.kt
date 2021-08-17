@@ -25,11 +25,6 @@ inline fun <reified A : Activity> Context.start(configIntent: Intent.() -> Unit 
     startActivity(Intent(this, A::class.java).apply(configIntent))
 }
 
-tailrec fun Context.getActivity(): Activity? = when (this) {
-    is Activity -> this
-    else -> (this as? ContextWrapper)?.baseContext?.getActivity()
-}
-
 fun Context.isFacebookInstalled() = try {
     packageManager.getPackageInfo(getString(R.string.facebook_package), PackageManager.GET_META_DATA)
     true

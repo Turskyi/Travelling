@@ -5,9 +5,7 @@ package ua.turskyi.travelling.utils
  */
 open class Event<out T>(private val content: T) {
 
-    var hasBeenHandled = false
-        /* Allow external read but not write */
-        private set
+    private var hasBeenHandled = false
 
     /**
      * Returns the content and prevents its use again.

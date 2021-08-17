@@ -17,7 +17,6 @@
     <string name="mime_type_txt_html" translatable="false">text/html</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
     <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
-    <string name="privacy_web_page" translatable="false">https://travelling-the-countries.web.app</string>
     <string name="android_5_1" translatable="false">5.1</string>
     <string name="media_providers" translatable="false">com.android.providers.media</string>
     <string name="image_and_jpeg_type" translatable="false">image/jpeg</string>
@@ -26,10 +25,6 @@
     <!-- for face book sharing -->
     <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
-    <!-- for facebook auth -->
-    <string name="facebook_application_id" translatable="false">285452062466394</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb285452062466394</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb285452062466394</string>
     <!-- END of not translatable strings -->
 
     <!-- default  strings -->
@@ -42,8 +37,6 @@
     <string name="dialog_btn_ok">OK</string>
     <string name="dialog_btn_ok_ready">OK ?</string>
     <string name="dialog_btn_not_ok">not OK</string>
-    <string name="exception_unsupported_context">you cannot instantiate the context</string>
-    <string name="exception_npe_context">you should init context util first</string>
     <!-- end of default strings -->
 
     <!-- home screen -->
@@ -116,17 +109,8 @@
     <!-- messages -->
     <string name="msg.no_facebook_app">You do not have Facebook app installed</string>
     <string name="msg.no_app_installed">No app available to share pie chart</string>
-    <string name="msg.internet_connection_lost">Тhe app is offline.</string>
-    <string name="msg.connection_billing">Problems with connecting to google play.</string>
-    <string name="msg.error_due_to_canceling_purchase">Cancelling the purchase</string>
-    <string name="msg.error_unexpected">unexpected error occurred</string>
-    <string name="msg.complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
-    <string name="msg.purchase_acknowledged">Purchase acknowledged</string>
     <string name="msg.gps_permission_denied">GPS permission denied</string>
     <string name="msg.did_not_choose">did not choose anything</string>
-    <string name="msg.did_not_sign_in">did not sign in</string>
-    <string name="msg.sign_in_cancelled">sign in canceled</string>
-    <string name="msg.no_internet">no internet connection</string>
     <string name="home_onboarding_title">…loading countries</string>
     <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
     <string name="msg.home_country_did_not_added">did not added anything</string>

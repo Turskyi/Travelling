@@ -83,10 +83,8 @@ internal class CollapsingTextHelper(private val mView: View) {
     private var mCollapsedTextGravity: Int = Gravity.CENTER_VERTICAL
     private var mExpandedTextSize: Float = 15f
     private var mCollapsedTextSize: Float = 15f
-    var expandedTextColor: ColorStateList? = null
-        private set
-    var collapsedTextColor: ColorStateList? = null
-        private set
+    private var expandedTextColor: ColorStateList? = null
+    private var collapsedTextColor: ColorStateList? = null
     private var mExpandedDrawY: Float = 0f
     private var mCollapsedDrawY: Float = 0f
     private var mExpandedDrawX: Float = 0f
@@ -133,11 +131,6 @@ internal class CollapsingTextHelper(private val mView: View) {
     private var lineSpacingMultiplier: Float = 1f
     fun setTextSizeInterpolator(interpolator: Interpolator?) {
         mTextSizeInterpolator = interpolator
-        recalculate()
-    }
-
-    fun setPositionInterpolator(interpolator: Interpolator?) {
-        mPositionInterpolator = interpolator
         recalculate()
     }
 
@@ -311,12 +304,6 @@ internal class CollapsingTextHelper(private val mView: View) {
         return null
     }
 
-    fun setTypefaces(typeface: Typeface?) {
-        mExpandedTypeface = typeface
-        mCollapsedTypeface = mExpandedTypeface
-        recalculate()
-    }
-
     var collapsedTypeface: Typeface?
         get() = if (mCollapsedTypeface != null) mCollapsedTypeface else Typeface.DEFAULT
         set(typeface) {
@@ -366,30 +353,8 @@ internal class CollapsingTextHelper(private val mView: View) {
                 calculateCurrentOffsets()
             }
         }
-    var collapsedTextSize: Float
-        get() {
-            return mCollapsedTextSize
-        }
-        set(textSize) {
-            if (mCollapsedTextSize != textSize) {
-                mCollapsedTextSize = textSize
-                recalculate()
-            }
-        }
-    var expandedTextSize: Float
-        get() {
-            return mExpandedTextSize
-        }
-        set(textSize) {
-            if (mExpandedTextSize != textSize) {
-                mExpandedTextSize = textSize
-                recalculate()
-            }
-        }
 
-    private fun calculateCurrentOffsets() {
-        calculateOffsets(mExpandedFraction)
-    }
+    private fun calculateCurrentOffsets() = calculateOffsets(mExpandedFraction)
 
     private fun calculateOffsets(fraction: Float) {
         interpolateBounds(fraction)
@@ -750,7 +715,7 @@ internal class CollapsingTextHelper(private val mView: View) {
                 )
                 // if last char in line is space, move it behind the ellipsis
                 var lineEnd: CharSequence? = ""
-                if (lineText.get(lineText.length - 1) == ' ') {
+                if (lineText[lineText.length - 1] == ' ') {
                     lineEnd = lineText.subSequence(lineText.length - 1, lineText.length)
                     lineText = lineText.subSequence(0, lineText.length - 1)
                 }

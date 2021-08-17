@@ -116,17 +116,17 @@ class SectionAverageGapItemDecoration(
     }
 
     private fun markSections() {
-        val adapter: BaseSectionQuickAdapter<*, *>? = mAdapter
+        val adapter: BaseSectionQuickAdapter<*, *> = mAdapter
         mSectionList.clear()
         var sectionEntity: SectionEntity?
         var section = Section()
         var i = 0
-        val size = adapter?.itemCount
-        while (i < size!!) {
+        val size = adapter.itemCount
+        while (i < size) {
             sectionEntity = adapter.getItem(i)
             if (sectionEntity.isHeader) {
                 if (i != 0) {
-             /*       section */
+             //       section
                     section.endPos = i - 1
                     mSectionList.add(section)
                 }
