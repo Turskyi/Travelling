@@ -7,10 +7,12 @@ import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.utils.extensions.mapNodeToModel
 import ua.turskyi.travelling.models.City
 
-class AddCityDialogViewModel(private val interactor: CountriesInteractor) : ViewModel(){
-    fun insert(city: City,
-               onSuccess: () -> Unit,
-               onError: ((Exception) -> Unit?)?) {
+class AddCityDialogViewModel(private val interactor: CountriesInteractor) : ViewModel() {
+    fun insert(
+        city: City,
+        onSuccess: () -> Unit,
+        onError: (Exception) -> Unit,
+    ) {
         viewModelScope.launch {
             interactor.insertCity(city.mapNodeToModel(), onSuccess = onSuccess, onError = onError)
         }

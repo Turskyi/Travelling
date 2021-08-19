@@ -261,10 +261,6 @@ internal class CollapsingTextHelper(private val mView: View) {
         }
     }
 
-    fun getMaxLines(): Int {
-        return maxLines
-    }
-
     // getter and setter methods for line spacing
     fun setLineSpacingExtra(lineSpacingExtra: Float) {
         if (lineSpacingExtra != this.lineSpacingExtra) {
@@ -274,20 +270,12 @@ internal class CollapsingTextHelper(private val mView: View) {
         }
     }
 
-    fun getLineSpacingExtra(): Float {
-        return lineSpacingExtra
-    }
-
     fun setLineSpacingMultiplier(lineSpacingMultiplier: Float) {
         if (lineSpacingMultiplier != this.lineSpacingMultiplier) {
             this.lineSpacingMultiplier = lineSpacingMultiplier
             clearTexture()
             recalculate()
         }
-    }
-
-    fun getLineSpacingMultiplier(): Float {
-        return lineSpacingMultiplier
     }
 
     private fun readFontFamilyTypeface(resId: Int): Typeface? {
@@ -303,23 +291,6 @@ internal class CollapsingTextHelper(private val mView: View) {
         }
         return null
     }
-
-    var collapsedTypeface: Typeface?
-        get() = if (mCollapsedTypeface != null) mCollapsedTypeface else Typeface.DEFAULT
-        set(typeface) {
-            if (areTypefacesDifferent(mCollapsedTypeface, typeface)) {
-                mCollapsedTypeface = typeface
-                recalculate()
-            }
-        }
-    var expandedTypeface: Typeface?
-        get() = if (mExpandedTypeface != null) mExpandedTypeface else Typeface.DEFAULT
-        set(typeface) {
-            if (areTypefacesDifferent(mExpandedTypeface, typeface)) {
-                mExpandedTypeface = typeface
-                recalculate()
-            }
-        }
 
     fun setState(state: IntArray?): Boolean {
         mState = state

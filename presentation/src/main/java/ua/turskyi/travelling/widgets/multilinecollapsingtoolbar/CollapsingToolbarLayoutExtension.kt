@@ -7,8 +7,6 @@ import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -19,7 +17,6 @@ import android.widget.FrameLayout
 import androidx.annotation.*
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.ViewGroupUtils
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.math.MathUtils
 import androidx.core.util.ObjectsCompat
@@ -582,23 +579,6 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
             }
         }
 
-    /**
-     * Sets the text colors of the collapsed title.
-     *
-     * @param colors ColorStateList containing the new text colors
-     */
-    private fun setCollapsedTitleTextColor(@NonNull colors: ColorStateList?) {
-        mCollapsingTextHelper?.setCollapsedTextColor(colors!!)
-    }
-
-    /**
-     * Sets the text colors of the expanded title.
-     *
-     * @param colors ColorStateList containing the new text colors
-     */
-    private fun setExpandedTitleTextColor(@NonNull colors: ColorStateList?) {
-        mCollapsingTextHelper?.setExpandedTextColor(colors!!)
-    }
     /**
      * Returns the horizontal and vertical alignment for title when expanded.
      *

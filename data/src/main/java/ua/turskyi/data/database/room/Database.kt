@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ua.turskyi.data.BuildConfig
+import ua.turskyi.data.R
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
 import ua.turskyi.data.database.room.dao.CountriesDao
@@ -44,22 +45,22 @@ abstract class Database : RoomDatabase() {
         ).addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                db.query("PRAGMA journal_mode = MEMORY")
+                db.query(context.resources.getString(R.string.pragma_journal_mode_memory))
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
-                db.query("PRAGMA synchronous = OFF")
+                db.query(context.resources.getString(R.string.pragma_synchronous_off))
             }
         }).addCallback(object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                db.query("PRAGMA journal_mode = MEMORY")
+                db.query(context.resources.getString(R.string.pragma_journal_mode_memory))
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
-                db.query("PRAGMA synchronous = OFF")
+                db.query(context.resources.getString(R.string.pragma_synchronous_off))
             }
         }).build()
     }

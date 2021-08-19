@@ -2,11 +2,9 @@ package ua.turskyi.travelling.widgets.multilinecollapsingtoolbar
 
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
-import android.view.animation.LinearInterpolator
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
-import kotlin.math.roundToInt
 
 internal object AnimationUtils {
     val FAST_OUT_SLOW_IN_INTERPOLATOR: Interpolator = FastOutSlowInInterpolator()

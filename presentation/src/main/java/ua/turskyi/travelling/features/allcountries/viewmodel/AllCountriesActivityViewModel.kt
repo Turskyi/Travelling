@@ -49,7 +49,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
     private fun getCountryList(searchQuery: String): PagedList<Country> {
 
-        /* PagedList */
+        // PagedList
         val config: PagedList.Config = PagedList.Config.Builder()
             /* If "true", then it should be created another viewType in Adapter "onCreateViewHolder"
               while uploading */
@@ -59,7 +59,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             .build()
 
         return if (searchQuery == "" || searchQuery == "%%") {
-            /* DataSource */
+            // DataSource
             val dataSource = CountriesPositionalDataSource(interactor)
             _visibilityLoader = dataSource.visibilityLoader
             PagedList.Builder(dataSource, config)
@@ -67,8 +67,10 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         } else {
-            val filteredDataSource =
-                FilteredPositionalDataSource(countryName = searchQuery, interactor = interactor)
+            val filteredDataSource = FilteredPositionalDataSource(
+                countryName = searchQuery,
+                interactor = interactor,
+            )
             PagedList.Builder(filteredDataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
@@ -77,18 +79,18 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     }
 
     private fun getNotVisitedCountriesNum() = viewModelScope.launch {
-            interactor.setNotVisitedCountriesNum({ num ->
-                _notVisitedCountriesNumLiveData.postValue(num)
-            }, { exception ->
-                _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
-                    }
+        interactor.setNotVisitedCountriesNum({ num ->
+            _notVisitedCountriesNumLiveData.postValue(num)
+        }, { exception ->
+            _visibilityLoader.postValue(GONE)
+            _errorMessage.run {
+                exception.message?.let { message ->
+                    /* Trigger the event by setting a new Event as a new value */
+                    postValue(Event(message))
                 }
-            })
-        }
+            }
+        })
+    }
 
     fun markAsVisited(country: Country, onSuccess: () -> Unit) {
         _visibilityLoader.postValue(VISIBLE)

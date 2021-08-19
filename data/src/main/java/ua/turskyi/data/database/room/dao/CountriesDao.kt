@@ -15,15 +15,15 @@ interface CountriesDao {
 
     @Query("SELECT * FROM  $COLLECTION_COUNTRIES WHERE $PARAM_NAME LIKE :name LIMIT :limit OFFSET :offset")
     fun loadAllCountriesByNameAndRange(
-        name: String?,
+        name: String,
         limit: Int,
         offset: Int
     ): MutableList<CountryEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAllCountries(countries: List<CountryEntity>?)
+    fun insertAllCountries(countries: List<CountryEntity>)
 
-    /* using in paging adapters */
+    // using in paging adapters
     @Query("SELECT * FROM $COLLECTION_COUNTRIES LIMIT :limit OFFSET :offset")
     fun getCountriesByRange(limit: Int, offset: Int): List<CountryEntity>
 

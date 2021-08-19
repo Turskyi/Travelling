@@ -136,7 +136,7 @@ dependencies {
     implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
 
     // used for animation
-    def lottieVersion = "4.0.0"
+    def lottieVersion = "4.1.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // for "ci", used for deploying app to google app market
