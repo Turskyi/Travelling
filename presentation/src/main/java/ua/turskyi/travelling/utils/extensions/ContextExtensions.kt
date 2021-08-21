@@ -90,14 +90,12 @@ fun Context.getToolbarHeight(): Int {
     return toolbarHeight
 }
 
-fun Context.toast(
-    @StringRes msgResId: Int
-) = Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+fun Context.toast(@StringRes msgResId: Int) {
+    Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+}
 
-fun Context.toastLong(
-    @StringRes msgResId: Int
-) = Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
+fun Context.toastLong(@StringRes msgResId: Int) {
+    Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
+}
 
-fun Context.toastLong(
-    msg: String?
-) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+fun Context.toastLong(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()

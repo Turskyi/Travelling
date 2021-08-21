@@ -62,16 +62,18 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
     }
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
-        val currentCountry = getItem(position) as Country
-        holder.tvCountry.text = currentCountry.name
-        setSelectableItemBackground(holder)
-        if (currentCountry.isVisited) {
-            holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-        } else {
-            holder.tvCountry.paintFlags =
-                holder.tvCountry.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        val currentCountry: Country? = getItem(position)
+        if(currentCountry != null){
+            holder.tvCountry.text = currentCountry.name
+            setSelectableItemBackground(holder)
+            if (currentCountry.isVisited) {
+                holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                holder.tvCountry.paintFlags =
+                    holder.tvCountry.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+            showPicturesInSVG(currentCountry, holder)
         }
-        showPicturesInSVG(currentCountry, holder)
     }
 
     private fun setSelectableItemBackground(holder: CountryViewHolder) {

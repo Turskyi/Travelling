@@ -28,15 +28,14 @@ fun View.setDynamicVisibility(visibility: Boolean) = if (visibility) {
     this.animate().alpha(0.0f).duration = 200
 }
 
-fun View.convertViewToBitmap(): Bitmap? {
-    val bitmap =
-        Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+fun View.convertViewToBitmap(): Bitmap {
+    val bitmap: Bitmap = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     this.draw(canvas)
     return bitmap
 }
 
-fun View.getScreenShot() = convertViewToBitmap()?.let { Bitmap.createBitmap(it) }
+fun View.getScreenShot(): Bitmap = Bitmap.createBitmap(convertViewToBitmap())
 
 /**
  * Show a snackbar with [messageRes]
@@ -77,14 +76,14 @@ fun View.shareImageViaChooser() {
         R.string.picture_file_name,
         SimpleDateFormat(context.getString(R.string.day_month_year), Locale.ENGLISH).format(Date())
     )
-    val bitmap: Bitmap? = getScreenShot()
-    val file: File? = bitmap?.convertBitmapToFile(context, fileName)
-    val uri: Uri? = file?.let { screenShootFile ->
+    val bitmap: Bitmap = getScreenShot()
+    val file: File = bitmap.convertBitmapToFile(context, fileName)
+    val uri: Uri =
         FileProvider.getUriForFile(
             context, resources.getString(R.string.authority_name, context.packageName.toString()),
-            screenShootFile
+            file
         )
-    }
+
 
     val intentImage = Intent()
     intentImage.action = Intent.ACTION_SEND
@@ -103,7 +102,7 @@ fun View.shareImageViaChooser() {
                 context.getString(R.string.share_title)
             )
         )
-    } catch (e: ActivityNotFoundException) {
+    } catch (exception: ActivityNotFoundException) {
         toast(R.string.msg_no_app_installed)
     }
 }
@@ -114,7 +113,7 @@ fun View.shareViaFacebook(fragment: Fragment) {
         ShareHashtag.Builder()
             .setHashtag(resources.getString(R.string.share_massage, APPLICATION_ID))
             .build()
-    val bitmap: Bitmap? = getScreenShot()
+    val bitmap: Bitmap = getScreenShot()
     val sharePhoto: SharePhoto = SharePhoto.Builder().setBitmap(bitmap).setCaption(
         resources.getString(
             R.string.picture_name, SimpleDateFormat(
