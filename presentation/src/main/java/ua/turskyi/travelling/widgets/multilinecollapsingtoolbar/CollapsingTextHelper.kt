@@ -134,20 +134,6 @@ internal class CollapsingTextHelper(private val mView: View) {
         recalculate()
     }
 
-    fun setCollapsedTextColor(textColor: ColorStateList) {
-        if (collapsedTextColor !== textColor) {
-            collapsedTextColor = textColor
-            recalculate()
-        }
-    }
-
-    fun setExpandedTextColor(textColor: ColorStateList) {
-        if (expandedTextColor !== textColor) {
-            expandedTextColor = textColor
-            recalculate()
-        }
-    }
-
     fun setExpandedBounds(left: Int, top: Int, right: Int, bottom: Int) {
         if (!rectEquals(mExpandedBounds, left, top, right, bottom)) {
             mExpandedBounds.set(left, top, right, bottom)

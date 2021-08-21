@@ -209,7 +209,7 @@ class FlagFragment : Fragment() {
             val position = this.arguments?.getInt(EXTRA_POSITION)
             position?.let {
                 mChangeFlagListener?.onChangeToolbarTitle(countries[position].name)
-                if (countries[position].selfie.isNullOrEmpty()) {
+                if (countries[position].selfie.isEmpty()) {
                     showTheFlag(countries, position)
                 } else {
                     showSelfie(countries, position)

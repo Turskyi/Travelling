@@ -6,22 +6,23 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 
-fun List<CountryModel>.mapModelListToCountryList() = this.mapTo(
-    mutableListOf(), { it.mapModelToActual() })
+fun List<CountryModel>.mapModelListToCountryList(): MutableList<Country> {
+    return this.mapTo(mutableListOf(), { it.mapModelToActual() })
+}
 
-fun List<CountryModel>.mapModelListToNodeList() = this.mapTo(
-    mutableListOf(), { model -> model.mapModelToNode() })
+fun CountryModel.mapModelToNode(): VisitedCountry {
+    return VisitedCountry(id = id, title = name, img = flag, isVisited = isVisited, selfie = selfie)
+}
 
-fun CountryModel.mapModelToNode() = VisitedCountry(
-    id = id, title = name, img = flag, visited = isVisited, selfie = selfie
-)
+fun List<CountryModel>.mapModelListToNodeList(): MutableList<VisitedCountry> {
+    return this.mapTo(mutableListOf(), { model -> model.mapModelToNode() })
+}
 
 fun CountryModel.mapModelToActual() = Country(id, name, flag, isVisited, selfie)
-fun Country.mapToModel() = CountryModel(id, name, flag, visited, selfie)
-fun VisitedCountry.mapNodeToActual() = Country(
-    id = id, visited = visited, name = title,
-    flag = img, selfie = selfie
-)
+fun Country.mapToModel() = CountryModel(id, name, flag, isVisited, selfie)
+fun VisitedCountry.mapNodeToActual(): Country {
+    return Country(id = id, isVisited = isVisited, name = title, flag = img, selfie = selfie)
+}
 
 fun CityModel.mapModelToBaseNode() = City(id = id, name = name, parentId = parentId, month = month)
 fun City.mapNodeToModel() = CityModel(id = id, name = name, parentId = parentId, month = month)

@@ -9,18 +9,18 @@ data class CountryEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int,
     @ColumnInfo(name = PARAM_NAME) var name: String,
     @ColumnInfo(name = PARAM_FLAG) var flag: String,
-    @ColumnInfo(name = PARAM_VISITED) var isVisited: Boolean?,
-    @ColumnInfo(name = PARAM_SELFIE) var selfie: String?
+    @ColumnInfo(name = PARAM_VISITED) var isVisited: Boolean,
+    @ColumnInfo(name = PARAM_SELFIE) var selfie: String
 ) {
     @Ignore
-    constructor() : this(0, "", "", null, null)
+    constructor() : this(0, "", "", false, "")
     @Ignore
-    constructor(id: Int, name: String, flag: String, isVisited: Boolean?) : this(
+    constructor(id: Int, name: String, flag: String, isVisited: Boolean) : this(
         id,
         name,
         flag,
         isVisited,
-        null
+        ""
     )
 
     companion object {

@@ -23,7 +23,8 @@ import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
 class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
-    COUNTRIES_DIFF_CALLBACK) {
+    COUNTRIES_DIFF_CALLBACK
+) {
 
     /**
      * Allows the RecyclerView to determine which items have changed when the [List] of [Country]
@@ -43,7 +44,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
                     oldItem: Country,
                     newItem: Country
                 ): Boolean {
-                    return oldItem.name == newItem.name && oldItem.visited == newItem.visited
+                    return oldItem.name == newItem.name && oldItem.isVisited == newItem.isVisited
                 }
             }
     }
@@ -52,8 +53,11 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
     var onCountryLongClickListener: ((country: Country) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
-        val view = LayoutInflater
-            .from(parent.context).inflate(R.layout.item_list_country, parent, false)
+        val view: View = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_list_country,
+            parent,
+            false,
+        )
         return CountryViewHolder(view)
     }
 
@@ -61,7 +65,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
         val currentCountry = getItem(position) as Country
         holder.tvCountry.text = currentCountry.name
         setSelectableItemBackground(holder)
-        if (currentCountry.visited == true) {
+        if (currentCountry.isVisited) {
             holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             holder.tvCountry.paintFlags =
@@ -85,7 +89,6 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
         holder: CountryViewHolder
     ) {
         val uri: Uri = Uri.parse(country.flag)
-
         GlideToVectorYou
             .init()
             .with(holder.itemView.context)
@@ -110,10 +113,9 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
             visibility = VISIBLE
             setBackgroundColor(Color.TRANSPARENT)
             loadData(
-                "<html><head><style type='text/css'>" +
-                        "body{margin:auto auto;text-align:center;} img{width:80%25;}" +
-                        " </style></head><body><img src='${country.flag}'/>" +
-                        "</body></html>", "text/html", "UTF-8"
+                resources.getString(R.string.html_mini_flag, country.flag),
+                resources.getString(R.string.mime_type_txt_html),
+                resources.getString(R.string.encoding_utf_8),
             )
         }
     }

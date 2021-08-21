@@ -9,10 +9,10 @@ import ua.turskyi.data.entities.local.CityEntity.Companion.COLLECTION_CITIES
 
 @Entity(tableName = COLLECTION_CITIES , indices = [Index(value = [PARAM_ID], unique = true)])
 data class CityEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int?,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int,
     @ColumnInfo(name = PARAM_NAME) val name: String,
     @ColumnInfo(name = PARAM_PARENT_ID)  val parentId: Int,
-    @ColumnInfo(name = PARAM_MONTH)  val month: String?
+    @ColumnInfo(name = PARAM_MONTH)  val month: String
 ) {
     companion object {
         const val COLLECTION_CITIES = "Cities"

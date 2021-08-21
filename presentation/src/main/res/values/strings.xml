@@ -13,6 +13,13 @@
     </head>
     <body><img src=\'%1$s\'/></body>
     </html>]]></string>
+    <string name="html_mini_flag" translatable="false"><![CDATA[
+    <html>
+    <head>
+    <style type=\'text/css\'>body{margin:auto auto;text-align:center;} img{width:80%%25;}</style>
+    </head>
+    <body><img src=\'%1$s\'/></body>
+    </html>]]></string>
     <string name="encoding_utf_8" translatable="false">UTF-8</string>
     <string name="mime_type_txt_html" translatable="false">text/html</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>

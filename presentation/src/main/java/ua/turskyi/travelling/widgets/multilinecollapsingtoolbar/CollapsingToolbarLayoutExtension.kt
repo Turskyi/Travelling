@@ -3,7 +3,6 @@ package ua.turskyi.travelling.widgets.multilinecollapsingtoolbar
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Rect
