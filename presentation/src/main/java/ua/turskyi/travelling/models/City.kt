@@ -17,6 +17,6 @@ class City(var id: Int, var name: String, var parentId: Int, var month: String) 
         month = "",
     )
 
-    override val childNode: MutableList<BaseNode>?
-        get() = null
+    override val childNode: MutableList<BaseNode>
+        get() = mutableListOf()
 }

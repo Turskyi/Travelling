@@ -10,17 +10,18 @@ import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
+import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.fragment.app.DialogFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.Task
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.utils.extensions.toast
@@ -50,126 +51,102 @@ class AddCityDialogFragment : DialogFragment() {
     private val viewModel by inject<AddCityDialogViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    private var etCity: LinedEditText? = null
-    private var etMonth: EditText? = null
+    private lateinit var etCity: LinedEditText
+    private lateinit var etMonth: EditText
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
         initLocationServices()
 
-        val builder = context?.let { context ->
-            AlertDialog.Builder(
-                context,
-                R.style.RoundShapedDarkAlertDialogStyle
-            )
-        }
+        val builder: AlertDialog.Builder = AlertDialog.Builder(
+            requireContext(),
+            R.style.RoundShapedDarkAlertDialogStyle,
+        )
 
-        val viewGroup = (activity as AppCompatActivity)
-            .findViewById<ViewGroup>(android.R.id.content)
-        val dialogView = LayoutInflater.from(context)
-            .inflate(
-                R.layout.dialogue_city, viewGroup,
-                false
-            )
+        val viewGroup: ViewGroup = requireActivity().findViewById(android.R.id.content)
+        val dialogView: View = LayoutInflater.from(context).inflate(
+            R.layout.dialogue_city,
+            viewGroup,
+            false
+        )
 
-        builder?.setView(dialogView)
-        val alertDialog = builder?.create()
+        builder.setView(dialogView)
+        val alertDialog: AlertDialog = builder.create()
 
-        val buttonSave = dialogView.findViewById<Button>(R.id.buttonSave)
-        val buttonDate = dialogView.findViewById<Button>(R.id.btnDate)
-        val buttonGps = dialogView.findViewById<Button>(R.id.btnGps)
+        val buttonSave: Button = dialogView.findViewById(R.id.buttonSave)
+        val buttonDate: Button = dialogView.findViewById(R.id.btnDate)
+        val buttonGps: Button = dialogView.findViewById(R.id.btnGps)
         etCity = dialogView.findViewById(R.id.letCity)
         etMonth = dialogView.findViewById(R.id.etMonth)
 
-        /**
-         * There is a unique case when particular android version cannot perform location logic
+        /*
+         * There is a unique case when particular android version (5.1)
+         *  cannot perform location logic
          * and crashing, so here button just used as a cancel button.
          */
         if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
             buttonGps.text = getString(R.string.home_dialog_btn_cancel)
-            /* Removes CompoundDrawable */
+            // Removes CompoundDrawable
             buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
 
-        etCity?.visibility = VISIBLE
-        etCity?.setText("")
-        etMonth?.setText("")
+        etCity.visibility = VISIBLE
+        etCity.setText("")
+        etMonth.setText("")
         buttonSave.visibility = VISIBLE
         buttonGps.visibility = VISIBLE
 
         initListeners(buttonSave, alertDialog, buttonGps, buttonDate)
 
-        return alertDialog!!
+        return alertDialog
     }
 
     private fun initListeners(
         buttonSave: Button,
-        alertDialog: AlertDialog?,
+        alertDialog: AlertDialog,
         buttonGps: Button,
         buttonDate: Button
     ) {
         buttonSave.setOnClickListener {
-            if (etCity?.text.toString() != "") {
-                if (etMonth?.text.toString() != "") {
-                    arguments?.getInt(ARG_ID)?.let { parentId ->
-                        City(
-                            name = etCity?.text.toString(),
-                            parentId = parentId,
-                            month = etMonth?.text.toString()
-                        ).let { city ->
-                            viewModel.insert(
-                                city, {
-                                    alertDialog?.dismiss()
-                                }, { exception ->
-                                    toastLong(
-                                        exception.localizedMessage
-                                            ?: exception.stackTraceToString(),
-                                    )
-                                }
-                            )
-                        }
-                    }
-                } else {
-                    arguments?.getInt(ARG_ID)?.let { parentId ->
-                        City(name = etCity?.text.toString(), parentId = parentId).let { city ->
-                            viewModel.insert(
-                                city, {
-                                    alertDialog?.dismiss()
-                                }, { exception ->
-                                    toastLong(
-                                        exception.localizedMessage
-                                            ?: exception.stackTraceToString(),
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
+            if (etCity.text.toString() != "") {
+                viewModel.insert(
+                    city = City(
+                        name = etCity.text.toString(),
+                        parentId = requireArguments().getInt(ARG_ID),
+                        month = etMonth.text.toString(),
+                    ),
+                    onSuccess = { alertDialog.dismiss() },
+                    onError = { exception ->
+                        toastLong(
+                            exception.localizedMessage
+                                ?: exception.stackTraceToString(),
+                        )
+                    },
+                )
             } else {
-                alertDialog?.cancel()
+                alertDialog.cancel()
                 toast(R.string.home_city_did_not_save)
             }
-            alertDialog?.dismiss()
+            alertDialog.dismiss()
         }
 
         buttonGps.setOnClickListener {
-            /**
-             * There is a unique case when particular android version cannot perform location logic
+            /*
+             * There is a unique case when particular android version (5.1)
+             *  cannot perform location logic
              * and crashing, so here button just used as a cancel button.
              */
-            etCity?.let { inputField ->
-                if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
-                    alertDialog?.cancel()
-                } else {
-                    checkIfGpsEnabled(inputField)
-                }
+            if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
+                alertDialog.cancel()
+            } else {
+                checkIfGpsEnabled(etCity)
             }
         }
 
         buttonDate.setOnClickListener {
-            val monthYear = DateFormat.format(
+            val monthYear: CharSequence = DateFormat.format(
                 getString(R.string.home_dialog_date_format),
                 Date()
             )
-            etMonth?.setText(monthYear)
+            etMonth.setText(monthYear)
         }
     }
 
@@ -187,8 +164,8 @@ class AddCityDialogFragment : DialogFragment() {
         grantResults: IntArray
     ) {
         if (requestCode == resources.getInteger(R.integer.location_access_request_code)) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                etCity?.let { inputField -> addCityTo(inputField) }
+            if (grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+                insertCityIntoAnEmptyField(etCity)
             } else {
                 toastLong(R.string.msg_gps_permission_denied)
             }
@@ -196,19 +173,22 @@ class AddCityDialogFragment : DialogFragment() {
     }
 
     private fun initLocationServices() {
-        locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (requireContext().getSystemService(Context.LOCATION_SERVICE) is LocationManager) {
+            locationManager = requireContext().getSystemService(
+                Context.LOCATION_SERVICE,
+            ) as LocationManager
+        }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     private fun checkIfGpsEnabled(editText: LinedEditText) {
-        val gpsEnabled = checkIfGpsEnabled()
+        val gpsEnabled: Boolean = checkIfGpsEnabled()
         if (!gpsEnabled) {
             toast(R.string.dialogue_turn_on_gps)
         } else if (!isOnline()) {
             toast(R.string.dialog_no_internet)
         } else {
-            addCityTo(editText)
+            insertCityIntoAnEmptyField(editText)
         }
     }
 
@@ -222,7 +202,7 @@ class AddCityDialogFragment : DialogFragment() {
         return gpsEnabled
     }
 
-    private fun addCityTo(editText: LinedEditText) {
+    private fun insertCityIntoAnEmptyField(editText: LinedEditText) {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -240,14 +220,12 @@ class AddCityDialogFragment : DialogFragment() {
                 resources.getInteger(R.integer.location_access_request_code)
             )
         } else {
-            val findLastLocationTask = fusedLocationClient.lastLocation
-            findLastLocationTask.addOnSuccessListener { location ->
-                if (location != null) {
-                    addLastLocation(location, editText)
-                } else {
-                    toast(R.string.dialog_hold_on)
-                    addChangedLocation(editText)
-                }
+            val findLastLocationTask: Task<Location> = fusedLocationClient.lastLocation
+            findLastLocationTask.addOnSuccessListener { location: Location ->
+                addLastLocation(location, editText)
+            }.addOnFailureListener { exception ->
+                toastLong(exception.localizedMessage ?: exception.stackTraceToString())
+                addChangedLocation(editText)
             }
         }
     }
@@ -256,24 +234,16 @@ class AddCityDialogFragment : DialogFragment() {
         val locationListener: LocationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-                val addressesChanged: MutableList<Address>? =
-                    location.latitude.let { latitude ->
-                        geoCoder.getFromLocation(
-                            latitude,
-                            location.longitude, 1
-                        )
-                    }
-                val cityChanged: String? = addressesChanged?.get(0)?.locality
+                val addressesChanged: MutableList<Address> = geoCoder.getFromLocation(
+                    location.latitude,
+                    location.longitude,
+                    1
+                )
+                val cityChanged: String = addressesChanged.first().locality
                 editText.setText(cityChanged)
             }
 
-            override fun onStatusChanged(
-                provider: String,
-                status: Int,
-                extras: Bundle
-            ) {
-            }
-
+            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }
@@ -288,18 +258,14 @@ class AddCityDialogFragment : DialogFragment() {
         toastLong(exception.localizedMessage ?: exception.stackTraceToString())
     }
 
-    private fun addLastLocation(
-        location: Location,
-        editText: LinedEditText
-    ) {
+    private fun addLastLocation(location: Location, editText: LinedEditText) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-
         try {
-            val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+            val addresses: MutableList<Address> = geoCoder.getFromLocation(
                 location.latitude,
                 location.longitude, 1
             )
-            val cityName: String? = addresses?.get(0)?.locality
+            val cityName: String = addresses.first().locality
             editText.setText(cityName)
         } catch (exception: IOException) {
             toastLong(exception.localizedMessage ?: exception.stackTraceToString())

@@ -46,9 +46,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
         registerAllCountriesActivityResultLauncher()
-        checkPermissionAndInitObservers(this@HomeActivity)
+        checkPermission()
         initView()
         initListeners()
+        initObservers()
     }
 
     override fun onResume() {
@@ -67,7 +68,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     /**
      * Calling when "add city dialogue" dismissed.
      */
-    override fun onDismiss(dialogInterface: DialogInterface?) {
+    override fun onDismiss(dialogInterface: DialogInterface) {
         viewModel.showListOfVisitedCountries()
     }
 
@@ -369,25 +370,24 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         })
     }
 
-    private fun checkPermissionAndInitObservers(activity: AppCompatActivity) {
+    private fun checkPermission() {
         val locationPermission: Int = ContextCompat.checkSelfPermission(
-            activity,
+            this,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
         val externalStoragePermission: Int =
             ContextCompat.checkSelfPermission(
-                activity,
+                this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         if (locationPermission != PackageManager.PERMISSION_GRANTED
             && externalStoragePermission != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermission(activity)
+            requestPermission(this)
         } else {
             /* we are getting here every time except the first time,
              * since permission is already received */
             viewModel.isPermissionGranted = true
-            initObservers()
         }
     }
 

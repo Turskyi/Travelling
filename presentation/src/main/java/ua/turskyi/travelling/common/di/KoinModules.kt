@@ -1,12 +1,5 @@
 package ua.turskyi.travelling.common.di
 
-import ua.turskyi.data.network.datasource.NetSource
-import ua.turskyi.data.network.service.CountriesApi
-import ua.turskyi.data.util.hasNetwork
-import ua.turskyi.data.repository.CountriesRepositoryImpl
-import ua.turskyi.data.database.room.Database
-import ua.turskyi.data.database.room.datasource.DatabaseSource
-import ua.turskyi.domain.repository.CountriesRepository
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -15,14 +8,20 @@ import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ua.turskyi.data.BuildConfig.DATABASE_NAME
 import ua.turskyi.data.BuildConfig.HOST_URL
+import ua.turskyi.data.database.room.Database
+import ua.turskyi.data.database.room.datasource.DatabaseSource
+import ua.turskyi.data.network.datasource.NetSource
+import ua.turskyi.data.network.service.CountriesApi
+import ua.turskyi.data.repository.CountriesRepositoryImpl
+import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.domain.interactor.CountriesInteractor
+import ua.turskyi.domain.repository.CountriesRepository
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
@@ -39,7 +38,7 @@ val adaptersModule = module {
 }
 
 val viewModelsModule = module {
-    factory { HomeActivityViewModel(get(), androidApplication()) }
+    factory { HomeActivityViewModel(get()) }
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsFragmentViewModel(get()) }
     factory { AddCityDialogViewModel(get()) }
