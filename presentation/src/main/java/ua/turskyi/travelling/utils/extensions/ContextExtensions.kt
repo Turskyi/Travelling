@@ -25,11 +25,6 @@ inline fun <reified A : Activity> Context.start(configIntent: Intent.() -> Unit 
     startActivity(Intent(this, A::class.java).apply(configIntent))
 }
 
-tailrec fun Context.getActivity(): Activity? = when (this) {
-    is Activity -> this
-    else -> (this as? ContextWrapper)?.baseContext?.getActivity()
-}
-
 fun Context.isFacebookInstalled() = try {
     packageManager.getPackageInfo(getString(R.string.facebook_package), PackageManager.GET_META_DATA)
     true
@@ -37,8 +32,9 @@ fun Context.isFacebookInstalled() = try {
     false
 }
 
-fun Context.spToPix(@DimenRes sizeRes: Int) =
-    resources.getDimension(sizeRes) / resources.displayMetrics.density
+fun Context.spToPix(@DimenRes sizeRes: Int): Float {
+    return resources.getDimension(sizeRes) / resources.displayMetrics.density
+}
 
 fun Context.getHomeActivity(): HomeActivity? {
     var context = this
@@ -94,14 +90,12 @@ fun Context.getToolbarHeight(): Int {
     return toolbarHeight
 }
 
-fun Context.toast(
-    @StringRes msgResId: Int
-) = Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+fun Context.toast(@StringRes msgResId: Int) {
+    Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+}
 
-fun Context.toastLong(
-    @StringRes msgResId: Int
-) = Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
+fun Context.toastLong(@StringRes msgResId: Int) {
+    Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
+}
 
-fun Context.toastLong(
-    msg: String?
-) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+fun Context.toastLong(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()

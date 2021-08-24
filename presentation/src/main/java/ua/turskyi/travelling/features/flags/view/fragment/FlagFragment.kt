@@ -44,7 +44,7 @@ class FlagFragment : Fragment() {
 
     private val viewModel: FlagsFragmentViewModel by inject()
 
-    var mChangeFlagListener: OnChangeFlagFragmentListener? = null
+    private var mChangeFlagListener: OnChangeFlagFragmentListener? = null
     private var flagsActivityViewListener: FlagsActivityView? = null
 
     private lateinit var photoPickerResultLauncher: ActivityResultLauncher<Intent>
@@ -60,7 +60,7 @@ class FlagFragment : Fragment() {
         try {
             flagsActivityViewListener = context as FlagsActivityView?
         } catch (castException: ClassCastException) {
-            /* in this case the activity does not implement the listener.  */
+            // in this case the activity does not implement the listener.
             castException.printStackTrace()
         }
     }
@@ -185,7 +185,7 @@ class FlagFragment : Fragment() {
     private fun initPhotoPicker() {
         val action: String = Intent.ACTION_OPEN_DOCUMENT
         val intent = Intent(action)
-        intent.type = getString(R.string.image_type)
+        intent.type = getString(R.string.image_and_jpeg_type)
         val intentChooser =
             Intent.createChooser(intent, getString(R.string.flag_chooser_title_complete_using))
         photoPickerResultLauncher.launch(intentChooser)
@@ -209,7 +209,7 @@ class FlagFragment : Fragment() {
             val position = this.arguments?.getInt(EXTRA_POSITION)
             position?.let {
                 mChangeFlagListener?.onChangeToolbarTitle(countries[position].name)
-                if (countries[position].selfie.isNullOrEmpty()) {
+                if (countries[position].selfie.isEmpty()) {
                     showTheFlag(countries, position)
                 } else {
                     showSelfie(countries, position)

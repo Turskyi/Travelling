@@ -1,12 +1,5 @@
 package ua.turskyi.travelling.common.di
 
-import ua.turskyi.data.network.datasource.CountriesNetSource
-import ua.turskyi.data.network.service.CountriesApi
-import ua.turskyi.data.util.hasNetwork
-import ua.turskyi.data.repository.CountriesRepositoryImpl
-import ua.turskyi.data.datastore.room.Database
-import ua.turskyi.data.datastore.room.datasource.CountriesDbSource
-import ua.turskyi.domain.repository.CountriesRepository
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -15,15 +8,20 @@ import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ua.turskyi.data.BuildConfig.DATABASE_NAME
 import ua.turskyi.data.BuildConfig.HOST_URL
+import ua.turskyi.data.database.room.Database
+import ua.turskyi.data.database.room.datasource.DatabaseSource
+import ua.turskyi.data.network.datasource.NetSource
+import ua.turskyi.data.network.service.CountriesApi
+import ua.turskyi.data.repository.CountriesRepositoryImpl
+import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.domain.interactor.CountriesInteractor
+import ua.turskyi.domain.repository.CountriesRepository
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
@@ -40,7 +38,7 @@ val adaptersModule = module {
 }
 
 val viewModelsModule = module {
-    factory { HomeActivityViewModel(get(), androidApplication()) }
+    factory { HomeActivityViewModel(get()) }
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsFragmentViewModel(get()) }
     factory { AddCityDialogViewModel(get()) }
@@ -60,7 +58,7 @@ val dataProvidersModule = module {
     single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
     single {
         OkHttpClient.Builder()
-            .cache(get<Cache>())
+            .cache(get())
             .addInterceptor { chain ->
                 var request: Request = chain.request()
                 request = if (hasNetwork(androidContext())) {
@@ -75,18 +73,10 @@ val dataProvidersModule = module {
                     ).build()
                 }
                 chain.proceed(request)
-            }.addInterceptor(get<HttpLoggingInterceptor>())
-            .build()
+            }.build()
     }
 
-    single {
-        HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-
-    single<Gson> {
-        GsonBuilder().setLenient().create()
-    }
+    single<Gson> { GsonBuilder().setLenient().create() }
 
     single {
         val cacheSize: Long = (5 * 1024 * 1024).toLong()
@@ -95,16 +85,16 @@ val dataProvidersModule = module {
     single<Retrofit> {
         Retrofit.Builder()
             .baseUrl(HOST_URL)
-            .client(get<OkHttpClient>())
-            .addConverterFactory(GsonConverterFactory.create(get<Gson>())).build()
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create(get())).build()
     }
 }
 
 val sourcesModule = module {
     single { get<Database>().countriesDao() }
     single { get<Retrofit>().create(CountriesApi::class.java) }
-    single { CountriesDbSource(get()) }
-    single { CountriesNetSource(get()) }
+    single { DatabaseSource(get()) }
+    single { NetSource(get()) }
 }
 
 

@@ -27,8 +27,7 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/pic_logo" />
         <!-- This color used with incoming notification messages.
-         This is used when no color is set for the incoming
-             notification message.  -->
+         This is used when no color is set for the incoming notification message.  -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorLightGrey" />
@@ -40,8 +39,10 @@
             android:value="@string/default_notification_channel_id" />
         <!-- [END fcm_default_channel] -->
 
+        <!-- android:exported should be set true for main activity, or it won't launch -->
         <activity
             android:name="ua.turskyi.travelling.features.home.view.ui.HomeActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher"
@@ -53,11 +54,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".features.allcountries.view.ui.AllCountriesActivity"
             android:parentActivityName=".features.home.view.ui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity
             android:name=".features.flags.view.FlagsActivity"
             android:parentActivityName=".features.home.view.ui.HomeActivity" />
@@ -71,12 +74,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="@string/content_provider"
             android:exported="true"
-            tools:replace="android:authorities"
-            tools:ignore="ExportedContentProvider" />
+            tools:ignore="ExportedContentProvider"
+            tools:replace="android:authorities" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

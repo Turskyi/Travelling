@@ -5,7 +5,24 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 
 class VisitedCountry(
     var id: Int,
+    val title: String,
     var img: String,
-    var visited: Boolean?,
-    var selfie: String?,
-    override var childNode: MutableList<BaseNode>? = null, val title: String) : BaseExpandNode()
+    var isVisited: Boolean,
+    var selfie: String,
+    override var childNode: MutableList<BaseNode>,
+) : BaseExpandNode() {
+    constructor(
+        id: Int,
+        title: String,
+        img: String,
+        isVisited: Boolean,
+        selfie: String
+    ) : this(
+        id = id,
+        title = title,
+        img = img,
+        isVisited = isVisited,
+        selfie = selfie,
+        childNode = mutableListOf()
+    )
+}

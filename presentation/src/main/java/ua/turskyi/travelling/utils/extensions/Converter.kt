@@ -6,7 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 fun Bitmap.convertBitmapToFile(context: Context, fileName: String): File {
-    val dirPath = context.externalCacheDir?.absolutePath + "/Screenshots"
+    val dirPath: String = context.externalCacheDir?.absolutePath + "/Screenshots"
     val dir = File(dirPath)
     if (!dir.exists()) dir.mkdirs()
     val file = File(dirPath, fileName)
@@ -15,8 +15,8 @@ fun Bitmap.convertBitmapToFile(context: Context, fileName: String): File {
         this.compress(Bitmap.CompressFormat.PNG, 85, fileOutputStream)
         fileOutputStream.flush()
         fileOutputStream.close()
-    } catch (e: Exception) {
-        e.printStackTrace()
+    } catch (exception: Exception) {
+        exception.printStackTrace()
     }
     return file
 }

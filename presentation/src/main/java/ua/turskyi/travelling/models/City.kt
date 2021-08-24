@@ -2,21 +2,21 @@ package ua.turskyi.travelling.models
 
 import com.chad.library.adapter.base.entity.node.BaseNode
 
-class City(var id: Int?, var name: String, var parentId: Int, var month: String?) : BaseNode() {
+class City(var id: Int, var name: String, var parentId: Int, var month: String) : BaseNode() {
     constructor(name: String, parentId: Int, month: String) : this(
-        null,
+        id = 0,
         name = name,
         parentId = parentId,
-        month = month
+        month = month,
     )
 
     constructor(name: String, parentId: Int) : this(
-        null,
+        id = 0,
         name = name,
         parentId = parentId,
-        null
+        month = "",
     )
 
-    override val childNode: MutableList<BaseNode>?
-        get() = null
+    override val childNode: MutableList<BaseNode>
+        get() = mutableListOf()
 }
