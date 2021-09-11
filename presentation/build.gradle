@@ -89,7 +89,7 @@ dependencies {
 
     // firebase
     implementation 'com.google.firebase:firebase-crashlytics:18.2.1'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
+    implementation 'com.google.firebase:firebase-analytics:19.0.1'
     implementation 'com.google.firebase:firebase-perf:20.0.2'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
 
@@ -130,7 +130,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:18.0.0"
 
     // Facebook SDK
-    def facebookVersion = "11.2.0"
+    def facebookVersion = "11.3.0"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
     implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
@@ -140,7 +140,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // for "ci", used for deploying app to google app market
-    def appCenterSdkVersion = '4.2.0'
+    def appCenterSdkVersion = '4.3.1'
     implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
 
     // Koin for Android

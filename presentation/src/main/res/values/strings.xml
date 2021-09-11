@@ -54,7 +54,6 @@
     <string name="dialogue_btn_gps">GPS</string>
     <string name="btn_save">Save</string>
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
-    <string name="dialog_hold_on">Hold on a moment, trying to find your location.</string>
     <string name="dialog.no_internet">TURN ON INTERNET</string>
     <string name="home_dialog_btn_cancel">Cancel</string>
     <string name="txt_info_billing">Unfortunately, this app cannot synchronize your data with a server,

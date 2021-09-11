@@ -6,6 +6,8 @@ An Android mobile application, which gives a convenient way to collect all count
 
 • App store: [Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling);
 
+• Testing App Distribution invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d
+
 • Operating system: [Android](https://www.android.com/);
 
 • Programming language: [Kotlin](https://kotlinlang.org/);
@@ -16,8 +18,8 @@ An Android mobile application, which gives a convenient way to collect all count
 
 • Embedded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
 
-• CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the dev branch,
-[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to master branch;
+• CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the **dev** branch,
+[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to **master** branch;
 
 • Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
 
