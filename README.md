@@ -6,7 +6,7 @@ An Android mobile application, which gives a convenient way to collect all count
 
 • App store: [Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling);
 
-• Testing App Distribution invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d
+• Testing App Distribution invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d;
 
 • Operating system: [Android](https://www.android.com/);
 
