@@ -38,6 +38,7 @@ android {
             keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -55,17 +56,22 @@ android {
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
     }
+
     buildFeatures {
         dataBinding true
         viewBinding true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    testOptions.unitTests.includeAndroidResources = true
 }
 
 dependencies {
@@ -149,12 +155,18 @@ dependencies {
     // Koin core features
     implementation("io.insert-koin:koin-core:$insert_koin_version")
 
-    // test
+    // tests
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-    def jupiter_version = "5.7.0"
+    def jupiter_version = "5.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
+
+    // testImplementation for pure JVM unit tests
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+
+    // androidTestImplementation for Android instrumentation tests
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 }

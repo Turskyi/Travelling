@@ -6,7 +6,7 @@ import ua.turskyi.data.entities.local.CountryEntity.Companion.COLLECTION_COUNTRI
 
 @Entity(tableName = COLLECTION_COUNTRIES, indices = [Index(value = [PARAM_NAME], unique = true)])
 data class CountryEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = PARAM_ID) var id: Int = 0,
     @ColumnInfo(name = PARAM_NAME) var name: String,
     @ColumnInfo(name = PARAM_FLAG) var flag: String,
     @ColumnInfo(name = PARAM_VISITED) var isVisited: Boolean,
@@ -17,6 +17,15 @@ data class CountryEntity(
     @Ignore
     constructor(id: Int, name: String, flag: String, isVisited: Boolean) : this(
         id,
+        name,
+        flag,
+        isVisited,
+        ""
+    )
+
+    @Ignore
+    constructor(name: String, flag: String, isVisited: Boolean) : this(
+        0,
         name,
         flag,
         isVisited,

@@ -1,5 +1,6 @@
 package ua.turskyi.travelling
 
+import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -18,7 +19,7 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("ua.turskyi.travelling", appContext.packageName)
     }
 }

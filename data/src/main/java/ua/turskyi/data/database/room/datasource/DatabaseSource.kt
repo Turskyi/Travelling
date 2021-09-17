@@ -17,10 +17,13 @@ class DatabaseSource(private val countriesDao: CountriesDao) {
         return countriesDao.getCountriesByRange(limit, offset)
     }
 
-    fun getCountNotVisitedCountries() = countriesDao.getNumNotVisitedCountries()
+    fun getCountNotVisitedCountries(): Int = countriesDao.getNumNotVisitedCountries()
     fun getVisitedLocalCountriesFromDb() = countriesDao.getVisitedCountries()
     fun getCities(): List<CityEntity> = countriesDao.getCities()
-    fun insertCountry(countryEntity: CountryEntity) = countriesDao.insertCountry(countryEntity)
+    suspend fun insertCountry(countryEntity: CountryEntity) {
+        countriesDao.insertCountry(countryEntity)
+    }
+
     fun insertAllCountries(countries: List<CountryEntity>) {
         countriesDao.insertAllCountries(countries)
     }

@@ -9,9 +9,13 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+// A test class is just a normal class
 class ExampleUnitTest {
+
+    // Each test is annotated with @Test (this is a Junit annotation)
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        // Here you are checking that 4 is the same as 2+2
+        assertEquals(4, 2L + 2)
     }
 }

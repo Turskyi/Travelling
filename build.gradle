@@ -62,6 +62,13 @@ subprojects {
 
             // avoids "Service not registered" exception
             implementation "com.google.android.gms:play-services-basement:$play_services_basement_version"
+
+            // Koin testing tools
+            testImplementation "io.insert-koin:koin-test:$insert_koin_version"
+            // Needed JUnit version
+            testImplementation "io.insert-koin:koin-test-junit4:$insert_koin_version"
+
+            testImplementation "com.google.truth:truth:1.1.3"
         }
     }
 }
