@@ -46,4 +46,16 @@ An Android mobile application, which gives a convenient way to collect all count
 [RecyclerView](http://www.recyclerview.org/),
 [Loading SVG](https://github.com/corouteam/GlideToVectorYou), 
 [Glide](https://bumptech.github.io/glide/), 
-[Data Binding](https://developer.android.com/topic/libraries/data-binding).
+[Data Binding](https://developer.android.com/topic/libraries/data-binding);
+
+• Screenshots:
+![Home Page](/screenshots/device-2020-06-05-085243.png?raw=true "")
+![Search Page](/screenshots/device-2020-06-05-085456.png?raw=true "")
+![Detail Page](/screenshots/device-2020-06-05-090524.png?raw=true "Showing SVG image from REST API")
+![Share](/screenshots/device-2020-06-28-164528.png?raw=true "")
+![Animated loading image](/screenshots/device-2020-10-18-103522.png?raw=true "")
+![](/screenshots/device-2020-06-05-090129.png?raw=true "")
+![](/screenshots/device-2020-06-05-091508.png?raw=true "Showing image from device")
+![](/screenshots/device-2020-06-05-094730.png?raw=true "Tablet layout")
+![](/screenshots/device-2020-06-28-162902.png?raw=true "Tablet layout")
+![](/screenshots/device-2020-10-18-103111.png?raw=true "")

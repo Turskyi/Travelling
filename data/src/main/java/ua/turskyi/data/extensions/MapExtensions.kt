@@ -1,6 +1,6 @@
 package ua.turskyi.data.extensions
 
-import ua.turskyi.data.entities.network.CountryNet
+import ua.turskyi.data.entities.network.CountryResponse
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
 import ua.turskyi.domain.model.CityModel
@@ -19,12 +19,12 @@ fun CityEntity.mapEntityToModel(): CityModel {
     return CityModel(id = id, name = name, parentId = parentId, month = month)
 }
 
-fun List<CountryNet>.mapNetListToModelList(): MutableList<CountryModel> {
+fun List<CountryResponse>.mapNetListToModelList(): MutableList<CountryModel> {
     return this.mapTo(mutableListOf(), { countryNet -> countryNet.mapNetToEntity() })
 }
 
 fun CountryEntity.mapEntityToModel() = CountryModel(id, name, flag, isVisited, selfie)
-fun CountryNet.mapNetToEntity() = CountryModel(name, flag)
+fun CountryResponse.mapNetToEntity() = CountryModel(name, flag)
 fun List<CityEntity>.mapEntitiesToModelList(): MutableList<CityModel> {
     return mapTo(mutableListOf(), { cityEntity -> cityEntity.mapEntityToModel() })
 }
