@@ -1,5 +1,6 @@
 package ua.turskyi.travelling.features.flags.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -91,6 +92,7 @@ class FlagFragment : Fragment() {
         initObservers()
     }
 
+    @SuppressLint("InvalidFragmentVersionForActivityResult")
     private fun initResultLauncher() {
         photoPickerResultLauncher = registerForActivityResult(
             StartActivityForResult()

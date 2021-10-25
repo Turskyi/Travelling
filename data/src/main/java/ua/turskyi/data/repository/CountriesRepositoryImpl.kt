@@ -133,7 +133,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         }
     }
 
-    override suspend fun getVisitedModelCountriesFromDb(
+    override suspend fun setVisitedModelCountriesFromDb(
         onSuccess: (List<CountryModel>) -> Unit,
         onError: (Exception) -> Unit
     ) {
@@ -142,7 +142,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         }
     }
 
-    override suspend fun getCities(
+    override suspend fun setCities(
         onSuccess: (List<CityModel>) -> Unit,
         onError: (Exception) -> Unit
     ) {
@@ -156,7 +156,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         applicationScope.launch { onSuccess(databaseSource.getCountNotVisitedCountries()) }
     }
 
-    override suspend fun getCountriesByRange(
+    override suspend fun setCountriesByRange(
         to: Int,
         from: Int,
         onSuccess: (List<CountryModel>) -> Unit,

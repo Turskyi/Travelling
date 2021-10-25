@@ -6,23 +6,23 @@ import ua.turskyi.data.network.service.CountriesApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ua.turskyi.data.entities.network.CountryListResponse
-import ua.turskyi.data.entities.network.CountryNet
+import ua.turskyi.data.entities.network.CountriesResponse
+import ua.turskyi.data.entities.network.CountryResponse
 import ua.turskyi.data.util.throwException
 
 class NetSource(private val countriesApi: CountriesApi) : KoinComponent {
 
     fun getCountryNetList(
-        onComplete: (List<CountryNet>?) -> Unit,
+        onComplete: (List<CountryResponse>?) -> Unit,
         onError: (Exception) -> Unit) {
-        countriesApi.getCategoriesFromApi().enqueue(object : Callback<CountryListResponse> {
-            override fun onFailure(call: Call<CountryListResponse>, t: Throwable) {
+        countriesApi.getCategoriesFromApi().enqueue(object : Callback<CountriesResponse> {
+            override fun onFailure(call: Call<CountriesResponse>, t: Throwable) {
                 onError(NetworkErrorException(t))
             }
 
             override fun onResponse(
-                call: Call<CountryListResponse>,
-                response: Response<CountryListResponse>
+                call: Call<CountriesResponse>,
+                response: Response<CountriesResponse>
             ) {
                 if (response.isSuccessful) {
                     onComplete(response.body())

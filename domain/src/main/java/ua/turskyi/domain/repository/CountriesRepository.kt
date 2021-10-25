@@ -20,12 +20,12 @@ interface CountriesRepository {
         onError: (Exception) -> Unit
     )
 
-    suspend fun getVisitedModelCountriesFromDb(
+    suspend fun setVisitedModelCountriesFromDb(
         onSuccess: (List<CountryModel>) -> Unit,
         onError: (Exception) -> Unit
     )
 
-    suspend fun getCities(
+    suspend fun setCities(
         onSuccess: (List<CityModel>) -> Unit,
         onError: (Exception) -> Unit
     )
@@ -53,7 +53,7 @@ interface CountriesRepository {
         onError: (Exception) -> Unit
     )
 
-    suspend fun getCountriesByRange(
+    suspend fun setCountriesByRange(
         to: Int,
         from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
