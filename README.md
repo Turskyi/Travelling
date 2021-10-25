@@ -48,14 +48,11 @@ An Android mobile application, which gives a convenient way to collect all count
 [Glide](https://bumptech.github.io/glide/), 
 [Data Binding](https://developer.android.com/topic/libraries/data-binding);
 
+• Api: https://restcountries.com/#api-endpoints-v2-all
+
 • Screenshots:
-![Home Page](/screenshots/device-2020-06-05-085243.png?raw=true "")
-![Search Page](/screenshots/device-2020-06-05-085456.png?raw=true "")
-![Detail Page](/screenshots/device-2020-06-05-090524.png?raw=true "Showing SVG image from REST API")
-![Share](/screenshots/device-2020-06-28-164528.png?raw=true "")
-![Animated loading image](/screenshots/device-2020-10-18-103522.png?raw=true "")
-![](/screenshots/device-2020-06-05-090129.png?raw=true "")
-![](/screenshots/device-2020-06-05-091508.png?raw=true "Showing image from device")
-![](/screenshots/device-2020-06-05-094730.png?raw=true "Tablet layout")
-![](/screenshots/device-2020-06-28-162902.png?raw=true "Tablet layout")
-![](/screenshots/device-2020-10-18-103111.png?raw=true "")
+<img src="/screenshots/device-2020-06-05-085243.png?raw=true" width="200" > <img src="/screenshots/device-2020-06-05-085456.png?raw=true" width="200" >
+<img src="/screenshots/device-2020-06-05-090524.png?raw=true" width="200" > <img src="/screenshots/device-2020-06-28-164528.png?raw=true" width="200" >
+<img src="/screenshots/device-2020-10-18-103522.png?raw=true" width="200" > <img src="/screenshots/device-2020-10-18-103111.png?raw=true" width="200" >
+<img src="/screenshots/device-2020-06-05-090129.png?raw=true" width="200" > <img src="/screenshots/device-2020-06-05-091508.png?raw=true" width="200" >
+<img src="/screenshots/device-2020-06-05-094730.png?raw=true" width="200" > <img src="/screenshots/device-2020-06-28-162902.png?raw=true" width="200" >
