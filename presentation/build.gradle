@@ -38,6 +38,7 @@ android {
             keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -55,17 +56,22 @@ android {
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
     }
+
     buildFeatures {
         dataBinding true
         viewBinding true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    testOptions.unitTests.includeAndroidResources = true
 }
 
 dependencies {
@@ -88,9 +94,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.6.0'
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.1'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-perf:20.0.2'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.3'
+    implementation 'com.google.firebase:firebase-analytics:19.0.2'
+    implementation 'com.google.firebase:firebase-perf:20.0.3'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
 
     // ViewModel and LiveData
@@ -130,17 +136,17 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:18.0.0"
 
     // Facebook SDK
-    def facebookVersion = "11.2.0"
+    def facebookVersion = "12.0.1"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
     implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
 
     // used for animation
-    def lottieVersion = "4.1.0"
+    def lottieVersion = "4.2.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // for "ci", used for deploying app to google app market
-    def appCenterSdkVersion = '4.2.0'
+    def appCenterSdkVersion = '4.3.1'
     implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
 
     // Koin for Android
@@ -149,12 +155,18 @@ dependencies {
     // Koin core features
     implementation("io.insert-koin:koin-core:$insert_koin_version")
 
-    // test
+    // tests
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-    def jupiter_version = "5.7.0"
+    def jupiter_version = "5.8.1"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
+
+    // testImplementation for pure JVM unit tests
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+
+    // androidTestImplementation for Android instrumentation tests
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 }

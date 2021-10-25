@@ -129,7 +129,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         super.onRequestPermissionsResult(requestCode, permissions, grantResult)
         when (requestCode) {
             resources.getInteger(R.integer.location_and_storage_request_code) -> if ((grantResult.isNotEmpty()
-                        && grantResult[0] == PackageManager.PERMISSION_GRANTED)
+                        && grantResult.first() == PackageManager.PERMISSION_GRANTED)
             ) {
                 // we got here the first time, when permission is received
                 viewModel.isPermissionGranted = true
@@ -194,11 +194,13 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             }
 
             onCountryNameClickListener = { countryNode ->
-                /* Creating the new Fragment with the Country id passed in. */
-                val fragment = AddCityDialogFragment.newInstance(countryNode.id)
+                // Showing the new Dialog Fragment with the Country id passed in.
+                val fragment: AddCityDialogFragment = AddCityDialogFragment.newInstance(
+                    countryNode.id,
+                )
                 fragment.show(supportFragmentManager, null)
             }
-            onCityLongClickListener = { city ->
+            onCityLongClickListener = { city: City ->
                 binding.root.showSnackWithAction(getString(R.string.delete_it, city.name)) {
                     action(R.string.yes) {
                         removeCityOnLongClick(city)
@@ -235,7 +237,9 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
          * but it is made on purpose of demonstration databinding */
         viewModel.navigateToAllCountries.observe(this, { shouldNavigate ->
             if (shouldNavigate == true) {
-                allCountriesResultLauncher.launch(Intent(this, AllCountriesActivity::class.java))
+                allCountriesResultLauncher.launch(
+                    Intent(this, AllCountriesActivity::class.java),
+                )
                 viewModel.onNavigatedToAllCountries()
             }
         })
@@ -328,7 +332,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             }
         }
 
-    private fun showTitleWithCitiesAndCountries() =
+    private fun showTitleWithCitiesAndCountries() {
         viewModel.visitedCountriesWithCities.observe(this, { countries ->
             if (viewModel.citiesCount > countries.size) {
                 binding.toolbarLayout.title = "${
@@ -358,6 +362,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 }"
             }
         })
+    }
 
     /** [showTitleWithOnlyCountries] must be open to use it in custom "circle pie chart" widget */
     fun showTitleWithOnlyCountries() {

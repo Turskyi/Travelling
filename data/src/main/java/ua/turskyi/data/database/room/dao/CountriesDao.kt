@@ -37,7 +37,7 @@ interface CountriesDao {
     fun getCities(): List<CityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCountry(country: CountryEntity)
+    suspend fun insertCountry(country: CountryEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCity(city: CityEntity)

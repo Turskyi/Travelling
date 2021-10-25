@@ -11,7 +11,10 @@ import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.coroutines.CoroutineContext
 
-internal class CountriesPositionalDataSource(private val interactor: CountriesInteractor) :
+internal class CountriesPositionalDataSource(
+    private val interactor: CountriesInteractor,
+    private val viewmodelScope: CoroutineScope,
+) :
     PositionalDataSource<Country>(), CoroutineScope {
 
     private var job: Job = Job()
@@ -27,7 +30,7 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.getCountriesByRange(params.requestedLoadSize,  params.requestedStartPosition,
+            interactor.setCountriesByRange(params.requestedLoadSize, params.requestedStartPosition,
                 { initCountries ->
                     callback.onResult(
                         initCountries.mapModelListToCountryList(),
@@ -50,8 +53,8 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         params: LoadRangeParams,
         callback: LoadRangeCallback<Country>
     ) {
-        GlobalScope.launch {
-            interactor.getCountriesByRange(params.startPosition + params.loadSize,
+        viewmodelScope.launch {
+            interactor.setCountriesByRange(params.startPosition + params.loadSize,
                 params.startPosition,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToCountryList())

@@ -60,7 +60,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
         return if (searchQuery == "" || searchQuery == "%%") {
             // DataSource
-            val dataSource = CountriesPositionalDataSource(interactor)
+            val dataSource = CountriesPositionalDataSource(interactor, viewModelScope)
             _visibilityLoader = dataSource.visibilityLoader
             PagedList.Builder(dataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
