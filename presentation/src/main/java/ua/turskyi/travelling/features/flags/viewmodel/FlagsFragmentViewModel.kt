@@ -10,7 +10,7 @@ import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 
 class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : ViewModel(),
-    LifecycleObserver {
+    LifecycleEventObserver {
     private var visitedCount = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
@@ -25,7 +25,12 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
     val errorMessage: LiveData<Event<String>>
         get() = _errorMessage
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_CREATE){
+            getVisitedCountriesFromDB()
+        }
+    }
+
     private fun getVisitedCountriesFromDB() {
         viewModelScope.launch {
             interactor.setVisitedCountries({ countries ->

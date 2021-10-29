@@ -3,12 +3,12 @@ buildscript {
     // Defining versions in a single place
     ext {
         // sdk versions
-        compile_sdk_version = 30
+        compile_sdk_version = 31
         build_tools_version = "30.0.3"
         min_sdk_version = 21
-        target_sdk_version = 30
-        version_code = 10
-        version_name = "1.0.8"
+        target_sdk_version = 29
+        version_code = 11
+        version_name = "2.0.0"
     }
     repositories {
         google()

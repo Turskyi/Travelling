@@ -2,6 +2,7 @@ package ua.turskyi.travelling.features.flags.view
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -36,10 +37,10 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
         binding.tvToolbarTitle.text = title
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
+    override fun onCreatePanelMenu(featureId: Int, menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_info, menu)
-        return true
+        return super.onCreatePanelMenu(featureId, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
