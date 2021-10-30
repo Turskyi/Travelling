@@ -48,7 +48,7 @@ An Android mobile application, which gives a convenient way to collect all count
 [Glide](https://bumptech.github.io/glide/), 
 [Data Binding](https://developer.android.com/topic/libraries/data-binding);
 
-• Api: https://restcountries.com/#api-endpoints-v2-all
+• Api: https://restcountries.com/#api-endpoints-v2-all;
 
 • Screenshots:
 

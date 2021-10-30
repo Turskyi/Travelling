@@ -33,11 +33,14 @@ fun Activity.getScreenWidth() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES
     displayMetrics.widthPixels
 }
 
-fun Activity.toastLong(msg: String) =
+fun Activity.toastLong(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+}
 
-fun Activity.toast(@StringRes message: Int) =
+fun Activity.toast(@StringRes message: Int) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
 
-fun Activity.toast(message: String) =
+fun Activity.toast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
