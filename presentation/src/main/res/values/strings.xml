@@ -32,6 +32,7 @@
     <!-- for face book sharing -->
     <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
+    <string name="tag.sync_dialog" translatable="false">sync dialog</string>
     <!-- END of not translatable strings -->
 
     <!-- default  strings -->
@@ -117,6 +118,7 @@
     <string name="msg.no_app_installed">No app available to share pie chart</string>
     <string name="msg.gps_permission_denied">GPS permission denied</string>
     <string name="msg.did_not_choose">did not choose anything</string>
+    <string name="msg.not_found">not found</string>
     <string name="home_onboarding_title">…loading countries</string>
     <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
     <string name="msg.home_country_did_not_added">did not added anything</string>
