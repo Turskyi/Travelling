@@ -13,6 +13,7 @@ import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
+import ua.turskyi.travelling.utils.extensions.toast
 
 class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener,
     FlagsActivityView {
@@ -28,9 +29,16 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
-        initListeners()
-        initObserver()
+        getBundle = this@FlagsActivity.intent.extras
+        if (getBundle != null) {
+            initView()
+            initListeners()
+            initObserver()
+        } else {
+            toast(R.string.msg_not_found)
+            finish()
+        }
+
     }
 
     override fun onChangeToolbarTitle(title: String?) {
@@ -48,9 +56,10 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
         return true
     }
 
-    override fun getItemCount(): Int {
-        val itemCount: Int? = getBundle?.getInt(EXTRA_ITEM_COUNT)
-        return itemCount ?: 0
+    override fun getItemCount(): Int = if (getBundle != null) {
+        getBundle!!.getInt(EXTRA_ITEM_COUNT)
+    } else {
+        0
     }
 
     override fun setLoaderVisibility(currentVisibility: Int) {

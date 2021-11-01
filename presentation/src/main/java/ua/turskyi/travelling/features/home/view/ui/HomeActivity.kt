@@ -36,8 +36,8 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
-    private val viewModel by inject<HomeActivityViewModel>()
-    private val homeAdapter by inject<HomeAdapter>()
+    private val viewModel: HomeActivityViewModel by inject()
+    private val homeAdapter: HomeAdapter by inject()
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
@@ -114,7 +114,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 val infoDialog: SyncDialog = SyncDialog.newInstance(
                     getString(R.string.txt_info_billing)
                 )
-                infoDialog.show(this.supportFragmentManager, "sync dialog")
+                infoDialog.show(
+                    this.supportFragmentManager,
+                    resources.getString(R.string.tag_sync_dialog),
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -128,14 +131,16 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResult)
         when (requestCode) {
-            resources.getInteger(R.integer.location_and_storage_request_code) -> if ((grantResult.isNotEmpty()
-                        && grantResult.first() == PackageManager.PERMISSION_GRANTED)
-            ) {
-                // we got here the first time, when permission is received
-                viewModel.isPermissionGranted = true
-                initObservers()
-            } else {
-                requestPermission(this)
+            resources.getInteger(R.integer.location_and_storage_request_code) -> {
+                if ((grantResult.isNotEmpty() &&
+                            grantResult.first() == PackageManager.PERMISSION_GRANTED)
+                ) {
+                    // we got here the first time, when permission is received
+                    viewModel.isPermissionGranted = true
+                    initObservers()
+                } else {
+                    requestPermission(this)
+                }
             }
         }
     }
@@ -146,7 +151,9 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         binding.lifecycleOwner = this
         setSupportActionBar(binding.toolbar)
         // set drawable icon
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
+        if (supportActionBar != null) {
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
+        }
 
         val linearLayoutManager = LinearLayoutManager(this)
         binding.rvVisitedCountries.apply {
@@ -167,7 +174,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
 
     private fun initListeners() {
         homeAdapter.apply {
-            onFlagClickListener = { country ->
+            onFlagClickListener = { country: VisitedCountry ->
                 // mis-clicking prevention, using threshold of 1000 ms
                 if (SystemClock.elapsedRealtime() - viewModel.mLastClickTime > resources.getInteger(
                         R.integer.click_interval
@@ -175,14 +182,14 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 ) {
                     openActivityWithArgs(FlagsActivity::class.java) {
                         putInt(EXTRA_POSITION, getItemPosition(country))
-                        viewModel.visitedCountries.value?.size?.let { itemCount ->
-                            putInt(EXTRA_ITEM_COUNT, itemCount)
+                        if (viewModel.visitedCountries.value != null) {
+                            putInt(EXTRA_ITEM_COUNT, viewModel.visitedCountries.value!!.size)
                         }
                     }
                 }
                 viewModel.mLastClickTime = SystemClock.elapsedRealtime()
             }
-            onLongClickListener = { countryNode ->
+            onLongClickListener = { countryNode: VisitedCountry ->
                 val country: Country = countryNode.mapNodeToActual()
 
                 binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)) {
@@ -193,8 +200,9 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 }
             }
 
-            onCountryNameClickListener = { countryNode ->
-                // Showing the new Dialog Fragment with the Country id passed in.
+            onCountryNameClickListener = { countryNode: VisitedCountry ->
+                /* Showing the new Dialog Fragment with the Country id passed in,
+                to add a new city to the country */
                 val fragment: AddCityDialogFragment = AddCityDialogFragment.newInstance(
                     countryNode.id,
                 )
@@ -229,14 +237,15 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         })
 
         viewModel.errorMessage.observe(this, { event ->
-            event.getMessageIfNotHandled()?.let { message ->
-                toastLong(message)
+            val errorMessage: String? = event.getMessageIfNotHandled()
+            if (errorMessage != null) {
+                toastLong(errorMessage)
             }
         })
         /*  here could be a more efficient way to handle a click to open activity,
          * but it is made on purpose of demonstration databinding */
-        viewModel.navigateToAllCountries.observe(this, { shouldNavigate ->
-            if (shouldNavigate == true) {
+        viewModel.navigateToAllCountries.observe(this, { shouldNavigate: Boolean ->
+            if (shouldNavigate) {
                 allCountriesResultLauncher.launch(
                     Intent(this, AllCountriesActivity::class.java),
                 )
@@ -289,13 +298,13 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         }
 
     private fun updateAdapterWith(visitedCountries: List<VisitedCountry>) {
-        for (countryNode in visitedCountries) {
+        for (countryNode: VisitedCountry in visitedCountries) {
             countryNode.isExpanded = false
         }
         homeAdapter.setList(visitedCountries)
     }
 
-    private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) =
+    private fun initTitleWithNumberOf(visitedCountries: List<VisitedCountry>) {
         if (viewModel.citiesCount == 0) {
             binding.toolbarLayout.title = resources.getQuantityString(
                 R.plurals.numberOfCountriesVisited,
@@ -331,6 +340,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 }"
             }
         }
+    }
 
     private fun showTitleWithCitiesAndCountries() {
         viewModel.visitedCountriesWithCities.observe(this, { countries ->
@@ -366,13 +376,16 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
 
     /** [showTitleWithOnlyCountries] must be open to use it in custom "circle pie chart" widget */
     fun showTitleWithOnlyCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, { countryList ->
-            binding.toolbarLayout.title = resources.getQuantityString(
-                R.plurals.numberOfCountriesVisited,
-                countryList.size,
-                countryList.size
-            )
-        })
+        viewModel.visitedCountriesWithCities.observe(
+            this,
+            { countryList: List<VisitedCountry> ->
+                binding.toolbarLayout.title = resources.getQuantityString(
+                    R.plurals.numberOfCountriesVisited,
+                    countryList.size,
+                    countryList.size
+                )
+            },
+        )
     }
 
     private fun checkPermission() {
@@ -385,8 +398,8 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
-        if (locationPermission != PackageManager.PERMISSION_GRANTED
-            && externalStoragePermission != PackageManager.PERMISSION_GRANTED
+        if (locationPermission != PackageManager.PERMISSION_GRANTED &&
+            externalStoragePermission != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermission(this)
         } else {
@@ -398,10 +411,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
 
     private fun requestPermission(activity: AppCompatActivity) = ActivityCompat.requestPermissions(
         activity,
-        listOf(
+        arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).toTypedArray(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        ),
         resources.getInteger(R.integer.location_and_storage_request_code)
     )
 }
