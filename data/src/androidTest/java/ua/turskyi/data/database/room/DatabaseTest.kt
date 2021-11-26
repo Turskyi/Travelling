@@ -40,7 +40,7 @@ class DatabaseTest : TestCase() {
 
         dao.insertCountry(country)
 
-        val countries: List<CountryEntity> = dao.getCountriesByRange(1,0)
+        val countries: List<CountryEntity> = dao.getCountriesByRange(1, 0)
 
 
         assertEquals(1, countries.size)

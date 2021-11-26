@@ -20,6 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- remove add dependency -->
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+
         <!-- [START fcm_default_icon] -->
         <!-- Default icon. This is used when no icon is set for incoming notification messages.
               -->
