@@ -7,8 +7,8 @@ buildscript {
         build_tools_version = "30.0.3"
         min_sdk_version = 21
         target_sdk_version = 29
-        version_code = 13
-        version_name = "2.0.2"
+        version_code = 14
+        version_name = "2.0.3"
     }
     repositories {
         google()

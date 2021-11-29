@@ -18,7 +18,7 @@ An Android mobile application, which gives a convenient way to collect all count
 
 • Embedded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
 
-• CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the **dev** branch,
+• CI/CD [![Build status](https://build.appcenter.ms/v0.1/apps/6ef58ca2-721c-4622-bfe7-336d4c6d7d01/branches/master/badge)](https://appcenter.ms): [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution) after every push to the **dev** branch,
 [Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new release app bundle to **Google Play** after every push to **master** branch;
 
 • Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) wrapped with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html);
