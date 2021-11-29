@@ -14,6 +14,7 @@ data class CountryEntity(
 ) {
     @Ignore
     constructor() : this(0, "", "", false, "")
+
     @Ignore
     constructor(id: Int, name: String, flag: String, isVisited: Boolean) : this(
         id,
