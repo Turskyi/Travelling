@@ -1,4 +1,4 @@
-# Travelling
+# Travelling [![Build status](https://build.appcenter.ms/v0.1/apps/6ef58ca2-721c-4622-bfe7-336d4c6d7d01/branches/master/badge)](https://appcenter.ms)
 
 An Android mobile application, which gives a convenient way to collect all countries that you have visited.
 
