@@ -7,8 +7,10 @@ buildscript {
         build_tools_version = "30.0.3"
         min_sdk_version = 21
         target_sdk_version = 30
-        version_code = 14
-        version_name = "2.0.3"
+/* to check the latest version @see
+[https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview] */
+        version_code = 15
+        version_name = "2.0.4"
     }
     repositories {
         google()
@@ -16,7 +18,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
