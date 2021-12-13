@@ -1,23 +1,23 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+//file:noinspection GrUnresolvedAccess
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
+}
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion rootProject.compile_sdk_version
+    buildToolsVersion rootProject.build_tools_version
 
-    buildFeatures {
-        dataBinding = true
-        viewBinding = true
-    }
     defaultConfig {
         applicationId "ua.turskyi.travelling"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 6
-        versionName "1.0.4"
+        minSdkVersion rootProject.min_sdk_version
+        targetSdkVersion rootProject.target_sdk_version
+        versionCode rootProject.version_code
+        versionName rootProject.version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -26,13 +26,13 @@ android {
     }
 
     signingConfigs {
-        release {
+        production {
             storeFile file(rootProject.SIGNING_KEY_RELEASE_PATH)
             storePassword rootProject.SIGNING_KEY_RELEASE_PASSWORD
             keyAlias rootProject.SIGNING_KEY_RELEASE_KEY
             keyPassword rootProject.SIGNING_KEY_RELEASE_KEY_PASSWORD
         }
-        debug {
+        dev {
             storeFile file(rootProject.SIGNING_KEY_DEBUG_PATH)
             storePassword rootProject.SIGNING_KEY_DEBUG_PASSWORD
             keyAlias rootProject.SIGNING_KEY_DEBUG_KEY
@@ -40,79 +40,77 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-// used in manifest provider authorities
-            resValue "string", "content_provider",
-                    "com.facebook.app.FacebookContentProvider285452062466394"
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.production
             // used in manifest provider authorities
             resValue "string", "content_provider",
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
+        debug {
+            signingConfig signingConfigs.dev
+// used in manifest provider authorities
+            resValue "string", "content_provider",
+                    "com.facebook.app.FacebookContentProvider285452062466394"
+        }
     }
-    // for ci to publish on google play market
-    flavorDimensions "distribute"
-    productFlavors {
-        appCenter {
-            dimension "distribute"
-        }
-        googlePlay {
-            dimension "distribute"
-        }
+
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
+
+    testOptions.unitTests.includeAndroidResources = true
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(":domain")
-    implementation project(":di")
+    implementation project(':data')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    // koin
-    api "org.koin:koin-androidx-viewmodel:$koin_version"
-    api "org.koin:koin-core:$koin_version"
-    api "org.koin:koin-androidx-scope:$koin_version"
-
     // design components
-    implementation "com.google.android.material:material:$material"
+    implementation "com.google.android.material:material:$material_version"
 
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "androidx.activity:activity-ktx:$activity_version"
 
     // android
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'androidx.core:core-ktx:1.5.0'
-    implementation 'com.android.billingclient:billing:4.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+
+    // firebase
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.6'
+    implementation('com.google.firebase:firebase-analytics:20.0.1') {
+        // remove advertising dependency
+        exclude module: "play-services-ads-identifier"
+        exclude module: "play-services-measurement"
+        exclude module: "play-services-measurement-sdk"
+    }
+    implementation 'com.google.firebase:firebase-perf:20.0.4'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
 
     // ViewModel and LiveData
-    def lifecycle_version = "2.3.1"
+    def lifecycle_version = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     // Glide (Image caching and management)
-    def glideVersion = "4.11.0"
+    def glideVersion = "4.12.0"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
 
@@ -123,7 +121,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
 
     // Recyclerview
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -131,38 +129,43 @@ dependencies {
     // Android chart view / graph view library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    // multiline-collapsingtoolbar
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
-
-    /* ViewPager2 */
+    // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     // PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     // Location
-    implementation "com.google.android.gms:play-services-location:18.0.0"
+    implementation "com.google.android.gms:play-services-location:19.0.0"
 
     // Facebook SDK
-    def facebookVersion = "8.1.0"
+    def facebookVersion = "12.2.0"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
-    implementation "com.facebook.android:facebook-login:$facebookVersion"
+    implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
 
-    def lottieVersion = "3.4.4"
+    // used for animation
+    def lottieVersion = "4.2.2"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
-    // for ci to publish on google play market
-    def appCenterSdkVersion = "3.3.0"
-    appCenterImplementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
-    googlePlayImplementation "com.microsoft.appcenter:appcenter-distribute-play:${appCenterSdkVersion}"
+    // Koin for Android
+    implementation("io.insert-koin:koin-android:$insert_koin_version")
 
-    // test
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Koin core features
+    implementation("io.insert-koin:koin-core:$insert_koin_version")
 
-    def junitVersion = "5.7.0"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    // tests
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+
+    def jupiter_version = "5.8.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
+
+    // testImplementation for pure JVM unit tests
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+
+    // androidTestImplementation for Android instrumentation tests
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 }
