@@ -21,18 +21,20 @@ import kotlin.math.roundToInt
 
 internal class CollapsingTextHelper(private val mView: View) {
     companion object {
-        /* Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
+        /* Pre-JB-MR2 doesn't support HW accelerated canvas scaled text, so we will work around it
          * by using our own texture */
         private const val USE_SCALING_TEXTURE: Boolean = false
         private const val DEBUG_DRAW: Boolean = false
+        private const val SMALLEST_DECIMAL = 0.001f
         private var DEBUG_DRAW_PAINT: Paint? = null
 
         /**
-         * Returns true if `value` is 'close' to it's closest decimal value. Close is currently
+         * Returns true if `value` is 'close' to it's closest decimal value. "Close" is currently
          * defined as it's difference being < 0.001.
          */
+        @Suppress("BooleanMethodIsAlwaysInverted")
         private fun isClose(value: Float, targetValue: Float): Boolean {
-            return abs(value - targetValue) < 0.001f
+            return abs(value - targetValue) < SMALLEST_DECIMAL
         }
 
         /**
@@ -691,12 +693,13 @@ internal class CollapsingTextHelper(private val mView: View) {
                 mTextToDraw = truncatedText
                 mIsRtl = calculateIsRtl(mTextToDraw)
             }
-            val alignment: Layout.Alignment = when (mExpandedTextGravity and GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
-                Gravity.CENTER_HORIZONTAL -> Layout.Alignment.ALIGN_CENTER
-                Gravity.END-> Layout.Alignment.ALIGN_OPPOSITE
-                 Gravity.START -> Layout.Alignment.ALIGN_NORMAL
-                else -> Layout.Alignment.ALIGN_NORMAL
-            }
+            val alignment: Layout.Alignment =
+                when (mExpandedTextGravity and GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
+                    Gravity.CENTER_HORIZONTAL -> Layout.Alignment.ALIGN_CENTER
+                    Gravity.END -> Layout.Alignment.ALIGN_OPPOSITE
+                    Gravity.START -> Layout.Alignment.ALIGN_NORMAL
+                    else -> Layout.Alignment.ALIGN_NORMAL
+                }
             @Suppress("DEPRECATION")
             mTextLayout = StaticLayout(
                 mTextToDraw, mTextPaint, availableWidth.toInt(),
