@@ -19,6 +19,7 @@ import ua.turskyi.travelling.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+@Suppress("BooleanMethodIsAlwaysInverted")
 internal class CollapsingTextHelper(private val mView: View) {
     companion object {
         /* Pre-JB-MR2 doesn't support HW accelerated canvas scaled text, so we will work around it

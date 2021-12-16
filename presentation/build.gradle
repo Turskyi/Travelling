@@ -12,6 +12,7 @@ android {
     compileSdkVersion rootProject.compile_sdk_version
     buildToolsVersion rootProject.build_tools_version
 
+    //noinspection GroovyAssignabilityCheck
     defaultConfig {
         applicationId "ua.turskyi.travelling"
         minSdkVersion rootProject.min_sdk_version
@@ -39,9 +40,13 @@ android {
             keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
         }
     }
+
+    //noinspection GroovyAssignabilityCheck
     buildTypes {
+        //noinspection GroovyAssignabilityCheck
         release {
             minifyEnabled false
+            //noinspection GroovyAssignabilityCheck
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
             signingConfig signingConfigs.production
@@ -57,8 +62,10 @@ android {
         }
     }
 
+    //noinspection GroovyAssignabilityCheck
     buildFeatures {
         dataBinding true
+        //noinspection GroovyAssignabilityCheck
         viewBinding true
     }
     compileOptions {
