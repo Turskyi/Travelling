@@ -77,8 +77,9 @@ class AddCityDialogFragment : DialogFragment() {
         etCity = dialogView.findViewById(R.id.letCity)
         etMonth = dialogView.findViewById(R.id.etMonth)
 
-        /**
-         * There is a unique case when particular android version cannot perform location logic
+        /*
+         * There is a unique case when particular android version (5.1)
+         *  cannot perform location logic
          * and crashing, so here button just used as a cancel button.
          */
         if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
