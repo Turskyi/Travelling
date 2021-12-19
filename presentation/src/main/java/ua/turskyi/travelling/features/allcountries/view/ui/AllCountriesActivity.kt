@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
-import ua.turskyi.travelling.extensions.openInfoDialog
-import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
 
@@ -79,19 +79,20 @@ class AllCountriesActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        val observer = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
-        adapter.registerAdapterDataObserver(observer)
-        viewModel.notVisitedCountriesNumLiveData.observe(this, { notVisitedNum ->
+        val emptyListObserver = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
+        adapter.registerAdapterDataObserver(emptyListObserver)
+        viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum ->
             updateTitle(notVisitedNum)
-        })
-        viewModel.visibilityLoader.observe(this, { currentVisibility ->
+        }
+        viewModel.visibilityLoader.observe(this) { currentVisibility ->
             binding.pb.visibility = currentVisibility
-        })
-        viewModel.errorMessage.observe(this, { event ->
-            event.getMessageIfNotHandled()?.let { message ->
+        }
+        viewModel.errorMessage.observe(this) { event ->
+            val message: String? = event.getMessageIfNotHandled()
+            if (message != null) {
                 toastLong(message)
             }
-        })
+        }
     }
 
     private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
@@ -104,12 +105,10 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private fun addToVisited(country: Country) {
         viewModel.markAsVisited(country) {
-            runOnUiThread {
-                hideKeyboard()
-                val intent = Intent()
-                setResult(RESULT_OK, intent)
-                finish()
-            }
+            hideKeyboard()
+            val intent = Intent()
+            setResult(RESULT_OK, intent)
+            finish()
         }
     }
 

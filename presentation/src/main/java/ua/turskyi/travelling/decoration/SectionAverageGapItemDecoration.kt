@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.chad.library.adapter.base.BaseSectionQuickAdapter
 import com.chad.library.adapter.base.entity.SectionEntity
-import java.util.*
 
 class SectionAverageGapItemDecoration(
     private val gapHorizontalDp: Int,
@@ -24,6 +23,7 @@ class SectionAverageGapItemDecoration(
         val count: Int
             get() = endPos - startPos + 1
 
+        @Suppress("BooleanMethodIsAlwaysInverted")
         operator fun contains(pos: Int): Boolean {
             return pos in startPos..endPos
         }
@@ -41,7 +41,7 @@ class SectionAverageGapItemDecoration(
     private var sectionEdgeHPaddingPx = 0
     private var eachItemHPaddingPx = 0
     private var sectionEdgeVPaddingPx = 0
-    private val mSectionList: MutableList<Section?> = ArrayList()
+    private val mSectionList: MutableList<Section> = ArrayList()
     private lateinit var mAdapter: BaseSectionQuickAdapter<*, *>
     private val mDataObserver: AdapterDataObserver = object : AdapterDataObserver() {
         override fun onChanged() = markSections()
@@ -71,7 +71,7 @@ class SectionAverageGapItemDecoration(
             val entity = adapter?.getItem(position)
             entity?.let {
                 if (entity.isHeader) {
-                    /*header*/
+                    //header
                     outRect[0, 0, 0] = 0
                     return
                 }
@@ -83,8 +83,8 @@ class SectionAverageGapItemDecoration(
             outRect.top = gapVSizePx
             outRect.bottom = 0
 
-            /* visualPos Section */
-            val visualPos = position + 1 - section!!.startPos
+            // visualPos Section
+            val visualPos = position + 1 - section.startPos
             when {
                 visualPos % spanCount!! == 1 -> {
                     outRect.left = sectionEdgeHPaddingPx
@@ -110,23 +110,23 @@ class SectionAverageGapItemDecoration(
 
     private fun setUpWithAdapter(adapter: BaseSectionQuickAdapter<*, *>?) {
         mAdapter.unregisterAdapterDataObserver(mDataObserver)
-        adapter?.let{ mAdapter = adapter }
+        adapter?.let { mAdapter = adapter }
         mAdapter.registerAdapterDataObserver(mDataObserver)
         markSections()
     }
 
     private fun markSections() {
-        val adapter: BaseSectionQuickAdapter<*, *>? = mAdapter
+        val adapter: BaseSectionQuickAdapter<*, *> = mAdapter
         mSectionList.clear()
         var sectionEntity: SectionEntity?
         var section = Section()
         var i = 0
-        val size = adapter?.itemCount
-        while (i < size!!) {
+        val size = adapter.itemCount
+        while (i < size) {
             sectionEntity = adapter.getItem(i)
             if (sectionEntity.isHeader) {
                 if (i != 0) {
-             /*       section */
+                    //       section
                     section.endPos = i - 1
                     mSectionList.add(section)
                 }
@@ -165,15 +165,13 @@ class SectionAverageGapItemDecoration(
         eachItemHPaddingPx = (sectionEdgeHPaddingPx * 2 + gapHSizePx * (spanCount - 1)) / spanCount
     }
 
-    private fun findSectionLastItemPos(curPos: Int): Section? {
-        for (section in mSectionList) {
-            section?.contains(curPos)?.let{
-                if (section.contains(curPos)) {
-                    return section
-                }
+    private fun findSectionLastItemPos(curPos: Int): Section {
+        for (section: Section in mSectionList) {
+            if (section.contains(curPos)) {
+                return section
             }
         }
-        return null
+        return Section()
     }
 
     private fun isLastRow(visualPos: Int, spanCount: Int, sectionItemCount: Int): Boolean {

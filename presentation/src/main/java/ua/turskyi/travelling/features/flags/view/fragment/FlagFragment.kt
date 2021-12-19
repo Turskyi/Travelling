@@ -1,8 +1,10 @@
 package ua.turskyi.travelling.features.flags.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Color.TRANSPARENT
 import android.net.Uri
 import android.os.Build
@@ -13,9 +15,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -26,14 +30,14 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentFlagBinding
-import ua.turskyi.travelling.extensions.observeOnce
-import ua.turskyi.travelling.extensions.toast
-import ua.turskyi.travelling.extensions.toastLong
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.observeOnce
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 
 class FlagFragment : Fragment() {
 
@@ -42,7 +46,7 @@ class FlagFragment : Fragment() {
 
     private val viewModel: FlagsFragmentViewModel by inject()
 
-    var mChangeFlagListener: OnChangeFlagFragmentListener? = null
+    private var mChangeFlagListener: OnChangeFlagFragmentListener? = null
     private var flagsActivityViewListener: FlagsActivityView? = null
 
     private lateinit var photoPickerResultLauncher: ActivityResultLauncher<Intent>
@@ -58,7 +62,7 @@ class FlagFragment : Fragment() {
         try {
             flagsActivityViewListener = context as FlagsActivityView?
         } catch (castException: ClassCastException) {
-            /* in this case the activity does not implement the listener.  */
+            // in this case the activity does not implement the listener.
             castException.printStackTrace()
         }
     }
@@ -89,6 +93,7 @@ class FlagFragment : Fragment() {
         initObservers()
     }
 
+    @SuppressLint("InvalidFragmentVersionForActivityResult")
     private fun initResultLauncher() {
         photoPickerResultLauncher = registerForActivityResult(
             StartActivityForResult()
@@ -129,7 +134,7 @@ class FlagFragment : Fragment() {
                         visitedCountriesObserverForLocalPhotos
                     )
                 } else {
-                    val visitedCountriesObserverForCloudPhotos =
+                    val visitedCountriesObserverForCloudPhotos: Observer<List<Country>> =
                         Observer<List<Country>> { visitedCountries ->
                             position?.let {
                                 viewModel.updateSelfie(
@@ -151,20 +156,22 @@ class FlagFragment : Fragment() {
 
 
     private fun getContentUriFromUri(id: Int, imageId: Int, name: String, flag: String): Country {
-        val columns = arrayOf(MediaStore.Images.Media._ID)
+        val columns: Array<String> = arrayOf(MediaStore.Images.Media._ID)
 
-        val orderBy =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) MediaStore.Images.Media.DATE_TAKEN
-            else MediaStore.Images.Media._ID
+        val orderBy: String = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            MediaStore.Images.Media.DATE_TAKEN /* This cursor will hold the result of the query
+                and put all data in Cursor by sorting in descending order */
+        } else /* This cursor will hold the result of the query
+                and put all data in Cursor by sorting in descending order */ {
+            MediaStore.Images.Media._ID
+        }
 
-        /** This cursor will hold the result of the query
-        and put all data in Cursor by sorting in descending order */
-        val cursor = requireContext().contentResolver.query(
+        val cursor: Cursor? = requireContext().contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             columns, null, null, "$orderBy DESC"
         )
         cursor?.moveToFirst()
-        val uriImage = Uri.withAppendedPath(
+        val uriImage: Uri = Uri.withAppendedPath(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             "" + imageId
         )
@@ -181,7 +188,7 @@ class FlagFragment : Fragment() {
     private fun initPhotoPicker() {
         val action: String = Intent.ACTION_OPEN_DOCUMENT
         val intent = Intent(action)
-        intent.type = getString(R.string.image_type)
+        intent.type = getString(R.string.image_and_jpeg_type)
         val intentChooser =
             Intent.createChooser(intent, getString(R.string.flag_chooser_title_complete_using))
         photoPickerResultLauncher.launch(intentChooser)
@@ -195,155 +202,115 @@ class FlagFragment : Fragment() {
 
     private fun initObservers() {
         lifecycle.addObserver(viewModel)
-        viewModel.errorMessage.observe(this, { event ->
-            event.getMessageIfNotHandled()?.let { message ->
+        viewModel.errorMessage.observe(this) { event ->
+            val message = event.getMessageIfNotHandled()
+            if (message != null) {
                 toastLong(message)
             }
-        })
-        viewModel.visibilityLoader.observe(this, { currentVisibility ->
-            flagsActivityViewListener?.setLoaderVisibility(currentVisibility)
-        })
-        val visitedCountriesObserver = Observer<List<Country>> { countries ->
-            val position = this.arguments?.getInt(EXTRA_POSITION)
-            position?.let {
-                mChangeFlagListener?.onChangeToolbarTitle(countries[position].name)
-                if (countries[position].selfie.isNullOrEmpty()) {
+        }
+        viewModel.visibilityLoader.observe(this) { currentVisibility ->
+            if (flagsActivityViewListener != null) {
+                flagsActivityViewListener!!.setLoaderVisibility(currentVisibility)
+            }
+        }
+        val visitedCountriesObserver: Observer<List<Country>> = Observer<List<Country>> { countries: List<Country> ->
+            if (this.arguments != null) {
+                val position: Int = this.arguments!!.getInt(EXTRA_POSITION)
+
+                if (mChangeFlagListener != null) {
+                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                }
+
+                if (countries[position].selfie.isEmpty()) {
                     showTheFlag(countries, position)
                 } else {
                     showSelfie(countries, position)
-                    binding.ivEnlargedFlag.setOnClickListener(
-                        showFlagClickListener(
-                            countries,
-                            position
-                        )
-                    )
+                    binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
                 }
             }
         }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
     }
 
-    private fun showFlagClickListener(countries: List<Country>, position: Int?):
-            OnClickListener = OnClickListener {
-        showTheFlag(countries, position)
-        /* change clickListener */
-        binding.ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
-        val wvFlag = binding.wvFlag
-
-//        TODO: try to create custom view https://stackoverflow.com/questions/47107105/android-button-has-setontouchlistener-called-on-it-but-does-not-override-perform
-        wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
-    }
-
-    private fun onWebViewClickListener(
-        countries: List<Country>,
-        position: Int?
-    ): OnTouchListener {
-        return object : OnTouchListener {
-            val FINGER_RELEASED = 0
-            val FINGER_TOUCHED = 1
-            val FINGER_DRAGGING = 2
-            val FINGER_UNDEFINED = 3
-            private var fingerState = FINGER_RELEASED
-
-            override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        fingerState =
-                            if (fingerState == FINGER_RELEASED) FINGER_TOUCHED else FINGER_UNDEFINED
-                    }
-                    MotionEvent.ACTION_UP -> when {
-                        fingerState != FINGER_DRAGGING -> {
-                            fingerState = FINGER_RELEASED
-                            /* perform click */
-                            showSelfie(countries, position)
-                            view.performClick()
-                            /* return first clickListener */
-                            binding.ivEnlargedFlag.setOnClickListener(
-                                showFlagClickListener(
-                                    countries,
-                                    position
-                                )
-                            )
-                        }
-                        else -> fingerState =
-                            if (fingerState == FINGER_DRAGGING) FINGER_RELEASED else {
-                                FINGER_UNDEFINED
-                            }
-                    }
-                    else -> fingerState = if (motionEvent.action == MotionEvent.ACTION_MOVE) {
-                        if (fingerState == FINGER_TOUCHED || fingerState == FINGER_DRAGGING) {
-                            FINGER_DRAGGING
-                        } else FINGER_UNDEFINED
-                    } else FINGER_UNDEFINED
-                }
-                return false
-            }
+    private fun showFlagClickListener(countries: List<Country>, position: Int): OnClickListener {
+        return OnClickListener {
+            showTheFlag(countries, position)
+            // change clickListener
+            binding.ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
+            val wvFlag: WebView = binding.wvFlag
+            wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
         }
     }
 
-    private fun showSelfieClickListener(countries: List<Country>, position: Int?):
-            OnClickListener = OnClickListener {
-        showSelfie(countries, position)
-        /* return first clickListener */
-        binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+    private fun onWebViewClickListener(countries: List<Country>, position: Int): OnTouchListener {
+        return OnTouchListener { view: View, motionEvent: MotionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_UP -> {
+                    // perform click
+                    showSelfie(countries, position)
+                    view.performClick()
+                    // return first clickListener
+                    binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+                }
+            }
+            false
+        }
     }
 
-    private fun showSelfie(
-        countries: List<Country>,
-        position: Int?
-    ) {
+    private fun showSelfieClickListener(countries: List<Country>, position: Int): OnClickListener {
+        return OnClickListener {
+            showSelfie(countries, position)
+            // return first clickListener
+            binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+        }
+    }
+
+    private fun showSelfie(countries: List<Country>, position: Int) {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
-        position?.let {
-            val uri: Uri = Uri.parse(countries[position].selfie)
-            Glide.with(this)
-                .load(uri)
-                .thumbnail(0.5F)
-                .apply(
-                    RequestOptions()
-                        .placeholder(R.drawable.anim_loading)
-                        .error(R.drawable.ic_broken_image)
-                        .priority(Priority.IMMEDIATE)
-                )
-                .into(binding.ivEnlargedFlag)
-        }
+        val uri: Uri = Uri.parse(countries[position].selfie)
+        Glide.with(this)
+            .load(uri)
+            .thumbnail(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.anim_loading)
+                    .error(R.drawable.ic_broken_image)
+                    .priority(Priority.IMMEDIATE)
+            )
+            .into(binding.ivEnlargedFlag)
     }
 
-    private fun showTheFlag(
-        countries: List<Country>,
-        position: Int?
-    ) {
+    private fun showTheFlag(countries: List<Country>, position: Int) {
         /**
          * @Description Opens the pictureUri in full size
          *  */
-        position?.let {
-            val uri: Uri = Uri.parse(countries[position].flag)
-            GlideToVectorYou
-                .init()
-                .with(activity)
-                .withListener(object : GlideToVectorYouListener {
-                    override fun onLoadFailed() = showFlagInWebView()
-                    private fun showFlagInWebView() {
-                        binding.apply {
-                            ivEnlargedFlag.visibility = GONE
-                            wvFlag.webViewClient = WebViewClient()
-                            wvFlag.visibility = VISIBLE
-                            wvFlag.setBackgroundColor(TRANSPARENT)
-                            wvFlag.loadData(
-                                getString(R.string.html_data_flag, countries[position].flag),
-                                getString(R.string.mime_type_txt_html),
-                                getString(R.string.encoding_utf_8)
-                            )
-                        }
+        val uri: Uri = Uri.parse(countries[position].flag)
+        GlideToVectorYou
+            .init()
+            .with(activity)
+            .withListener(object : GlideToVectorYouListener {
+                override fun onLoadFailed() = showFlagInWebView()
+                private fun showFlagInWebView() {
+                    binding.apply {
+                        ivEnlargedFlag.visibility = GONE
+                        wvFlag.webViewClient = WebViewClient()
+                        wvFlag.visibility = VISIBLE
+                        wvFlag.setBackgroundColor(TRANSPARENT)
+                        wvFlag.loadData(
+                            getString(R.string.html_data_flag, countries[position].flag),
+                            getString(R.string.mime_type_txt_html),
+                            getString(R.string.encoding_utf_8)
+                        )
                     }
+                }
 
-                    override fun onResourceReady() {
-                        binding.ivEnlargedFlag.visibility = VISIBLE
-                        binding.wvFlag.visibility = GONE
-                    }
-                })
-                .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
-                .load(uri, binding.ivEnlargedFlag)
-        }
+                override fun onResourceReady() {
+                    binding.ivEnlargedFlag.visibility = VISIBLE
+                    binding.wvFlag.visibility = GONE
+                }
+            })
+            .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
+            .load(uri, binding.ivEnlargedFlag)
     }
 }

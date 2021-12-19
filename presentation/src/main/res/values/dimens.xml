@@ -54,4 +54,6 @@
     <dimen name="size_all_countries_fab_max_image">34dp</dimen>
     <dimen name="size_max_float_btn">60dp</dimen>
 
+    <item name="thumbnail" format="float" type="dimen">0.5</item>
+
 </resources>
