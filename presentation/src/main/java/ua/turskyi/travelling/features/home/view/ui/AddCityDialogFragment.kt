@@ -36,6 +36,8 @@ import java.util.*
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
+        // ARG_ID is used here in this class, without need to make it public
+        @Suppress("unused")
         private const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {
@@ -48,7 +50,7 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    private val viewModel by inject<AddCityDialogViewModel>()
+    private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private lateinit var etCity: LinedEditText
@@ -114,7 +116,7 @@ class AddCityDialogFragment : DialogFragment() {
                         month = etMonth.text.toString(),
                     ),
                     onSuccess = { alertDialog.dismiss() },
-                    onError = { exception ->
+                    onError = { exception: Exception ->
                         toastLong(
                             exception.localizedMessage
                                 ?: exception.stackTraceToString(),

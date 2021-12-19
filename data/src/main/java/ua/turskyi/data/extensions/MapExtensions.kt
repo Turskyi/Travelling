@@ -7,10 +7,10 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 fun List<CountryModel>.mapModelListToEntityList(): MutableList<CountryEntity> {
-    return mapTo(mutableListOf(), { countryModel -> countryModel.mapModelToEntity() })
+    return mapTo(mutableListOf()) { countryModel -> countryModel.mapModelToEntity() }
 }
 
-fun CountryModel.mapModelToEntity() = CountryEntity(id, name, flag, isVisited, "")
+fun CountryModel.mapModelToEntity(): CountryEntity = CountryEntity(id, name, flag, isVisited, "")
 fun CityModel.mapModelToEntity(): CityEntity {
     return CityEntity(id = id, name = name, parentId = parentId, month = month)
 }
@@ -20,16 +20,16 @@ fun CityEntity.mapEntityToModel(): CityModel {
 }
 
 fun List<CountryResponse>.mapNetListToModelList(): MutableList<CountryModel> {
-    return this.mapTo(mutableListOf(), { countryNet -> countryNet.mapNetToEntity() })
+    return this.mapTo(mutableListOf()) { countryNet: CountryResponse -> countryNet.mapNetToEntity() }
 }
 
 fun CountryEntity.mapEntityToModel() = CountryModel(id, name, flag, isVisited, selfie)
 fun CountryResponse.mapNetToEntity() = CountryModel(name, flag)
 fun List<CityEntity>.mapEntitiesToModelList(): MutableList<CityModel> {
-    return mapTo(mutableListOf(), { cityEntity -> cityEntity.mapEntityToModel() })
+    return mapTo(mutableListOf()) { cityEntity: CityEntity -> cityEntity.mapEntityToModel() }
 }
 
 fun List<CountryEntity>.mapEntityListToModelList(): MutableList<CountryModel> {
-    return mapTo(mutableListOf(), { countryEntity -> countryEntity.mapEntityToModel() })
+    return mapTo(mutableListOf()) { countryEntity: CountryEntity -> countryEntity.mapEntityToModel() }
 }
 

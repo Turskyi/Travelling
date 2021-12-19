@@ -28,11 +28,11 @@ class ZoomOutPageTransformer : ViewPager2.PageTransformer {
                     /*     Scale the page down (between MIN_SCALE and 1) */
                     scaleX = scaleFactor
                     scaleY = scaleFactor
-                    /*     Fade the page relative to its size. */
+                    //     Fade the page relative to its size.
                     alpha = (MIN_ALPHA +
                             (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
                 }
-                /* This page is way off-screen to the right. */
+                // This page is way off-screen to the right.
                 else -> alpha = 0f
             }
         }

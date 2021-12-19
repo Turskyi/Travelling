@@ -453,7 +453,7 @@ internal class CollapsingTextHelper(private val mView: View) {
             else -> mExpandedBounds.left.toFloat()
         }
 
-        // The bounds have changed so we need to clear the texture
+        // The bounds have changed, so we need to clear the texture
         clearTexture()
         // Now reset the text size back to the original
         setInterpolatedTextSize(currentTextSize)
@@ -574,7 +574,7 @@ internal class CollapsingTextHelper(private val mView: View) {
         if (mUseTexture) {
             // Make sure we have an expanded texture if needed
             ensureExpandedTexture()
-            // added collapsed and cross section textures
+            // added collapsed and cross-section textures
             ensureCollapsedTexture()
             ensureCrossSectionTexture()
         }
@@ -633,13 +633,13 @@ internal class CollapsingTextHelper(private val mView: View) {
             // collapsed text size
             val scaledDownWidth: Float = expandedWidth * textSizeRatio
             availableWidth = if (scaledDownWidth > collapsedWidth) {
-                /* If the scaled down size is larger than the actual collapsed width, we need to
+                /* If the scaled downsize is larger than the actual collapsed width, we need to
                   cap the available width so that when the expanded text scales down, it matches
                   the collapsed width */
 
                 expandedWidth
             } else {
-                // Otherwise we'll just use the expanded width
+                // Otherwise, we'll just use the expanded width
                 expandedWidth
             }
 

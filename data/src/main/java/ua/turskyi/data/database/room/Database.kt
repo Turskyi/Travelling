@@ -42,7 +42,7 @@ abstract class Database : RoomDatabase() {
             context,
             Database::class.java,
             BuildConfig.DATABASE_NAME
-        ).addCallback(object : RoomDatabase.Callback() {
+        ).addCallback(object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 db.query(context.resources.getString(R.string.pragma_journal_mode_memory))
