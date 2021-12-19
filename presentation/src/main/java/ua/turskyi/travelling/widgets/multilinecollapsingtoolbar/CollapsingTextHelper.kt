@@ -633,13 +633,13 @@ internal class CollapsingTextHelper(private val mView: View) {
             // collapsed text size
             val scaledDownWidth: Float = expandedWidth * textSizeRatio
             availableWidth = if (scaledDownWidth > collapsedWidth) {
-                /* If the scaled down size is larger than the actual collapsed width, we need to
+                /* If the scaled downsize is larger than the actual collapsed width, we need to
                   cap the available width so that when the expanded text scales down, it matches
                   the collapsed width */
 
                 expandedWidth
             } else {
-                // Otherwise we'll just use the expanded width
+                // Otherwise, we'll just use the expanded width
                 expandedWidth
             }
 
