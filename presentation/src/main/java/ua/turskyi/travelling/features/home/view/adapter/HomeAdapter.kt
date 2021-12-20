@@ -41,12 +41,11 @@ class HomeAdapter : BaseNodeAdapter() {
             field = value
         }
 
-    override fun getItemType(
-        data: List<BaseNode>,
-        position: Int
-    ) = when (data[position]) {
+    override fun getItemType(data: List<BaseNode>, position: Int): Int {
+        return when (data[position]) {
             is VisitedCountry -> 0
             is City -> 1
             else -> -1
         }
+    }
 }
