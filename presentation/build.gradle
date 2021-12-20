@@ -100,7 +100,7 @@ dependencies {
 
     // firebase
     implementation 'com.google.firebase:firebase-crashlytics:18.2.6'
-    implementation('com.google.firebase:firebase-analytics:20.0.1') {
+    implementation('com.google.firebase:firebase-analytics:20.0.2') {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
         exclude module: "play-services-measurement"
