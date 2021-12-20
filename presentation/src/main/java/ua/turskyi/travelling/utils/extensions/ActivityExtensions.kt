@@ -21,16 +21,18 @@ fun AppCompatActivity.openInfoDialog(@StringRes info: Int) {
     infoDialog.show(this.supportFragmentManager, "info dialog")
 }
 
-fun Activity.getScreenWidth() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-    val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
-    val insets: Insets = windowMetrics.windowInsets
-        .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-    windowMetrics.bounds.width() - insets.left - insets.right
-} else {
-    val displayMetrics = DisplayMetrics()
-    @Suppress("DEPRECATION")
-    windowManager.defaultDisplay.getMetrics(displayMetrics)
-    displayMetrics.widthPixels
+fun Activity.getScreenWidth(): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
+        val insets: Insets = windowMetrics.windowInsets
+            .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+        windowMetrics.bounds.width() - insets.left - insets.right
+    } else {
+        val displayMetrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        displayMetrics.widthPixels
+    }
 }
 
 fun Activity.toastLong(msg: String) {
