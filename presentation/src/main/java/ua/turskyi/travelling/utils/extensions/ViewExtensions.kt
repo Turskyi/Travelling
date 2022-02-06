@@ -46,7 +46,7 @@ fun View.showShortMsg(@StringRes messageRes: Int, duration: Int = Snackbar.LENGT
     mSnackbar.show()
 }
 
-fun View.showSnackBar(@StringRes msgString: Int) = showShortMsg(msgString)
+fun View.showSnackBar(@StringRes msgString: Int): Unit = showShortMsg(msgString)
 
 inline fun View.longSnackWithAction(
     message: String,
@@ -67,7 +67,7 @@ inline fun View.showSnackWithAction(
     message: String,
     length: Int = Snackbar.LENGTH_LONG,
     function: Snackbar.() -> Unit
-) = longSnackWithAction(message, length, function)
+): Unit = longSnackWithAction(message, length, function)
 
 fun View.toast(@StringRes msgResId: Int) = context.toast(msgResId)
 

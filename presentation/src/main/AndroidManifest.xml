@@ -48,7 +48,6 @@
         <activity
             android:name="ua.turskyi.travelling.features.home.view.ui.HomeActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -84,13 +83,11 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="@string/content_provider"
             android:exported="true"
-            tools:ignore="ExportedContentProvider"
-            tools:replace="android:authorities" />
+            tools:ignore="ExportedContentProvider" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"
-            tools:replace="android:value" />
+            android:value="@string/facebook_app_id" />
 
         <!-- [START firebase_service] -->
         <service
@@ -103,4 +100,11 @@
         </service>
         <!-- [END firebase_service] -->
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="@string/scheme_mailto" />
+        </intent>
+    </queries>
 </manifest>

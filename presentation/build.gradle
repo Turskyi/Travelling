@@ -23,7 +23,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // to ensure that the translations of Firebase library are relevant to the application
-        resConfigs "en"
+        resConfigs 'en'
     }
 
     signingConfigs {
@@ -101,14 +101,16 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.6'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.7'
     implementation('com.google.firebase:firebase-analytics:20.0.2') {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
         exclude module: "play-services-measurement"
         exclude module: "play-services-measurement-sdk"
     }
-    implementation 'com.google.firebase:firebase-perf:20.0.4'
+    /* Declare the dependency for the Performance Monitoring library.
+       When using the BoM, we don't specify versions in Firebase library dependencies. */
+    implementation 'com.google.firebase:firebase-perf-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
 
     // ViewModel and LiveData
@@ -145,10 +147,10 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     // Location
-    implementation "com.google.android.gms:play-services-location:19.0.0"
+    implementation "com.google.android.gms:play-services-location:19.0.1"
 
     // Facebook SDK
-    def facebookVersion = "12.2.0"
+    def facebookVersion = "12.3.0"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
     implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"

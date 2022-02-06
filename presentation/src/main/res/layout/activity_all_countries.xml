@@ -9,7 +9,8 @@
     android:animationCache="true"
     android:background="@android:color/black"
     android:persistentDrawingCache="animation"
-    tool:ignore="Overdraw">
+    tool:ignore="Overdraw"
+    tool:keep="@layout/activity_all_countries">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

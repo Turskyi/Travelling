@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package ua.turskyi.travelling.widgets.multilinecollapsingtoolbar
 
 import android.animation.ValueAnimator
@@ -75,6 +77,7 @@ import kotlin.math.roundToInt
  * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_toolbarId
  */
 
+@SuppressLint("PrivateResource")
 class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -700,7 +703,7 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
          */
         var parallaxMultiplier = DEFAULT_PARALLAX_MULTIPLIER
 
-        @SuppressLint("CustomViewStyleable")
+        @SuppressLint("CustomViewStyleable", "PrivateResource")
         constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
             val typedArray: TypedArray = context.obtainStyledAttributes(
                 attrs,

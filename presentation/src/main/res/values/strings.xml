@@ -33,6 +33,9 @@
     <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
     <string name="tag.sync_dialog" translatable="false">sync dialog</string>
+    <!-- not translatable -->
+    <string name="scheme_mailto" translatable="false">mailto:</string>
+    <string name="email" translatable="false">dmitriy.turskiy@gmail.com</string>
     <!-- END of not translatable strings -->
 
     <!-- default  strings -->
@@ -124,4 +127,10 @@
     <string name="msg.home_country_did_not_added">did not added anything</string>
     <!-- end of strings for toasts messages -->
     <string name="default_notification_channel_id">Notifications from Travelling application.</string>
+    <!-- alert dialog content -->
+    <string name="alert_error_title">It is just an error.</string>
+    <string name="alert_error_message">Do you want to write to the developer?</string>
+    <string name="error_message_intro">Something terrible happened</string>
+    <string name="no">Not really</string>
+    <string name="error_message_try_tomorrow">Then try tomorrow ;)</string>
 </resources>
