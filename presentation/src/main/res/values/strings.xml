@@ -1,5 +1,11 @@
 <resources>
-    <!-- not translatable -->
+    <!-- START of not translatable -->
+    <string name="play_market_app_link_to_pro_version" translatable="false">market://details?id=io.github.turskyi.travellingpro</string>
+    <string name="play_market_web_link_to_pro_version" translatable="false">https://play.google.com/store/apps/details?id=io.github.turskyi.travellingpro</string>
+    <string name="share_massage" translatable="false">#travelling_the_world \n https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="picture_file_name" translatable="false">piechart_%1$s.jpg</string>
+    <string name="picture_name" translatable="false">piechart_%1$s</string>
+    <string name="authority_name" translatable="false">%1$s.provider</string>
     <string name="html_data_flag" translatable="false"><![CDATA[
     <html>
     <head>
@@ -7,23 +13,30 @@
     </head>
     <body><img src=\'%1$s\'/></body>
     </html>]]></string>
+    <string name="html_mini_flag" translatable="false"><![CDATA[
+    <html>
+    <head>
+    <style type=\'text/css\'>body{margin:auto auto;text-align:center;} img{width:80%%25;}</style>
+    </head>
+    <body><img src=\'%1$s\'/></body>
+    </html>]]></string>
     <string name="encoding_utf_8" translatable="false">UTF-8</string>
     <string name="mime_type_txt_html" translatable="false">text/html</string>
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
     <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
-    <string name="privacy_web_page" translatable="false">https://travelling-the-countries.web.app</string>
     <string name="android_5_1" translatable="false">5.1</string>
     <string name="media_providers" translatable="false">com.android.providers.media</string>
-    <string name="image_type" translatable="false">image/jpeg</string>
+    <string name="image_and_jpeg_type" translatable="false">image/jpeg</string>
+    <string name="image_type" translatable="false">image/*</string>
     <string name="geo_location" translatable="false">geo:0,0?q=%1$s</string>
     <!-- for face book sharing -->
     <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
-    <!-- for facebook auth -->
-    <string name="facebook_application_id" translatable="false">285452062466394</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb285452062466394</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb285452062466394</string>
-    <!-- end of not translatable strings -->
+    <string name="tag.sync_dialog" translatable="false">sync dialog</string>
+    <!-- not translatable -->
+    <string name="scheme_mailto" translatable="false">mailto:</string>
+    <string name="email" translatable="false">dmitriy.turskiy@gmail.com</string>
+    <!-- END of not translatable strings -->
 
     <!-- default  strings -->
     <string name="app_name">Travelling</string>
@@ -35,8 +48,6 @@
     <string name="dialog_btn_ok">OK</string>
     <string name="dialog_btn_ok_ready">OK ?</string>
     <string name="dialog_btn_not_ok">not OK</string>
-    <string name="exception_unsupported_context">you cannot instantiate the context</string>
-    <string name="exception_npe_context">you should init context util first</string>
     <!-- end of default strings -->
 
     <!-- home screen -->
@@ -47,11 +58,13 @@
     <string name="dialogue_btn_gps">GPS</string>
     <string name="btn_save">Save</string>
     <string name="dialogue_turn_on_gps">TURN ON GPS</string>
-    <string name="dialog_hold_on">Hold on a moment, trying to find your location.</string>
     <string name="dialog.no_internet">TURN ON INTERNET</string>
     <string name="home_dialog_btn_cancel">Cancel</string>
-    <string name="txt_info_billing">Please care to buy the full version of an app,
-        in order to sync your data with server.</string>
+    <string name="txt_info_billing">Unfortunately, this app cannot synchronize your data with a server,
+        since it free.\n\nPlease care to buy the pro version of an app,
+        where your data will be automatically backed up with a server.\n\nYeah, one more thing,
+        after that you have to add all your visited countries to the new app manually,
+        but it totally worth it, since you will never lose them again.</string>
     <string name="share_title">Share How Many Countries You Have Visited</string>
     <string name="txt_info_home">• Click on \"+\" to add a country.\n• Click on a country to add a
         city and a month.\n• Click on the pie chart to change the view of it.\n• If you press on the pie chart,
@@ -106,20 +119,18 @@
     <!-- messages -->
     <string name="msg.no_facebook_app">You do not have Facebook app installed</string>
     <string name="msg.no_app_installed">No app available to share pie chart</string>
-    <string name="msg.internet_connection_lost">Тhe app is offline.</string>
-    <string name="msg.connection_billing">Problems with connecting to google play.</string>
-    <string name="msg.error_due_to_canceling_purchase">Cancelling the purchase</string>
-    <string name="msg.error_unexpected">unexpected error occurred</string>
-    <string name="msg.complete_purchase">You\'ve started the pending purchase. Care to complete it.</string>
-    <string name="msg.purchase_acknowledged">Purchase acknowledged</string>
     <string name="msg.gps_permission_denied">GPS permission denied</string>
     <string name="msg.did_not_choose">did not choose anything</string>
-    <string name="msg.did_not_sign_in">did not sign in</string>
-    <string name="msg.sign_in_cancelled">sign in canceled</string>
-    <string name="msg.no_internet">no internet connection</string>
+    <string name="msg.not_found">not found</string>
     <string name="home_onboarding_title">…loading countries</string>
     <string name="msg.exception_flag_listener">%1$s must implement OnFlagFragmentListener</string>
     <string name="msg.home_country_did_not_added">did not added anything</string>
     <!-- end of strings for toasts messages -->
-
+    <string name="default_notification_channel_id">Notifications from Travelling application.</string>
+    <!-- alert dialog content -->
+    <string name="alert_error_title">It is just an error.</string>
+    <string name="alert_error_message">Do you want to write to the developer?</string>
+    <string name="error_message_intro">Something terrible happened</string>
+    <string name="no">Not really</string>
+    <string name="error_message_try_tomorrow">Then try tomorrow ;)</string>
 </resources>

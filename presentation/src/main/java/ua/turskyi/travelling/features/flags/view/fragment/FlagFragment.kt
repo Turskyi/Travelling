@@ -215,7 +215,7 @@ class FlagFragment : Fragment() {
         }
         val visitedCountriesObserver: Observer<List<Country>> = Observer<List<Country>> { countries: List<Country> ->
             if (this.arguments != null) {
-                val position: Int = this.arguments!!.getInt(EXTRA_POSITION)
+                val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
                 if (mChangeFlagListener != null) {
                     mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)

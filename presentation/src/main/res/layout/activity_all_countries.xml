@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- android:background="@android:color/black" must be added included explicitly to make black background -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
@@ -7,7 +8,9 @@
     android:animateLayoutChanges="true"
     android:animationCache="true"
     android:background="@android:color/black"
-    android:persistentDrawingCache="animation">
+    android:persistentDrawingCache="animation"
+    tool:ignore="Overdraw"
+    tool:keep="@layout/activity_all_countries">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
