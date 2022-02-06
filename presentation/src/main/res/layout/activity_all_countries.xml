@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:animationCache="true"
-    android:fitsSystemWindows="true"
+    android:background="@android:color/black"
     android:persistentDrawingCache="animation"
     tool:ignore="Overdraw"
     tool:keep="@layout/activity_all_countries">
