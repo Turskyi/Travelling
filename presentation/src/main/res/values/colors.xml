@@ -8,4 +8,36 @@
     <color name="colorLightGrey">#EAEAEA</color>
     <color name="colorBgVisitedCountry">#090909</color>
     <color name="colorBgCity">#1B2432</color>
+
+    <!-- Icons Light Colors -->
+    <!-- Expandable Search Bar Light Theme Colors -->
+    <color name="searchBarIconColor">@android:color/black</color>
+    <color name="searchBarSearchIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarClearIconTintColor">@color/searchBarIconColor</color>
+    <color name="searchBarBackIconTintColor">@color/searchBarIconColor</color>
+
+    <!-- Icons Dark Colors -->
+    <!-- Expandable Search Bar Dark Theme Colors -->
+    <color name="searchBarIconColorDark">@android:color/white</color>
+    <color name="searchBarSearchIconTintColorDark">@color/searchBarIconColorDark</color>
+    <color name="searchBarClearIconTintColorDark">@color/searchBarIconColorDark</color>
+    <color name="searchBarBackIconTintColorDark">@color/searchBarIconColorDark</color>
+
+    <!-- Text Light Colors -->
+    <color name="searchBarTextColor">#DE000000</color>
+    <color name="searchBarHintColor">#42000000</color>
+
+    <!-- Base Dark Colors -->
+    <color name="searchBarPrimaryColorDark">#303030</color>
+    <color name="searchBarCursorColorDark">@color/searchBarIconColorDark</color>
+    <color name="searchBarDividerColorDark">#1FFFFFFF</color>
+
+    <!-- Text Dark Colors -->
+    <color name="searchBarTextColorDark">#DEFFFFFF</color>
+    <color name="searchBarHintColorDark">#42FFFFFF</color>
+
+    <!-- Base Light Colors -->
+    <color name="searchBarPrimaryColor">#FFFFFF</color>
+    <color name="searchBarCursorColor">#8000a1ff</color>
+    <color name="searchBarDividerColor">#1F000000</color>
 </resources>

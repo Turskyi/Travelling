@@ -2,12 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
 android:opacity="opaque">
 <item
-    android:width="@dimen/width_smallest_screen"
     android:gravity="center">
-    <shape
-        android:shape="oval">
+    <shape android:shape="rectangle">
         <gradient
-            android:endColor="#9b0493"
+            android:endColor="#5E0202"
             android:angle="135"
             android:centerColor="@color/colorAccent"
             android:startColor="#38068f" />

@@ -18,25 +18,25 @@ open class LinedEditText(context: Context, attrs: AttributeSet) : androidx.appco
     }
 
     override fun onDraw(canvas: Canvas) {
-        val nextCount = lineCount
-        val right = right
-        val paddingTop = paddingTop
-        val paddingBottom = paddingBottom
-        val paddingLeft = paddingLeft
-        val paddingRight = paddingRight
-        val height = height
-        val lineHeight = lineHeight
-        val startCount = (height - paddingTop - paddingBottom) / lineHeight
+        val nextCount: Int = lineCount
+        val right: Int = right
+        val paddingTop: Int = paddingTop
+        val paddingBottom: Int = paddingBottom
+        val paddingLeft: Int = paddingLeft
+        val paddingRight: Int = paddingRight
+        val height: Int = height
+        val lineHeight: Int = lineHeight
+        val startCount: Int = (height - paddingTop - paddingBottom) / lineHeight
 
-        for (firstCount in 0 until startCount) {
-            val baseline = lineHeight * (firstCount + 1) + paddingTop
+        for (firstCount: Int in 0 until startCount) {
+            val baseline: Int = lineHeight * (firstCount + 1) + paddingTop
             canvas.drawLine(
                 paddingLeft.toFloat(),
                 baseline.toFloat(), (right - paddingRight).toFloat(), baseline.toFloat(), mPaint
             )
         }
 
-        for (secondCount in startCount until nextCount) {
+        for (secondCount: Int in startCount until nextCount) {
             val baseline = lineHeight * (secondCount + 1) + paddingTop
             canvas.drawLine(
                 paddingLeft.toFloat(),

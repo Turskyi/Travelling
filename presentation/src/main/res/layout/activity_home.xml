@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:background="@android:color/black"
-        android:fitsSystemWindows="true"
+        android:background="@drawable/bg_dark_space"
         tools:context=".view.ui.HomeActivity">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -24,21 +23,18 @@
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+            <ua.turskyi.travelling.widgets.multilinecollapsingtoolbar.CollapsingToolbarLayoutExtension
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/black"
                 android:fitsSystemWindows="true"
                 android:soundEffectsEnabled="true"
                 app:collapsedTitleGravity="start"
                 app:collapsedTitleTextAppearance="@style/CasualSmallTextAppearance"
-                app:contentScrim="@android:color/black"
                 app:expandedTitleGravity="bottom|center"
                 app:expandedTitleTextAppearance="@style/CasualTextAppearance"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:scrimAnimationDuration="@android:integer/config_longAnimTime"
-                app:statusBarScrim="@android:color/black"
                 app:title="@string/home_onboarding_title"
                 app:toolbarId="@+id/toolbar">
 
@@ -69,7 +65,7 @@
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
+            </ua.turskyi.travelling.widgets.multilinecollapsingtoolbar.CollapsingToolbarLayoutExtension>
 
         </com.google.android.material.appbar.AppBarLayout>
 
