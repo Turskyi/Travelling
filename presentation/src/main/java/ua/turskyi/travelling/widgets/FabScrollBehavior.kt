@@ -29,7 +29,7 @@ class FabScrollBehavior(context: Context, attrs: AttributeSet?) :
                 fab.layoutParams as CoordinatorLayout.LayoutParams
             val fabBottomMargin: Int = layoutParams.bottomMargin
             val distanceToScroll = fab.height + fabBottomMargin
-            val ratio = dependency.getY() / toolbarHeight.toFloat()
+            val ratio: Float = dependency.getY() / toolbarHeight.toFloat()
             /* change the following data depending on the result is needed */
             fab.translationY = -distanceToScroll * 3 * ratio
         }

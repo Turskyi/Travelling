@@ -3,13 +3,12 @@
     android:opacity="opaque">
     <item
         android:gravity="center">
-        <shape
-            android:shape="oval">
+        <shape android:shape="rectangle">
             <gradient
                 android:angle="45"
-                android:endColor="#CCE100"
+                android:endColor="#015039"
                 android:centerColor="#006A05"
-                android:startColor="#00ADFB" />
+                android:startColor="#002E16" />
         </shape>
     </item>
 </layer-list>

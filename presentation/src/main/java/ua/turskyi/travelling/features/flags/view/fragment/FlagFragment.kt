@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Color.TRANSPARENT
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,9 +23,10 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.RequestOptions
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideApp
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
@@ -213,22 +215,28 @@ class FlagFragment : Fragment() {
                 flagsActivityViewListener!!.setLoaderVisibility(currentVisibility)
             }
         }
-        val visitedCountriesObserver: Observer<List<Country>> = Observer<List<Country>> { countries: List<Country> ->
-            if (this.arguments != null) {
-                val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
+        val visitedCountriesObserver: Observer<List<Country>> =
+            Observer<List<Country>> { countries: List<Country> ->
+                if (this.arguments != null) {
+                    val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
-                if (mChangeFlagListener != null) {
-                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
-                }
+                    if (mChangeFlagListener != null) {
+                        mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                    }
 
-                if (countries[position].selfie.isEmpty()) {
-                    showTheFlag(countries, position)
-                } else {
-                    showSelfie(countries, position)
-                    binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+                    if (countries[position].selfie.isEmpty()) {
+                        showTheFlag(countries, position)
+                    } else {
+                        showSelfie(countries, position)
+                        binding.ivEnlargedFlag.setOnClickListener(
+                            showFlagClickListener(
+                                countries,
+                                position
+                            )
+                        )
+                    }
                 }
             }
-        }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
     }
 
@@ -250,7 +258,12 @@ class FlagFragment : Fragment() {
                     showSelfie(countries, position)
                     view.performClick()
                     // return first clickListener
-                    binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+                    binding.ivEnlargedFlag.setOnClickListener(
+                        showFlagClickListener(
+                            countries,
+                            position
+                        )
+                    )
                 }
             }
             false
@@ -269,9 +282,12 @@ class FlagFragment : Fragment() {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
         val uri: Uri = Uri.parse(countries[position].selfie)
-        Glide.with(this)
+        val thumbnailBuilder: RequestBuilder<Drawable> =
+            GlideApp.with(binding.ivEnlargedFlag.context)
+                .asDrawable().sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
+        GlideApp.with(this)
             .load(uri)
-            .thumbnail(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
+            .thumbnail(thumbnailBuilder)
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.anim_loading)
