@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:animationCache="true"
-    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
     android:persistentDrawingCache="animation"
     tool:ignore="Overdraw"
     tool:keep="@layout/activity_all_countries">
@@ -95,6 +95,7 @@
         android:fadeScrollbars="true"
         android:focusable="true"
         android:visibility="gone"
+        android:layout_marginBottom="@dimen/offset_40"
         app:elevation="@dimen/elevation_4"
         app:fabCustomSize="@dimen/size_all_countries_fab_custom"
         app:fabSize="auto"

@@ -4,14 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.*
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -34,7 +31,6 @@ import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.io.IOException
 import java.util.*
-
 
 class AddCityDialogFragment : DialogFragment() {
 
@@ -59,87 +55,47 @@ class AddCityDialogFragment : DialogFragment() {
     private lateinit var etCity: LinedEditText
     private lateinit var etMonth: EditText
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog {
+        initLocationServices()
 
-        val inflater: Any = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)
+        val builder: AlertDialog.Builder = AlertDialog.Builder(
+            requireContext(),
+            R.style.RoundShapedDarkAlertDialogStyle
+        )
 
-        if (inflater is LayoutInflater) {
-            initLocationServices()
-            val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(
-                requireContext(),
-                R.style.RoundShapedDarkAlertDialogStyle,
-            )
+        val viewGroup: ViewGroup = requireActivity().findViewById(android.R.id.content)
+        val dialogView: View = layoutInflater.inflate(
+            R.layout.dialogue_city, viewGroup,
+            false
+        )
 
-            val viewGroup: ViewGroup = requireActivity().findViewById(android.R.id.content)
-            val dialogView: View = inflater.inflate(
-                R.layout.dialogue_city,
-                viewGroup,
-                false
-            )
+        builder.setView(dialogView)
+        val alertDialog: AlertDialog = builder.create()
 
-            dialogBuilder.setView(dialogView)
+        val buttonSave: Button = dialogView.findViewById(R.id.buttonSave)
+        val buttonDate: Button = dialogView.findViewById(R.id.btnDate)
+        val buttonGps: Button = dialogView.findViewById(R.id.btnGps)
+        etCity = dialogView.findViewById(R.id.letCity)
+        etMonth = dialogView.findViewById(R.id.etMonth)
 
-            val buttonSave: Button = dialogView.findViewById(R.id.buttonSave)
-            val buttonDate: Button = dialogView.findViewById(R.id.btnDate)
-            val buttonGps: Button = dialogView.findViewById(R.id.btnGps)
-            etCity = dialogView.findViewById(R.id.letCity)
-            etMonth = dialogView.findViewById(R.id.etMonth)
-
-            /*
-             * There is a unique case when particular android version (5.1)
-             *  cannot perform location logic
-             * and crashing, so here button just used as a cancel button.
-             */
-            if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
-                buttonGps.text = getString(R.string.home_dialog_btn_cancel)
-                // Removes CompoundDrawable
-                buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-            }
-
-            etCity.visibility = VISIBLE
-            etCity.setText("")
-            etMonth.setText("")
-            buttonSave.visibility = VISIBLE
-            buttonGps.visibility = VISIBLE
-
-            val alertDialog: AlertDialog = dialogBuilder.create()
-            initListeners(buttonSave, alertDialog, buttonGps, buttonDate)
-            return alertDialog
-        } else {
-// show error dialog
-            val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
-            val alertDialog: AlertDialog =
-                dialogBuilder.setTitle(getString(R.string.alert_error_title))
-                    .setMessage(getString(R.string.alert_error_message))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.yes)) { _: DialogInterface?, _: Int ->
-                        val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            // Fill it with data
-                            type = "message/rfc822"
-                            data = Uri.parse(resources.getString(R.string.scheme_mailto))
-                            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email)))
-                            putExtra(
-                                Intent.EXTRA_SUBJECT,
-                                resources.getString(R.string.error_message_intro),
-                            )
-                            putExtra(
-                                Intent.EXTRA_TEXT,
-                                "In ${AddCityDialogFragment::class.java}\n\nrequireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) is not a LayoutInflater",
-                            )
-                        }
-
-                        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-                            requireActivity().startActivity(intent)
-                        } else {
-                            toastLong("There are no email clients installed.")
-                        }
-                    }.setNegativeButton(
-                        getString(R.string.no)
-                    ) { dialog: DialogInterface, _: Int ->
-                        toastLong(getString(R.string.error_message_try_tomorrow))
-                        dialog.dismiss()
-                    }.create()
-            return alertDialog
+        /**
+         * There is a unique case when particular android version cannot perform location logic
+         * and crashing, so here button just used as a cancel button.
+         */
+        if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
+            buttonGps.text = getString(R.string.home_dialog_btn_cancel)
+            // Removes CompoundDrawable
+            buttonGps.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
+
+        etCity.visibility = VISIBLE
+        etCity.setText("")
+        etMonth.setText("")
+        buttonSave.visibility = VISIBLE
+        buttonGps.visibility = VISIBLE
+
+        initListeners(buttonSave, alertDialog, buttonGps, buttonDate)
+
+        return alertDialog
     }
 
     private fun initListeners(
