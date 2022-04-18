@@ -2,21 +2,21 @@ package ua.turskyi.travelling.widgets
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.features.home.view.ui.ShareListBottomSheetFragment
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.IntFormatter
+import ua.turskyi.travelling.utils.extensions.*
 
 /**
  * This custom view is a convenient way to incapsulate all logic related to pie chart to a separate
@@ -53,7 +53,7 @@ class CirclePieChart @JvmOverloads constructor(
         toolbar.menu.clear()
         //----------------
         val bottomSheet = ShareListBottomSheetFragment()
-        context.getFragmentActivity()?.supportFragmentManager?.let { fragmentManager ->
+        context.getFragmentActivity()?.supportFragmentManager?.let { fragmentManager: FragmentManager ->
             bottomSheet.show(fragmentManager, null)
         }
     }
@@ -118,12 +118,6 @@ class CirclePieChart @JvmOverloads constructor(
         // rotate the pie chart to 45 degrees
         rotationAngle = -10f
 
-        // init animated background for piechart
-        setBackgroundResource(R.drawable.gradient_list)
-        val animationDrawable: AnimationDrawable = background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(2000)
-        animationDrawable.setExitFadeDuration(4000)
-        animationDrawable.start()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // set radius of an open eye
             holeRadius = 78F

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -6,7 +6,9 @@
         <item name="colorPrimaryDark">@android:color/transparent</item>
         <item name="colorAccent">@android:color/white</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <!-- App theme without action bar -->
@@ -99,8 +101,8 @@
         <item name="android:background">@drawable/bg_btn_different_states</item>
     </style>
 
-    <style name="ShadowLayout">
-        <item name="containerBackgroundColor">@android:color/black</item>
+    <style name="ShadowLayout" tools:keep="@style/ShadowLayout">
+        <item name="containerBackgroundColor">@android:color/transparent</item>
         <item name="shadowGravity">bottom</item>
         <item name="shadowRadius">@dimen/offset_12</item>
         <item name="containerElevation">@dimen/elevation_12</item>
@@ -154,4 +156,23 @@
 
     <style name="ActionBar.Title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
 
+    <!-- Expandable Search Bar Dark Theme -->
+    <style name="ExpandableSearchBarDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="searchBarBackgroundColor">@color/searchBarPrimaryColorDark</item>
+        <item name="searchIconTint">@color/searchBarSearchIconTintColorDark</item>
+        <item name="clearIconTint">@color/searchBarClearIconTintColorDark</item>
+        <item name="backIconTint">@color/searchBarBackIconTintColorDark</item>
+        <item name="textColor">@color/searchBarTextColorDark</item>
+        <item name="hintColor">@color/searchBarHintColorDark</item>
+    </style>
+
+    <!-- Expandable Search Bar Light Theme -->
+    <style name="ExpandableSearchBarLight" parent="Theme.AppCompat.Light.NoActionBar" tools:keep="@style/ExpandableSearchBarLight">
+        <item name="searchBarBackgroundColor">@color/searchBarPrimaryColor</item>
+        <item name="searchIconTint">@color/searchBarSearchIconTintColor</item>
+        <item name="clearIconTint">@color/searchBarClearIconTintColor</item>
+        <item name="backIconTint">@color/searchBarBackIconTintColor</item>
+        <item name="textColor">@color/searchBarTextColor</item>
+        <item name="hintColor">@color/searchBarHintColor</item>
+    </style>
 </resources>

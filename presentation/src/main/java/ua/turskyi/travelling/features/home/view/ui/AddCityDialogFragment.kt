@@ -9,7 +9,6 @@ import android.location.*
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -24,10 +23,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.utils.extensions.toast
-import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.models.City
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
 import java.io.IOException
@@ -36,6 +35,8 @@ import java.util.*
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
+        // ARG_ID is used here in this class, without need to make it public
+        @Suppress("unused")
         private const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {
@@ -48,7 +49,7 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    private val viewModel by inject<AddCityDialogViewModel>()
+    private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private lateinit var etCity: LinedEditText
@@ -58,13 +59,12 @@ class AddCityDialogFragment : DialogFragment() {
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(
             requireContext(),
-            R.style.RoundShapedDarkAlertDialogStyle,
+            R.style.RoundShapedDarkAlertDialogStyle
         )
 
         val viewGroup: ViewGroup = requireActivity().findViewById(android.R.id.content)
-        val dialogView: View = LayoutInflater.from(context).inflate(
-            R.layout.dialogue_city,
-            viewGroup,
+        val dialogView: View = layoutInflater.inflate(
+            R.layout.dialogue_city, viewGroup,
             false
         )
 
@@ -77,9 +77,8 @@ class AddCityDialogFragment : DialogFragment() {
         etCity = dialogView.findViewById(R.id.letCity)
         etMonth = dialogView.findViewById(R.id.etMonth)
 
-        /*
-         * There is a unique case when particular android version (5.1)
-         *  cannot perform location logic
+        /**
+         * There is a unique case when particular android version cannot perform location logic
          * and crashing, so here button just used as a cancel button.
          */
         if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
@@ -114,7 +113,7 @@ class AddCityDialogFragment : DialogFragment() {
                         month = etMonth.text.toString(),
                     ),
                     onSuccess = { alertDialog.dismiss() },
-                    onError = { exception ->
+                    onError = { exception: Exception ->
                         toastLong(
                             exception.localizedMessage
                                 ?: exception.stackTraceToString(),
@@ -158,6 +157,7 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -242,8 +242,6 @@ class AddCityDialogFragment : DialogFragment() {
                 val cityChanged: String = addressesChanged.first().locality
                 editText.setText(cityChanged)
             }
-
-            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- android:background="@android:color/black" must be added included explicitly to make black background -->
+<?xml version="1.0" encoding="utf-8"?><!-- android:background="@android:color/black" must be added included explicitly to make black background -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
@@ -7,18 +6,19 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:animationCache="true"
-    android:background="@android:color/black"
+    android:fitsSystemWindows="true"
     android:persistentDrawingCache="animation"
-    tool:ignore="Overdraw">
+    tool:ignore="Overdraw"
+    tool:keep="@layout/activity_all_countries">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/offset_16">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/offset8"
+            android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|snap|enterAlways"
             app:toolbarId="@+id/toolbar">
@@ -40,52 +40,27 @@
                     tool:text="250 visitedCountries remain to visit" />
             </androidx.appcompat.widget.Toolbar>
 
-            <ua.turskyi.travelling.widgets.ShadowedLinearLayout
-                android:id="@+id/sllSearch"
-                style="@style/ShadowLayout"
-                android:layout_width="wrap_content"
+            <ua.turskyi.travelling.widgets.ExpandableSearchBar
+                android:id="@+id/expandableSearchBar"
+                style="@style/ExpandableSearchBarDark"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:animateLayoutChanges="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:containerElevation="@dimen/elevation_1"
-                app:scaleViewOnElevationChange="true"
-                app:shadowMarginStart="@dimen/offset8"
-                app:shadowMarginTop="@dimen/offset8"
-                app:shadowRadius="@dimen/offset8">
-
-                <ImageButton
-                    android:id="@+id/ib_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/content_description.icon_search"
-                    android:padding="@dimen/offset8"
-                    android:src="@drawable/ic_search" />
-
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="country"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/hint.search_country"
-                    android:inputType="textCapSentences"
-                    android:labelFor="@+id/ib_search"
-                    android:maxLength="100"
-                    android:paddingStart="@dimen/offset8"
-                    android:paddingEnd="@dimen/offset8"
-                    android:singleLine="true" />
-            </ua.turskyi.travelling.widgets.ShadowedLinearLayout>
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_4"
+                app:autoCollapse="true"
+                app:hint="Search"
+                app:isRounded="true"
+                app:searchBarBackgroundColor="#50ffffff"
+                app:searchBarBackgroundColorFocused="#64ffffff" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_all_countries"
         style="@style/RecyclerViewStyle"
+        android:paddingBottom="@dimen/offset_64"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
+    <!-- START: invisible views -->
     <TextView
         android:id="@+id/tv_no_results"
         style="@style/TextViewStyle"
@@ -101,17 +76,19 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/pb"
         style="@style/ProgressBarStyle"
-        android:padding="@dimen/offset_4"
         android:layout_marginTop="@dimen/offset_64"
+        android:padding="@dimen/offset_4"
         android:scaleType="centerInside"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/anim_flight" />
+    <!-- END: invisible views -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/float_btn_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/offset_40"
         android:clickable="true"
         android:contentDescription="@string/content_description.image"
         android:drawingCacheQuality="auto"

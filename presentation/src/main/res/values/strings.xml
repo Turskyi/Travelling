@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- START of not translatable -->
     <string name="play_market_app_link_to_pro_version" translatable="false">market://details?id=io.github.turskyi.travellingpro</string>
     <string name="play_market_web_link_to_pro_version" translatable="false">https://play.google.com/store/apps/details?id=io.github.turskyi.travellingpro</string>
@@ -33,13 +33,16 @@
     <string name="facebook_app_id" translatable="false">285452062466394</string>
     <string name="facebook_package" translatable="false">com.facebook.katana</string>
     <string name="tag.sync_dialog" translatable="false">sync dialog</string>
+    <!-- not translatable -->
+    <string name="scheme_mailto" translatable="false">mailto:</string>
+    <string name="email" translatable="false" tools:keep="@string/email">dmitriy.turskiy@gmail.com</string>
     <!-- END of not translatable strings -->
 
     <!-- default  strings -->
     <string name="app_name">Travelling</string>
     <string name="content_description.flag">flag</string>
     <string name="content_description.item_arrow">arrow</string>
-    <string name="content_description.icon_search">search image</string>
+    <string name="content_description.icon_search" tools:keep="@string/content_description_icon_search">search image</string>
     <string name="tap_back_button_in_order_to_exit">Click again to exit.</string>
     <string name="content_description.image">image</string>
     <string name="dialog_btn_ok">OK</string>
@@ -92,7 +95,7 @@
     <!-- end of strings for home screen -->
 
     <!-- screen with all countries -->
-    <string name="hint.search_country">country</string>
+    <string name="hint.search_country" tools:ignore="UnusedResources">country</string>
     <string name="all_countries_no_results">no results</string>
     <string name="txt_info_all_countries">• If you press on a country, you will be able to see
         the geographical location of it
@@ -124,4 +127,10 @@
     <string name="msg.home_country_did_not_added">did not added anything</string>
     <!-- end of strings for toasts messages -->
     <string name="default_notification_channel_id">Notifications from Travelling application.</string>
+    <!-- alert dialog content -->
+    <string name="alert_error_title" tools:keep="@string/alert_error_title">It is just an error.</string>
+    <string name="alert_error_message" tools:keep="@string/alert_error_message">Do you want to write to the developer?</string>
+    <string name="error_message_intro" tools:keep="@string/error_message_intro">Something terrible happened</string>
+    <string name="no" tools:keep="@string/no">Not really</string>
+    <string name="error_message_try_tomorrow" tools:keep="@string/error_message_try_tomorrow">Then try tomorrow ;)</string>
 </resources>

@@ -7,14 +7,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.utils.extensions.mapToModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
 import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.MainThreadExecutor
+import ua.turskyi.travelling.utils.extensions.mapToModel
 import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
@@ -42,9 +44,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     init {
         _visibilityLoader.postValue(VISIBLE)
         pagedList = getCountryList(searchQuery)
-        viewModelScope.launch {
-            getNotVisitedCountriesNum()
-        }
+        viewModelScope.launch { getNotVisitedCountriesNum() }
     }
 
     private fun getCountryList(searchQuery: String): PagedList<Country> {
@@ -67,10 +67,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         } else {
-            val filteredDataSource = FilteredPositionalDataSource(
-                countryName = searchQuery,
-                interactor = interactor,
-            )
+            val filteredDataSource = FilteredPositionalDataSource(countryName = searchQuery, interactor = interactor)
             PagedList.Builder(filteredDataSource, config)
                 .setFetchExecutor(Executors.newSingleThreadExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
@@ -78,34 +75,29 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
         }
     }
 
-    private fun getNotVisitedCountriesNum() = viewModelScope.launch {
-        interactor.setNotVisitedCountriesNum({ num ->
-            _notVisitedCountriesNumLiveData.postValue(num)
-        }, { exception ->
-            _visibilityLoader.postValue(GONE)
-            _errorMessage.run {
-                exception.message?.let { message ->
-                    /* Trigger the event by setting a new Event as a new value */
-                    postValue(Event(message))
-                }
-            }
-        })
+    private fun getNotVisitedCountriesNum(): Job {
+        return viewModelScope.launch {
+            interactor.setNotVisitedCountriesNum({ num: Int ->
+                _notVisitedCountriesNumLiveData.postValue(num)
+            }, { exception: Exception ->
+                _visibilityLoader.postValue(GONE)
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.stackTraceToString()))
+            })
+        }
     }
 
     fun markAsVisited(country: Country, onSuccess: () -> Unit) {
         _visibilityLoader.postValue(VISIBLE)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             interactor.markAsVisitedCountryModel(country.mapToModel(), {
-                onSuccess()
-            }, { exception ->
-                _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
-                    }
+                viewModelScope.launch(Dispatchers.Main) {
+                    onSuccess()
                 }
-                exception.printStackTrace()
+            }, { exception: Exception ->
+                _visibilityLoader.postValue(GONE)
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.stackTraceToString()))
             })
         }
     }

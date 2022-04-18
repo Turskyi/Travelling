@@ -3,10 +3,9 @@
 android:opacity="opaque">
 <item
     android:gravity="center">
-    <shape
-        android:shape="oval">
+    <shape android:shape="rectangle">
         <gradient
-            android:endColor="#9b0493"
+            android:endColor="#680202"
             android:angle="135"
             android:centerColor="@color/colorAccent"
             android:startColor="#38068f" />

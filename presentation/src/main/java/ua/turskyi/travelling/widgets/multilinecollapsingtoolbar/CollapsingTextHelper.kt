@@ -19,20 +19,23 @@ import ua.turskyi.travelling.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+@Suppress("BooleanMethodIsAlwaysInverted")
 internal class CollapsingTextHelper(private val mView: View) {
     companion object {
-        /* Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
+        /* Pre-JB-MR2 doesn't support HW accelerated canvas scaled text, so we will work around it
          * by using our own texture */
         private const val USE_SCALING_TEXTURE: Boolean = false
         private const val DEBUG_DRAW: Boolean = false
+        private const val SMALLEST_DECIMAL = 0.001f
         private var DEBUG_DRAW_PAINT: Paint? = null
 
         /**
-         * Returns true if `value` is 'close' to it's closest decimal value. Close is currently
+         * Returns true if `value` is 'close' to it's closest decimal value. "Close" is currently
          * defined as it's difference being < 0.001.
          */
+        @Suppress("BooleanMethodIsAlwaysInverted")
         private fun isClose(value: Float, targetValue: Float): Boolean {
-            return abs(value - targetValue) < 0.001f
+            return abs(value - targetValue) < SMALLEST_DECIMAL
         }
 
         /**
@@ -450,7 +453,7 @@ internal class CollapsingTextHelper(private val mView: View) {
             else -> mExpandedBounds.left.toFloat()
         }
 
-        // The bounds have changed so we need to clear the texture
+        // The bounds have changed, so we need to clear the texture
         clearTexture()
         // Now reset the text size back to the original
         setInterpolatedTextSize(currentTextSize)
@@ -571,7 +574,7 @@ internal class CollapsingTextHelper(private val mView: View) {
         if (mUseTexture) {
             // Make sure we have an expanded texture if needed
             ensureExpandedTexture()
-            // added collapsed and cross section textures
+            // added collapsed and cross-section textures
             ensureCollapsedTexture()
             ensureCrossSectionTexture()
         }
@@ -630,13 +633,13 @@ internal class CollapsingTextHelper(private val mView: View) {
             // collapsed text size
             val scaledDownWidth: Float = expandedWidth * textSizeRatio
             availableWidth = if (scaledDownWidth > collapsedWidth) {
-                /* If the scaled down size is larger than the actual collapsed width, we need to
+                /* If the scaled downsize is larger than the actual collapsed width, we need to
                   cap the available width so that when the expanded text scales down, it matches
                   the collapsed width */
 
                 expandedWidth
             } else {
-                // Otherwise we'll just use the expanded width
+                // Otherwise, we'll just use the expanded width
                 expandedWidth
             }
 
@@ -691,12 +694,13 @@ internal class CollapsingTextHelper(private val mView: View) {
                 mTextToDraw = truncatedText
                 mIsRtl = calculateIsRtl(mTextToDraw)
             }
-            val alignment: Layout.Alignment = when (mExpandedTextGravity and GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
-                Gravity.CENTER_HORIZONTAL -> Layout.Alignment.ALIGN_CENTER
-                Gravity.END-> Layout.Alignment.ALIGN_OPPOSITE
-                 Gravity.START -> Layout.Alignment.ALIGN_NORMAL
-                else -> Layout.Alignment.ALIGN_NORMAL
-            }
+            val alignment: Layout.Alignment =
+                when (mExpandedTextGravity and GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
+                    Gravity.CENTER_HORIZONTAL -> Layout.Alignment.ALIGN_CENTER
+                    Gravity.END -> Layout.Alignment.ALIGN_OPPOSITE
+                    Gravity.START -> Layout.Alignment.ALIGN_NORMAL
+                    else -> Layout.Alignment.ALIGN_NORMAL
+                }
             @Suppress("DEPRECATION")
             mTextLayout = StaticLayout(
                 mTextToDraw, mTextPaint, availableWidth.toInt(),

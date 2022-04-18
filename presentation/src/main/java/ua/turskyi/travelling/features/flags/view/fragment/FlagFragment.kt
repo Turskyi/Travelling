@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Color.TRANSPARENT
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,24 +20,26 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.request.RequestOptions
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideApp
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentFlagBinding
-import ua.turskyi.travelling.utils.extensions.observeOnce
-import ua.turskyi.travelling.utils.extensions.toast
-import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.observeOnce
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 
 class FlagFragment : Fragment() {
 
@@ -161,7 +164,7 @@ class FlagFragment : Fragment() {
             MediaStore.Images.Media.DATE_TAKEN /* This cursor will hold the result of the query
                 and put all data in Cursor by sorting in descending order */
         } else /* This cursor will hold the result of the query
-                and put all data in Cursor by sorting in descending order */{
+                and put all data in Cursor by sorting in descending order */ {
             MediaStore.Images.Media._ID
         }
 
@@ -201,40 +204,54 @@ class FlagFragment : Fragment() {
 
     private fun initObservers() {
         lifecycle.addObserver(viewModel)
-        viewModel.errorMessage.observe(this, { event ->
-            event.getMessageIfNotHandled()?.let { message -> toastLong(message) }
-        })
-        viewModel.visibilityLoader.observe(this, { currentVisibility ->
-            flagsActivityViewListener?.setLoaderVisibility(currentVisibility)
-        })
-        val visitedCountriesObserver = Observer<List<Country>> { countries ->
-            val position = this.arguments?.getInt(EXTRA_POSITION)
-            position?.let {
-                mChangeFlagListener?.onChangeToolbarTitle(countries[position].name)
-                if (countries[position].selfie.isEmpty()) {
-                    showTheFlag(countries, position)
-                } else {
-                    showSelfie(countries, position)
-                    binding.ivEnlargedFlag.setOnClickListener(
-                        showFlagClickListener(countries, position)
-                    )
-                }
+        viewModel.errorMessage.observe(this) { event ->
+            val message = event.getMessageIfNotHandled()
+            if (message != null) {
+                toastLong(message)
             }
         }
+        viewModel.visibilityLoader.observe(this) { currentVisibility ->
+            if (flagsActivityViewListener != null) {
+                flagsActivityViewListener!!.setLoaderVisibility(currentVisibility)
+            }
+        }
+        val visitedCountriesObserver: Observer<List<Country>> =
+            Observer<List<Country>> { countries: List<Country> ->
+                if (this.arguments != null) {
+                    val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
+
+                    if (mChangeFlagListener != null) {
+                        mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                    }
+
+                    if (countries[position].selfie.isEmpty()) {
+                        showTheFlag(countries, position)
+                    } else {
+                        showSelfie(countries, position)
+                        binding.ivEnlargedFlag.setOnClickListener(
+                            showFlagClickListener(
+                                countries,
+                                position
+                            )
+                        )
+                    }
+                }
+            }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
     }
 
-    private fun showFlagClickListener(countries: List<Country>, position: Int):
-            OnClickListener = OnClickListener {
-        showTheFlag(countries, position)
-        // change clickListener
-        binding.ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
-        val wvFlag: WebView = binding.wvFlag
-        wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
+    private fun showFlagClickListener(countries: List<Country>, position: Int): OnClickListener {
+        return OnClickListener {
+            showTheFlag(countries, position)
+            // change clickListener
+            binding.ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
+            val wvFlag: WebView = binding.wvFlag
+            wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
+        }
     }
 
     private fun onWebViewClickListener(countries: List<Country>, position: Int): OnTouchListener {
-        return OnTouchListener { view, motionEvent ->
+        return OnTouchListener { view: View, motionEvent: MotionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_UP -> {
                     // perform click
@@ -253,20 +270,24 @@ class FlagFragment : Fragment() {
         }
     }
 
-    private fun showSelfieClickListener(countries: List<Country>, position: Int):
-            OnClickListener = OnClickListener {
-        showSelfie(countries, position)
-        // return first clickListener
-        binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+    private fun showSelfieClickListener(countries: List<Country>, position: Int): OnClickListener {
+        return OnClickListener {
+            showSelfie(countries, position)
+            // return first clickListener
+            binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+        }
     }
 
     private fun showSelfie(countries: List<Country>, position: Int) {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
         val uri: Uri = Uri.parse(countries[position].selfie)
-        Glide.with(this)
+        val thumbnailBuilder: RequestBuilder<Drawable> =
+            GlideApp.with(binding.ivEnlargedFlag.context)
+                .asDrawable().sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
+        GlideApp.with(this)
             .load(uri)
-            .thumbnail(0.5F)
+            .thumbnail(thumbnailBuilder)
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.anim_loading)

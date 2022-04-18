@@ -30,9 +30,9 @@ import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.extensions.*
 import ua.turskyi.travelling.widgets.CirclePieChart
-import java.util.*
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
@@ -220,38 +220,36 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     }
 
     private fun initObservers() {
-        viewModel.visitedCountriesWithCities.observe(this, { visitedCountries ->
+        viewModel.visitedCountriesWithCities.observe(this) { visitedCountries ->
             initTitleWithNumberOf(visitedCountries)
             updateAdapterWith(visitedCountries)
-        })
-        viewModel.visitedCountries.observe(this, { visitedCountries ->
+        }
+        viewModel.visitedCountries.observe(this) { visitedCountries ->
             binding.circlePieChart.apply {
                 initPieChart()
                 createPieChartWith(visitedCountries, viewModel.notVisitedCountriesCount)
                 binding.circlePieChart.animatePieChart()
             }
             showFloatBtn(visitedCountries)
-        })
-        viewModel.visibilityLoader.observe(this, { currentVisibility ->
+        }
+        viewModel.visibilityLoader.observe(this) { currentVisibility ->
             binding.pb.visibility = currentVisibility
-        })
+        }
 
-        viewModel.errorMessage.observe(this, { event ->
+        viewModel.errorMessage.observe(this) { event: Event<String> ->
             val errorMessage: String? = event.getMessageIfNotHandled()
             if (errorMessage != null) {
                 toastLong(errorMessage)
             }
-        })
+        }
         /*  here could be a more efficient way to handle a click to open activity,
          * but it is made on purpose of demonstration databinding */
-        viewModel.navigateToAllCountries.observe(this, { shouldNavigate: Boolean ->
+        viewModel.navigateToAllCountries.observe(this) { shouldNavigate: Boolean ->
             if (shouldNavigate) {
-                allCountriesResultLauncher.launch(
-                    Intent(this, AllCountriesActivity::class.java),
-                )
+                allCountriesResultLauncher.launch(Intent(this, AllCountriesActivity::class.java))
                 viewModel.onNavigatedToAllCountries()
             }
-        })
+        }
     }
 
     /** [setTitle] must be open since it is used in [CirclePieChart]*/
@@ -270,7 +268,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 binding.floatBtnLarge.hide()
                 viewModel.showListOfVisitedCountries()
             } else {
-                // did not added country to visited list
+                // did not add country to visited list
                 when (result.resultCode) {
                     RESULT_CANCELED -> {
                         // User pressed back button
@@ -343,7 +341,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     }
 
     private fun showTitleWithCitiesAndCountries() {
-        viewModel.visitedCountriesWithCities.observe(this, { countries ->
+        viewModel.visitedCountriesWithCities.observe(this) { countries ->
             if (viewModel.citiesCount > countries.size) {
                 binding.toolbarLayout.title = "${
                     resources.getQuantityString(
@@ -371,21 +369,20 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                     )
                 }"
             }
-        })
+        }
     }
 
     /** [showTitleWithOnlyCountries] must be open to use it in custom "circle pie chart" widget */
     fun showTitleWithOnlyCountries() {
         viewModel.visitedCountriesWithCities.observe(
             this,
-            { countryList: List<VisitedCountry> ->
-                binding.toolbarLayout.title = resources.getQuantityString(
-                    R.plurals.numberOfCountriesVisited,
-                    countryList.size,
-                    countryList.size
-                )
-            },
-        )
+        ) { countryList: List<VisitedCountry> ->
+            binding.toolbarLayout.title = resources.getQuantityString(
+                R.plurals.numberOfCountriesVisited,
+                countryList.size,
+                countryList.size
+            )
+        }
     }
 
     private fun checkPermission() {

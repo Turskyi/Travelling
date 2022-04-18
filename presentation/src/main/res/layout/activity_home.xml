@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@drawable/bg_dark_space"
-        android:fitsSystemWindows="true"
         tools:context=".view.ui.HomeActivity">
 
         <com.google.android.material.appbar.AppBarLayout
