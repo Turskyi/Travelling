@@ -13,7 +13,8 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/offset_16">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -57,8 +58,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_all_countries"
         style="@style/RecyclerViewStyle"
+        android:paddingBottom="@dimen/offset_64"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
+    <!-- START: invisible views -->
     <TextView
         android:id="@+id/tv_no_results"
         style="@style/TextViewStyle"
@@ -80,18 +82,19 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/anim_flight" />
+    <!-- END: invisible views -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/float_btn_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/offset_40"
         android:clickable="true"
         android:contentDescription="@string/content_description.image"
         android:drawingCacheQuality="auto"
         android:fadeScrollbars="true"
         android:focusable="true"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/offset_40"
         app:elevation="@dimen/elevation_4"
         app:fabCustomSize="@dimen/size_all_countries_fab_custom"
         app:fabSize="auto"
