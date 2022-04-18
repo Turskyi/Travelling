@@ -15,12 +15,12 @@
     <dimen name="offset_64">64dp</dimen>
 
     <!--region Elevations-->
-    <dimen name="elevation_1">1dp</dimen>
-    <dimen name="elevation_default">2dp</dimen>
+    <dimen name="elevation_1" tools:keep="@dimen/elevation_1">1dp</dimen>
+    <dimen name="elevation_default" tools:keep="@dimen/elevation_default">2dp</dimen>
     <dimen name="elevation_2">2dp</dimen>
     <dimen name="elevation_4">4dp</dimen>
-    <dimen name="elevation_8">8dp</dimen>
-    <dimen name="elevation_12">12dp</dimen>
+    <dimen name="elevation_8" tools:keep="@dimen/elevation_8">8dp</dimen>
+    <dimen name="elevation_12" tools:keep="@dimen/elevation_12">12dp</dimen>
 
     <!--region Typography-->
     <!--https://material.io/develop/android/theming/typography/-->
@@ -39,7 +39,7 @@
 
     <!-- widths -->
     <dimen name="width_arrow_tablet">60dp</dimen>
-    <dimen name="width_smallest_screen">360dp</dimen>
+    <dimen name="width_smallest_screen" tools:keep="@dimen/width_smallest_screen">360dp</dimen>
     <dimen name="width_splash_logo">361dp</dimen>
     <dimen name="width_facebook_icon" tools:keep="@dimen/width_facebook_icon">390dp</dimen>
 

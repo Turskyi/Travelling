@@ -7,7 +7,7 @@ visited.
 
 • App store: [Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling);
 
-• Testing invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d;
+• Manual testing invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d;
 
 • Operating system: [Android](https://www.android.com/);
 

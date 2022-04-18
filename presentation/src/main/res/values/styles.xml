@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
@@ -101,7 +101,7 @@
         <item name="android:background">@drawable/bg_btn_different_states</item>
     </style>
 
-    <style name="ShadowLayout">
+    <style name="ShadowLayout" tools:keep="@style/ShadowLayout">
         <item name="containerBackgroundColor">@android:color/transparent</item>
         <item name="shadowGravity">bottom</item>
         <item name="shadowRadius">@dimen/offset_12</item>
@@ -167,7 +167,7 @@
     </style>
 
     <!-- Expandable Search Bar Light Theme -->
-    <style name="ExpandableSearchBarLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ExpandableSearchBarLight" parent="Theme.AppCompat.Light.NoActionBar" tools:keep="@style/ExpandableSearchBarLight">
         <item name="searchBarBackgroundColor">@color/searchBarPrimaryColor</item>
         <item name="searchIconTint">@color/searchBarSearchIconTintColor</item>
         <item name="clearIconTint">@color/searchBarClearIconTintColor</item>
