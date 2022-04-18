@@ -242,8 +242,6 @@ class AddCityDialogFragment : DialogFragment() {
                 val cityChanged: String = addressesChanged.first().locality
                 editText.setText(cityChanged)
             }
-
-            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }

@@ -95,7 +95,6 @@
         android:fadeScrollbars="true"
         android:focusable="true"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/offset_40"
         app:elevation="@dimen/elevation_4"
         app:fabCustomSize="@dimen/size_all_countries_fab_custom"
         app:fabSize="auto"
