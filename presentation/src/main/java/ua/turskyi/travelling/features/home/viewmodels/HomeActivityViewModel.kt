@@ -52,20 +52,18 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                 notVisitedCountriesCount = notVisitedCountriesNum.toFloat()
                 // loading visited countries
                 setVisitedCountries(notVisitedCountriesNum)
-            }, { exception ->
-                _errorMessage.run {
-                    // Trigger the event by setting a new Event as a new value
-                    postValue(
-                        Event(exception.localizedMessage ?: exception.stackTraceToString()),
-                    )
-                }
+            }, { exception: Exception /* = java.lang.Exception */ ->
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
             })
         }
     }
 
     private fun setVisitedCountries(notVisitedCountriesNum: Int) {
         viewModelScope.launch {
-            interactor.setVisitedCountries({ visitedCountries ->
+            interactor.setVisitedCountries({ visitedCountries: List<CountryModel> ->
                 // checking if database of visited and not visited countries is empty
                 if (notVisitedCountriesNum == 0 && visitedCountries.isEmpty()) {
                     viewModelScope.launch { downloadCountries() }
@@ -73,10 +71,10 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     val visitedNodeCountries: MutableList<VisitedCountry> =
                         visitedCountries.mapModelListToNodeList()
                     if (visitedNodeCountries.isEmpty()) {
-                        _visitedCountriesWithCities.run { postValue(visitedNodeCountries) }
-                        _visitedCountries.run {
-                            postValue(visitedCountries.mapModelListToCountryList())
-                        }
+                        _visitedCountriesWithCities.postValue(visitedNodeCountries)
+
+                        _visitedCountries.postValue(visitedCountries.mapModelListToCountryList())
+
                         _visibilityLoader.postValue(GONE)
                     } else {
                         addCitiesToVisitedCountries(visitedNodeCountries, visitedCountries)
@@ -85,14 +83,12 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                          * since it started later then here */
                     }
                 }
-            }, { exception ->
+            }, { exception: Exception /* = java.lang.Exception */ ->
                 _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    // Trigger the event by setting a new Event as a new value
-                    postValue(
-                        Event(exception.localizedMessage ?: exception.stackTraceToString()),
-                    )
-                }
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
             })
         }
     }
@@ -101,7 +97,7 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
         visitedNodeCountries: MutableList<VisitedCountry>,
         visitedCountries: List<CountryModel>
     ) {
-        for (country in visitedNodeCountries) {
+        for (country: VisitedCountry in visitedNodeCountries) {
             val cityList: MutableList<BaseNode> = mutableListOf()
             viewModelScope.launch {
                 interactor.setCities({ cities ->
@@ -115,21 +111,17 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
                     if (country.id == visitedCountries.last().id) {
                         // showing countries with included cities
                         _visitedCountriesWithCities.run { postValue(visitedNodeCountries) }
-                        _visitedCountries.run {
-                            postValue(visitedCountries.mapModelListToCountryList())
-                        }
+                        _visitedCountries.postValue(visitedCountries.mapModelListToCountryList())
                         _visibilityLoader.postValue(GONE)
                     }
-                }, { exception ->
+                }, { exception: Exception /* = java.lang.Exception */ ->
                     _visibilityLoader.postValue(GONE)
-                    _errorMessage.run {
-                        // Trigger the event by setting a new Event as a new value
-                        postValue(
-                            Event(
-                                exception.localizedMessage ?: exception.stackTraceToString(),
-                            ),
-                        )
-                    }
+                    // Trigger the event by setting a new Event as a new value
+                    _errorMessage.postValue(
+                        Event(
+                            exception.localizedMessage ?: exception.stackTraceToString(),
+                        ),
+                    )
                 })
             }
         }
@@ -138,14 +130,12 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
     private suspend fun downloadCountries() {
         interactor.downloadCountries(
             onSuccess = { showListOfVisitedCountries() },
-            onError = { exception ->
+            onError = { exception: Exception /* = java.lang.Exception */ ->
                 _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    // Trigger the event by setting a new Event as a new value
-                    postValue(
-                        Event(exception.localizedMessage ?: exception.stackTraceToString()),
-                    )
-                }
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
             },
         )
     }
@@ -162,14 +152,12 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
         _visibilityLoader.postValue(VISIBLE)
         interactor.removeCountryModelFromVisitedList(country.mapToModel(), {
             showListOfVisitedCountries()
-        }, { exception ->
+        }, { exception: Exception /* = java.lang.Exception */ ->
             _visibilityLoader.postValue(GONE)
-            _errorMessage.run {
-                // Trigger the event by setting a new Event as a new value
-                postValue(
-                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
-                )
-            }
+            // Trigger the event by setting a new Event as a new value
+            _errorMessage.postValue(
+                Event(exception.localizedMessage ?: exception.stackTraceToString()),
+            )
         })
     }
 
@@ -177,14 +165,12 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewM
         _visibilityLoader.postValue(VISIBLE)
         interactor.removeCity(city.mapNodeToModel(), {
             showListOfVisitedCountries()
-        }, { exception ->
+        }, { exception: Exception /* = java.lang.Exception */ ->
             _visibilityLoader.postValue(GONE)
-            _errorMessage.run {
-                // Trigger the event by setting a new Event as a new value
-                postValue(
-                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
-                )
-            }
+            // Trigger the event by setting a new Event as a new value
+            _errorMessage.postValue(
+                Event(exception.localizedMessage ?: exception.stackTraceToString()),
+            )
         })
     }
 }

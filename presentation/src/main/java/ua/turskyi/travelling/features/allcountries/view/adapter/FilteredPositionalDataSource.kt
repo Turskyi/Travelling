@@ -1,10 +1,14 @@
 package ua.turskyi.travelling.features.allcountries.view.adapter
 
 import androidx.paging.PositionalDataSource
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import kotlin.coroutines.CoroutineContext
 
 internal class FilteredPositionalDataSource(
@@ -53,7 +57,7 @@ internal class FilteredPositionalDataSource(
                      since only one page of countries required */
                     callback.onResult(allCountries.mapModelListToCountryList())
                 },
-                onError = { exception ->
+                onError = { exception: Exception /* = java.lang.Exception */ ->
                     exception.printStackTrace()
                     callback.onResult(emptyList())
                 },

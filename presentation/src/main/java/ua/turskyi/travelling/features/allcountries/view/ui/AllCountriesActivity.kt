@@ -21,6 +21,7 @@ import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdap
 import ua.turskyi.travelling.features.allcountries.view.adapter.EmptyListObserver
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.extensions.openInfoDialog
 import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.hideKeyboard
@@ -113,13 +114,13 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun initObservers() {
         val emptyListObserver = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
         adapter.registerAdapterDataObserver(emptyListObserver)
-        viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum ->
+        viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum: Int ->
             updateTitle(notVisitedNum)
         }
         viewModel.visibilityLoader.observe(this) { currentVisibility ->
             binding.pb.visibility = currentVisibility
         }
-        viewModel.errorMessage.observe(this) { event ->
+        viewModel.errorMessage.observe(this) { event: Event<String> ->
             val message: String? = event.getMessageIfNotHandled()
             if (message != null) {
                 toastLong(message)

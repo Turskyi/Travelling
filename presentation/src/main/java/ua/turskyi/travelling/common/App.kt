@@ -28,8 +28,5 @@ class App : Application() {
                 )
             )
         }
-
-        /** init Facebook Sdk */
-        AppEventsLogger.activateApp(this)
     }
 }

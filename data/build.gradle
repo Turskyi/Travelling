@@ -40,6 +40,7 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
+    namespace 'ua.turskyi.data'
 }
 
 dependencies {
