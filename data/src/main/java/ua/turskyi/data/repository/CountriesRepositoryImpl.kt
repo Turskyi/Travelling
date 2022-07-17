@@ -1,111 +1,73 @@
 package ua.turskyi.data.repository
 
-import kotlinx.coroutines.*
-import org.koin.core.KoinComponent
-import org.koin.core.inject
-import ua.turskyi.data.Prefs
-import ua.turskyi.data.api.datasource.CountriesNetSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import ua.turskyi.data.database.room.datasource.DatabaseSource
+import ua.turskyi.data.entities.local.CityEntity
+import ua.turskyi.data.entities.local.CountryEntity
+import ua.turskyi.data.entities.network.CountryResponse
 import ua.turskyi.data.extensions.*
-import ua.turskyi.data.firestoreSource.FirestoreSource
-import ua.turskyi.data.room.datasource.CountriesDbSource
+import ua.turskyi.data.network.datasource.NetSource
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
 
-class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : CountriesRepository, KoinComponent {
+class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : CountriesRepository,
+    KoinComponent {
 
-    private val netSource: CountriesNetSource by inject()
-    private val dbSource: CountriesDbSource by inject()
-    private val firebaseSource: FirestoreSource by inject()
-    private val prefs: Prefs by inject()
-
-    override var isSynchronized: Boolean
-        get() = prefs.isSynchronized
-        set(isSynchronized) {
-            prefs.isSynchronized = isSynchronized
-        }
-
-    override var isUpgraded: Boolean
-        get() = prefs.isUpgraded
-        set(isUpgraded) {
-            prefs.isUpgraded = isUpgraded
-        }
+    private val netSource: NetSource by inject()
+    private val databaseSource: DatabaseSource by inject()
 
     override suspend fun refreshCountries(
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
-    ) = netSource.getCountryNetList({ countryNetList ->
-        countryNetList?.mapNetListToModelList()?.let { modelList ->
-            addModelsToDb(modelList, { onSuccess() }, { exception -> onError?.invoke(exception) })
-        }
-    }, { exception -> onError?.invoke(exception) })
-
-    override suspend fun syncVisitedCountries(
-        onSuccess: (Job?) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        onSuccess(GlobalScope.launch {
-            refreshCountries({
-                dbSource.getVisitedLocalCountriesFromDb().forEach { country ->
-                    GlobalScope.launch {
-                        markAsVisited(country.mapEntityToModel(), {
-//                            implement check if last then call success in feature release
-                        }, { exception ->
-                            onError?.invoke(exception)
-                        })
+        netSource.getCountryNetList(
+            onComplete = { countryNetList: List<CountryResponse>? ->
+                countryNetList?.mapNetListToModelList()
+                    ?.let { modelList: MutableList<CountryModel> ->
+                        addModelsToDb(
+                            modelList,
+                            { onSuccess() },
+                            { exception -> onError.invoke(exception) },
+                        )
                     }
-                }
-                dbSource.getCities().forEach { city ->
-                    applicationScope.launch {
-                        insertCity(city.mapEntityToModel(),{
-//                            implement check if last then call success in feature release
-                        }, { exception ->
-                            onError?.invoke(exception)
-                        })
-                    }
-                }
-            }, { exception ->
-                onError?.invoke(exception)
-            })
-        })
-
+            },
+            onError = { exception: Exception /* = java.lang.Exception */ ->
+                onError.invoke(exception)
+            },
+        )
     }
 
     override suspend fun updateSelfie(
         id: Int,
         selfie: String,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.updateSelfie(id.toString(), selfie)
-        } else {
-            applicationScope.launch {
-                dbSource.updateSelfie(id, selfie)
-                onSuccess(dbSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
-            }
+        applicationScope.launch {
+            databaseSource.updateSelfie(id, selfie)
+            onSuccess(databaseSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
         }
     }
 
     override suspend fun markAsVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isUpgraded) {
-            firebaseSource.markAsVisited(
-                country.mapModelToEntity(), { onSuccess() },
-                { exception -> onError?.invoke(exception) })
-        } else {
-            applicationScope.launch {
-                try {
-                    val countryLocal = country.mapModelToEntity()
-                    countryLocal.isVisited = true
-                    dbSource.insertCountry(countryLocal)
-                    onSuccess()
-                } catch (exception: Exception) {
-                    onError?.invoke(exception)
-                }
+        applicationScope.launch {
+            try {
+                val countryLocal: CountryEntity = country.mapModelToEntity()
+                countryLocal.isVisited = true
+                databaseSource.insertCountry(countryLocal)
+                onSuccess()
+            } catch (exception: Exception) {
+                onError.invoke(exception)
             }
         }
     }
@@ -113,22 +75,17 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     override suspend fun removeFromVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.removeFromVisited(country.name, country.id, { onSuccess() },
-                { exception -> onError?.invoke(exception) })
-        } else {
-            applicationScope.launch {
-                try {
-                    val countryLocal = country.mapModelToEntity()
-                    countryLocal.isVisited = false
-                    dbSource.removeCitiesByCountry(country.id)
-                    dbSource.insertCountry(countryLocal)
-                    onSuccess()
-                } catch (exception: java.lang.Exception) {
-                    onError?.invoke(exception)
-                }
+        applicationScope.launch {
+            try {
+                val countryLocal: CountryEntity = country.mapModelToEntity()
+                countryLocal.isVisited = false
+                databaseSource.removeCitiesByCountry(country.id)
+                databaseSource.insertCountry(countryLocal)
+                onSuccess()
+            } catch (exception: java.lang.Exception) {
+                onError.invoke(exception)
             }
         }
     }
@@ -136,19 +93,14 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     override suspend fun insertCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isUpgraded) {
-            firebaseSource.insertCity(city.mapModelToEntity(), { onSuccess() },
-                { exception -> onError?.invoke(exception) })
-        } else {
-            applicationScope.launch {
-                try {
-                    dbSource.insertCity(city.mapModelToEntity())
-                    onSuccess()
-                } catch (exception: java.lang.Exception) {
-                    onError?.invoke(exception)
-                }
+        applicationScope.launch {
+            try {
+                databaseSource.insertCity(city.mapModelToEntity())
+                onSuccess.invoke()
+            } catch (exception: java.lang.Exception) {
+                onError.invoke(exception)
             }
         }
     }
@@ -156,22 +108,17 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     override suspend fun removeCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.removeCity(city.name, { onSuccess() },
-                { exception -> onError?.invoke(exception) })
-        } else {
-            applicationScope.launch {
-                try {
-                    withContext(Dispatchers.Default) {
-                        val cityLocal = city.mapModelToEntity()
-                        dbSource.removeCity(cityLocal)
-                    }
-                    onSuccess()
-                } catch (exception: java.lang.Exception) {
-                    onError?.invoke(exception)
+        applicationScope.launch {
+            try {
+                withContext(Dispatchers.Default) {
+                    val cityLocal: CityEntity = city.mapModelToEntity()
+                    databaseSource.removeCity(cityLocal)
                 }
+                onSuccess()
+            } catch (exception: java.lang.Exception) {
+                onError.invoke(exception)
             }
         }
     }
@@ -179,116 +126,64 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     private fun addModelsToDb(
         countries: MutableList<CountryModel>,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isUpgraded) {
-            firebaseSource.insertAllCountries(
-                countries.mapModelListToEntityList(), { onSuccess() },
-                { exception -> onError?.invoke(exception) })
-        } else {
-            applicationScope.launch {
-                try {
-                    dbSource.insertAllCountries(countries.mapModelListToEntityList())
-                    onSuccess()
-                } catch (exception: Exception) {
-                    onError?.invoke(exception)
-                }
+        applicationScope.launch {
+            try {
+                databaseSource.insertAllCountries(countries.mapModelListToEntityList())
+                onSuccess()
+            } catch (exception: Exception) {
+                onError.invoke(exception)
             }
         }
     }
 
-    override suspend fun getVisitedModelCountriesFromDb(
+    override suspend fun setVisitedModelCountriesFromDb(
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.getVisitedCountries({ countries ->
-                onSuccess(countries)
-            }, { exception ->
-                onError?.invoke(exception)
-            })
-        } else {
-            applicationScope.launch {
-                onSuccess(
-                    dbSource.getVisitedLocalCountriesFromDb()
-                        .mapEntityListToModelList()
-                )
-            }
+        applicationScope.launch {
+            onSuccess(databaseSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
         }
     }
 
-    override suspend fun getCities(
+    override suspend fun setCities(
         onSuccess: (List<CityModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.getCities({ cities ->
-                onSuccess(cities)
-            }, { exception ->
-                onError?.invoke(exception)
-            })
-        } else {
-            applicationScope.launch {
-                onSuccess(
-                    dbSource.getCities().mapEntitiesToModelList()
-                )
-            }
-        }
+        applicationScope.launch { onSuccess(databaseSource.getCities().mapEntitiesToModelList()) }
     }
 
-    override suspend fun getCountNotVisitedCountries(
+    override suspend fun setCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.getCountNotVisitedCountries({ count -> onSuccess(count) },
-                { onError?.invoke(it) })
-        } else {
-            applicationScope.launch {
-                onSuccess(dbSource.getCountNotVisitedCountries())
-            }
-        }
+        applicationScope.launch { onSuccess(databaseSource.getCountNotVisitedCountries()) }
     }
 
-    override suspend fun getCountriesByRange(
+    override suspend fun setCountriesByRange(
         to: Int,
         from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.getCountriesByRange(to, from, { list -> onSuccess(list) },
-                { onError?.invoke(it) })
-        } else {
-            applicationScope.launch {
-                onSuccess(
-                    dbSource.getLocalCountriesByRange(to, from)
-                        .mapEntityListToModelList()
-                )
-            }
+        applicationScope.launch {
+            onSuccess(databaseSource.getLocalCountriesByRange(to, from).mapEntityListToModelList())
         }
     }
 
     override suspend fun loadCountriesByNameAndRange(
-        name: String?,
+        name: String,
         limit: Int,
         offset: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)?
+        onError: (Exception) -> Unit
     ) {
-        if (prefs.isSynchronized) {
-            firebaseSource.getCountriesByNameAndRange(name,
-                limit,
-                offset,
-                { list -> onSuccess(list) },
-                { onError?.invoke(it) })
-        } else {
-            applicationScope.launch {
-                onSuccess(
-                    dbSource.loadCountriesByNameAndRange(name, limit, offset)
-                        .mapEntityListToModelList()
-                )
-            }
+        applicationScope.launch {
+            onSuccess(
+                databaseSource.loadCountriesByNameAndRange(name, limit, offset)
+                    .mapEntityListToModelList()
+            )
         }
     }
 }

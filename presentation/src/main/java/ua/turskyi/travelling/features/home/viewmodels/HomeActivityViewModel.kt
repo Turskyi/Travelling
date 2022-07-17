@@ -1,35 +1,28 @@
 package ua.turskyi.travelling.features.home.viewmodels
 
-import android.app.Application
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chad.library.adapter.base.entity.node.BaseNode
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.domain.model.CountryModel
-import ua.turskyi.travelling.extensions.*
 import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Event
+import ua.turskyi.travelling.utils.extensions.*
 
-class HomeActivityViewModel(private val interactor: CountriesInteractor, application: Application) :
-    AndroidViewModel(application) {
+class HomeActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
     var notVisitedCountriesCount: Float = 0F
     var citiesCount = 0
-
-    //    for future release
-    val isSynchronized: Boolean
-        get() = interactor.isSynchronized
-
-    //    for future release
-    val isUpgraded: Boolean
-        get() = interactor.isUpgraded
+    var isPermissionGranted: Boolean = false
+    var backPressedTiming: Long = 0
+    var mLastClickTime: Long = 0
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
@@ -51,135 +44,101 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
     val navigateToAllCountries: LiveData<Boolean>
         get() = _navigateToAllCountries
 
-    init {
-        _visibilityLoader.postValue(VISIBLE)
-    }
-
-//    for future release
-//    fun upgradeAndSync(authorizationResultLauncher: ActivityResultLauncher<Intent>) {
-//        _visibilityLoader.postValue(VISIBLE)
-//        interactor.isUpgraded = true
-//        if (!interactor.isSynchronized) {
-//            authorizationResultLauncher.launch(getAuthorizationIntent())
-//        }
-//        _visibilityLoader.postValue(GONE)
-//    }
-//
-//    private fun getAuthorizationIntent(): Intent {
-//        /** Choosing authentication providers */
-//        val providers = arrayListOf(
-//            AuthUI.IdpConfig.GoogleBuilder().build(),
-//            AuthUI.IdpConfig.FacebookBuilder().build()
-//        )
-//        return AuthUI.getInstance()
-//            .createSignInIntentBuilder()
-//            .setAvailableProviders(providers)
-//            /** Set logo drawable */
-//            .setLogo(R.drawable.pic_logo)
-//            .setTheme(R.style.AuthTheme)
-//            .setTosAndPrivacyPolicyUrls(
-////                TODO: replace with Terms of service
-//                getApplication<App>().getString(R.string.privacy_web_page),
-//                getApplication<App>().getString(R.string.privacy_web_page)
-//            )
-//            .build()
-//    }
-
-    val getCountries: () -> Unit = {
+    fun showListOfVisitedCountries() {
         _visibilityLoader.postValue(VISIBLE)
         viewModelScope.launch {
-            /** loading count of not visited countries */
-            interactor.getNotVisitedCountriesNum({ notVisitedCountriesNum ->
+            // loading count of not visited countries
+            interactor.setNotVisitedCountriesNum({ notVisitedCountriesNum ->
                 notVisitedCountriesCount = notVisitedCountriesNum.toFloat()
-                /** loading visited countries*/
-                getVisitedCountries(notVisitedCountriesNum)
-            }, { exception ->
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
-                    }
-                }
+                // loading visited countries
+                setVisitedCountries(notVisitedCountriesNum)
+            }, { exception: Exception /* = java.lang.Exception */ ->
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
             })
         }
     }
 
-    private fun getVisitedCountries(notVisitedCountriesNum: Int) {
+    private fun setVisitedCountries(notVisitedCountriesNum: Int) {
         viewModelScope.launch {
-            interactor.getVisitedModelCountries({ visitedCountries ->
-                /** checking if database of visited and not visited countries is empty */
-                if (notVisitedCountriesNum == 0 && visitedCountries.isNullOrEmpty()) {
-                    viewModelScope.launch {
-                        downloadCountries()
-                    }
+            interactor.setVisitedCountries({ visitedCountries: List<CountryModel> ->
+                // checking if database of visited and not visited countries is empty
+                if (notVisitedCountriesNum == 0 && visitedCountries.isEmpty()) {
+                    viewModelScope.launch { downloadCountries() }
                 } else {
-                    addCitiesToVisitedCountriesIfNotEmpty(visitedCountries)
-                }
-            }, { exception ->
-                _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
+                    val visitedNodeCountries: MutableList<VisitedCountry> =
+                        visitedCountries.mapModelListToNodeList()
+                    if (visitedNodeCountries.isEmpty()) {
+                        _visitedCountriesWithCities.postValue(visitedNodeCountries)
+
+                        _visitedCountries.postValue(visitedCountries.mapModelListToCountryList())
+
+                        _visibilityLoader.postValue(GONE)
+                    } else {
+                        addCitiesToVisitedCountries(visitedNodeCountries, visitedCountries)
+                        /* do not write any logic after  countries loop (here),
+                         * rest of the logic must be in "get cities" success method ,
+                         * since it started later then here */
                     }
                 }
+            }, { exception: Exception /* = java.lang.Exception */ ->
+                _visibilityLoader.postValue(GONE)
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
             })
         }
     }
 
-    private fun addCitiesToVisitedCountriesIfNotEmpty(countries: List<CountryModel>) {
-        val visitedCountries = countries.mapModelListToNodeList()
-        if (countries.isNullOrEmpty()) {
-            _visitedCountriesWithCities.run { postValue(visitedCountries) }
-            _visitedCountries.run { postValue(countries.mapModelListToCountryList()) }
-            _visibilityLoader.postValue(GONE)
-        } else {
-            for (country in visitedCountries) {
-                val cityList = mutableListOf<BaseNode>()
-                viewModelScope.launch {
-                    interactor.getCities({ cities ->
-                        for (city in cities) {
-                            if (country.id == city.parentId) {
-                                cityList.add(city.mapModelToBaseNode())
-                            }
+    private fun addCitiesToVisitedCountries(
+        visitedNodeCountries: MutableList<VisitedCountry>,
+        visitedCountries: List<CountryModel>
+    ) {
+        for (country: VisitedCountry in visitedNodeCountries) {
+            val cityList: MutableList<BaseNode> = mutableListOf()
+            viewModelScope.launch {
+                interactor.setCities({ cities ->
+                    for (city in cities) {
+                        if (country.id == city.parentId) {
+                            cityList.add(city.mapModelToBaseNode())
                         }
-                        citiesCount = cities.size
-                        country.childNode = cityList
-                        if (country.id == visitedCountries.last().id) {
-                            /** showing countries with included cities */
-                            _visitedCountriesWithCities.run { postValue(visitedCountries) }
-                            _visitedCountries.run { postValue(countries.mapModelListToCountryList()) }
-                            _visibilityLoader.postValue(GONE)
-                        }
-                    }, { exception ->
+                    }
+                    citiesCount = cities.size
+                    country.childNode = cityList
+                    if (country.id == visitedCountries.last().id) {
+                        // showing countries with included cities
+                        _visitedCountriesWithCities.run { postValue(visitedNodeCountries) }
+                        _visitedCountries.postValue(visitedCountries.mapModelListToCountryList())
                         _visibilityLoader.postValue(GONE)
-                        _errorMessage.run {
-                            exception.message?.let { message ->
-                                /* Trigger the event by setting a new Event as a new value */
-                                postValue(Event(message))
-                            }
-                        }
-                    })
-                }
+                    }
+                }, { exception: Exception /* = java.lang.Exception */ ->
+                    _visibilityLoader.postValue(GONE)
+                    // Trigger the event by setting a new Event as a new value
+                    _errorMessage.postValue(
+                        Event(
+                            exception.localizedMessage ?: exception.stackTraceToString(),
+                        ),
+                    )
+                })
             }
-            /* do not write any logic after  countries loop (here),
-             * rest of the logic must be in "get cities" success method ,
-             * since it started later then here */
         }
     }
 
-    fun showListOfCountries() = getCountries()
-
-    private suspend fun downloadCountries() =
-        interactor.downloadCountries({  showListOfCountries() }, { exception ->
-            _visibilityLoader.postValue(GONE)
-            _errorMessage.run {
-                exception.message?.let { message ->
-                    /* Trigger the event by setting a new Event as a new value */
-                    postValue(Event(message))
-                }
-            }
-        })
+    private suspend fun downloadCountries() {
+        interactor.downloadCountries(
+            onSuccess = { showListOfVisitedCountries() },
+            onError = { exception: Exception /* = java.lang.Exception */ ->
+                _visibilityLoader.postValue(GONE)
+                // Trigger the event by setting a new Event as a new value
+                _errorMessage.postValue(
+                    Event(exception.localizedMessage ?: exception.stackTraceToString()),
+                )
+            },
+        )
+    }
 
     fun onFloatBtnClicked() {
         _navigateToAllCountries.value = true
@@ -191,50 +150,27 @@ class HomeActivityViewModel(private val interactor: CountriesInteractor, applica
 
     fun removeFromVisited(country: Country) = viewModelScope.launch {
         _visibilityLoader.postValue(VISIBLE)
-            interactor.removeCountryModelFromVisitedList(country.mapToModel(),{
-                showListOfCountries()
-            },{ exception ->
-                _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
-                    }
-                }
-            })
-        }
+        interactor.removeCountryModelFromVisitedList(country.mapToModel(), {
+            showListOfVisitedCountries()
+        }, { exception: Exception /* = java.lang.Exception */ ->
+            _visibilityLoader.postValue(GONE)
+            // Trigger the event by setting a new Event as a new value
+            _errorMessage.postValue(
+                Event(exception.localizedMessage ?: exception.stackTraceToString()),
+            )
+        })
+    }
 
     fun removeCity(city: City) = viewModelScope.launch {
         _visibilityLoader.postValue(VISIBLE)
-            interactor.removeCity(city.mapNodeToModel(), {
-                showListOfCountries()
-            }, { exception ->
-                _visibilityLoader.postValue(GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        /* Trigger the event by setting a new Event as a new value */
-                        postValue(Event(message))
-                    }
-                }
-            })
-        }
-
-    //    for future release
-//    fun syncDatabaseWithFireStore() {
-//        _visibilityLoader.postValue(VISIBLE)
-//        viewModelScope.launch {
-//            interactor.syncVisitedCountries({
-//                interactor.isSynchronized = true
-//                _visibilityLoader.postValue(GONE)
-//            }, { exception ->
-//                _visibilityLoader.postValue(GONE)
-//                _errorMessage.run {
-//                    exception.message?.let { message ->
-//                        /* Trigger the event by setting a new Event as a new value */
-//                        postValue(Event(message))
-//                    }
-//                }
-//            })
-//        }
-//    }
+        interactor.removeCity(city.mapNodeToModel(), {
+            showListOfVisitedCountries()
+        }, { exception: Exception /* = java.lang.Exception */ ->
+            _visibilityLoader.postValue(GONE)
+            // Trigger the event by setting a new Event as a new value
+            _errorMessage.postValue(
+                Event(exception.localizedMessage ?: exception.stackTraceToString()),
+            )
+        })
+    }
 }

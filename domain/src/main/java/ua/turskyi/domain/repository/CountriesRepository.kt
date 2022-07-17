@@ -1,81 +1,69 @@
 package ua.turskyi.domain.repository
 
-import kotlinx.coroutines.Job
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
-    val isSynchronized: Boolean
-    var isUpgraded: Boolean
-
-    suspend fun refreshCountries(
-        onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
-
-    suspend fun syncVisitedCountries(
-        onSuccess: (Job?) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
-    )
+    suspend fun refreshCountries(onSuccess: () -> Unit, onError: (Exception) -> Unit)
 
     suspend fun updateSelfie(
         id: Int,
         selfie: String,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
     suspend fun markAsVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
-    suspend fun getVisitedModelCountriesFromDb(
+    suspend fun setVisitedModelCountriesFromDb(
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
-    suspend fun getCities(
+    suspend fun setCities(
         onSuccess: (List<CityModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
-    suspend fun getCountNotVisitedCountries(
+    suspend fun setCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
     suspend fun removeFromVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
     suspend fun removeCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
     suspend fun insertCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
-    suspend fun getCountriesByRange(
+    suspend fun setCountriesByRange(
         to: Int,
         from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 
     suspend fun loadCountriesByNameAndRange(
-        name: String?,
+        name: String,
         limit: Int,
         offset: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: ((Exception) -> Unit?)? = null
+        onError: (Exception) -> Unit
     )
 }

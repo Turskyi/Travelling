@@ -22,8 +22,9 @@ visited.
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android
 Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
 after every push to the **dev** branch,
-[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used to deliver new
-release app bundle to **Google Play** after every push to **master** branch;
+[Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used
+to [deliver](https://appcenter.ms/users/Turskyi/apps/Travelling/build/branches/master) new release
+app bundle to **Google Play** after every push to **master** branch;
 
 • Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
 wrapped
