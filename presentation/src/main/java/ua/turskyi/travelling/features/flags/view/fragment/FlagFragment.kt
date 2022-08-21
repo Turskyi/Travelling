@@ -18,6 +18,7 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.content.res.ResourcesCompat
@@ -99,20 +100,20 @@ class FlagFragment : Fragment() {
     private fun initResultLauncher() {
         photoPickerResultLauncher = registerForActivityResult(
             StartActivityForResult()
-        ) { result ->
+        ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val photoChooserIntent: Intent? = result.data
                 val position = this.arguments?.getInt(EXTRA_POSITION)
                 binding.ivEnlargedFlag.visibility = VISIBLE
                 binding.wvFlag.visibility = GONE
-                val selectedImageUri = photoChooserIntent?.data
+                val selectedImageUri: Uri? = photoChooserIntent?.data
                 if (selectedImageUri.toString().contains(getString(R.string.media_providers))) {
-                    val imageId =
+                    val imageId: Int? =
                         selectedImageUri?.lastPathSegment?.takeLastWhile { character -> character.isDigit() }
                             ?.toInt()
                     val visitedCountriesObserverForLocalPhotos =
-                        Observer<List<Country>> { visitedCountries ->
-                            val contentImg = imageId?.let { contentImgId ->
+                        Observer { visitedCountries: List<Country> ->
+                            val contentImg = imageId?.let { contentImgId: Int ->
                                 position?.let {
                                     getContentUriFromUri(
                                         visitedCountries[position].id,

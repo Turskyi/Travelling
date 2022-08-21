@@ -21,7 +21,6 @@ android {
         versionName rootProject.version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         // to ensure that the translations of Firebase library are relevant to the application
         resConfigs 'en'
     }
@@ -100,8 +99,8 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.11'
-    implementation('com.google.firebase:firebase-analytics:21.0.0') {
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.12'
+    implementation('com.google.firebase:firebase-analytics:21.1.0') {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
         exclude module: "play-services-measurement"
@@ -110,10 +109,10 @@ dependencies {
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
     implementation 'com.google.firebase:firebase-perf-ktx:20.1.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.6'
+    implementation 'com.google.firebase:firebase-messaging:23.0.7'
 
     // ViewModel and LiveData
-    def lifecycle_version = "2.5.0"
+    def lifecycle_version = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
@@ -169,7 +168,7 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-    def jupiter_version = "5.8.2"
+    def jupiter_version = "5.9.0"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
 
