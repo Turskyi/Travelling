@@ -13,7 +13,6 @@
     <dimen name="offset_29">29dp</dimen>
     <dimen name="offset_40">40dp</dimen>
     <dimen name="offset_64">64dp</dimen>
-    <dimen name="offset_140">140dp</dimen>
 
     <!--region Elevations-->
     <dimen name="elevation_1" tools:keep="@dimen/elevation_1">1dp</dimen>

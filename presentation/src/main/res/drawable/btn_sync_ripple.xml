@@ -12,6 +12,5 @@
                 android:color="@android:color/transparent" />
         </shape>
     </item>
-    <item
-        android:drawable="@drawable/ic_sync"/>
+    <item android:drawable="@drawable/ic_sync" />
 </ripple>

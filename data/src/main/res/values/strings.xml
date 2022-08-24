@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">data</string>
+    <string name="app_name" translatable="false">data</string>
+    <string name="pragma_journal_mode_memory" translatable="false">PRAGMA journal_mode = MEMORY</string>
+    <string name="pragma_synchronous_off" translatable="false">PRAGMA synchronous = OFF</string>
 </resources>

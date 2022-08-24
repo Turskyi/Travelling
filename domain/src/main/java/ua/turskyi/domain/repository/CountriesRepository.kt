@@ -4,6 +4,7 @@ import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 
 interface CountriesRepository {
+
     suspend fun refreshCountries(onSuccess: () -> Unit, onError: (Exception) -> Unit)
 
     suspend fun updateSelfie(

@@ -13,9 +13,7 @@ class SyncDialog : AppCompatDialogFragment() {
 
         fun newInstance(info: String): SyncDialog {
             val fragment = SyncDialog()
-            val bundle = Bundle().apply {
-                putString(ARG_INFO, info)
-            }
+            val bundle = Bundle().apply { putString(ARG_INFO, info) }
             fragment.arguments = bundle
             return fragment
         }
@@ -28,17 +26,15 @@ class SyncDialog : AppCompatDialogFragment() {
         listener = try {
             context as SyncListener
         } catch (e: ClassCastException) {
-            throw ClassCastException(
-                context.toString() + "must implement SyncListener"
-            )
+            throw ClassCastException(context.toString() + "must implement SyncListener")
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireActivity())
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         builder.setMessage(arguments?.getString(ARG_INFO))
             .setPositiveButton(getString(R.string.dialog_btn_ok_ready)) { _, _ ->
-                listener.initSynchronization()
+                listener.showTravellingPro()
             }.setNegativeButton(getString(R.string.dialog_btn_not_ok)) { _, _ ->
                 dismiss()
             }
@@ -46,6 +42,6 @@ class SyncDialog : AppCompatDialogFragment() {
     }
 
     interface SyncListener {
-        fun initSynchronization()
+        fun showTravellingPro()
     }
 }

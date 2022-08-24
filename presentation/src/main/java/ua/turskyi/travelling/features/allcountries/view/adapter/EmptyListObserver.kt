@@ -2,7 +2,7 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import ua.turskyi.travelling.extensions.setDynamicVisibility
+import ua.turskyi.travelling.utils.extensions.setDynamicVisibility
 
 class EmptyListObserver(private val recyclerView: RecyclerView, private val emptyView: View?) :
     RecyclerView.AdapterDataObserver() {

@@ -3,16 +3,21 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 import android.view.View.GONE
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.extensions.log
-import ua.turskyi.travelling.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.coroutines.CoroutineContext
 
-internal class CountriesPositionalDataSource(private val interactor: CountriesInteractor) :
+internal class CountriesPositionalDataSource(
+    private val interactor: CountriesInteractor,
+    private val viewmodelScope: CoroutineScope,
+) :
     PositionalDataSource<Country>(), CoroutineScope {
 
     private var job: Job = Job()
@@ -28,7 +33,8 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.getCountriesByRange(params.requestedLoadSize,  params.requestedStartPosition,
+            interactor.setCountriesByRange(
+                params.requestedLoadSize, params.requestedStartPosition,
                 { initCountries ->
                     callback.onResult(
                         initCountries.mapModelListToCountryList(),
@@ -51,8 +57,8 @@ internal class CountriesPositionalDataSource(private val interactor: CountriesIn
         params: LoadRangeParams,
         callback: LoadRangeCallback<Country>
     ) {
-        GlobalScope.launch {
-            interactor.getCountriesByRange(params.startPosition + params.loadSize,
+        viewmodelScope.launch {
+            interactor.setCountriesByRange(params.startPosition + params.loadSize,
                 params.startPosition,
                 { allCountries ->
                     callback.onResult(allCountries.mapModelListToCountryList())

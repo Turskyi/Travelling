@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import ua.turskyi.travelling.R
-import ua.turskyi.travelling.extensions.getHomeActivity
 
 class InfoDialog : AppCompatDialogFragment() {
     companion object {
