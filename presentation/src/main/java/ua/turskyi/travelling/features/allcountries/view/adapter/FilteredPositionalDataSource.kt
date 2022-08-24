@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
+import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import kotlin.coroutines.CoroutineContext
@@ -28,13 +28,13 @@ internal class FilteredPositionalDataSource(
                 name = countryName,
                 limit = params.requestedLoadSize,
                 offset = params.requestedStartPosition,
-                onSuccess = { allCountries ->
+                onSuccess = { allCountries: List<CountryModel> ->
                     callback.onResult(
                         allCountries.mapModelListToCountryList(),
                         params.requestedStartPosition
                     )
                 },
-                onError = { exception ->
+                onError = { exception: Exception /* = java.lang.Exception */ ->
                     exception.printStackTrace()
                     callback.onResult(emptyList(), params.requestedStartPosition)
                 },

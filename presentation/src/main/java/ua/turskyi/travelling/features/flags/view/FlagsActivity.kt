@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityFlagsBinding
-import ua.turskyi.travelling.utils.extensions.openInfoDialog
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
 import ua.turskyi.travelling.utils.extensions.toast
 
 class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener,

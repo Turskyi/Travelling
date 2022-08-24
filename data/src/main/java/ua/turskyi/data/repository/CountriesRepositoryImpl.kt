@@ -9,6 +9,7 @@ import org.koin.core.component.inject
 import ua.turskyi.data.database.room.datasource.DatabaseSource
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
+import ua.turskyi.data.entities.network.CountryResponse
 import ua.turskyi.data.extensions.*
 import ua.turskyi.data.network.datasource.NetSource
 import ua.turskyi.domain.model.CityModel
@@ -26,15 +27,19 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
         onError: (Exception) -> Unit
     ) {
         netSource.getCountryNetList(
-            onComplete = { countryNetList ->
-                countryNetList?.mapNetListToModelList()?.let { modelList ->
-                    addModelsToDb(
-                        modelList,
-                        { onSuccess() },
-                        { exception -> onError.invoke(exception) })
-                }
+            onComplete = { countryNetList: List<CountryResponse>? ->
+                countryNetList?.mapNetListToModelList()
+                    ?.let { modelList: MutableList<CountryModel> ->
+                        addModelsToDb(
+                            modelList,
+                            { onSuccess() },
+                            { exception -> onError.invoke(exception) },
+                        )
+                    }
             },
-            onError = { exception -> onError.invoke(exception) },
+            onError = { exception: Exception /* = java.lang.Exception */ ->
+                onError.invoke(exception)
+            },
         )
     }
 

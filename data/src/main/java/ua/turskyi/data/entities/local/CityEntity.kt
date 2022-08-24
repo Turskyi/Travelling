@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import ua.turskyi.data.entities.local.CityEntity.Companion.PARAM_ID
 import ua.turskyi.data.entities.local.CityEntity.Companion.COLLECTION_CITIES
+import ua.turskyi.data.entities.local.CityEntity.Companion.PARAM_ID
 
 @Entity(tableName = COLLECTION_CITIES, indices = [Index(value = [PARAM_ID], unique = true)])
 data class CityEntity(

@@ -5,9 +5,9 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 
 class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : ViewModel(),
     LifecycleEventObserver {
@@ -26,7 +26,7 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
         get() = _errorMessage
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_CREATE){
+        if (event == Lifecycle.Event.ON_CREATE) {
             getVisitedCountriesFromDB()
         }
     }

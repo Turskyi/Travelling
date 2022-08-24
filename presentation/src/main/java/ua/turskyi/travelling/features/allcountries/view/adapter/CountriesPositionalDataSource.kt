@@ -3,10 +3,13 @@ package ua.turskyi.travelling.features.allcountries.view.adapter
 import android.view.View.GONE
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PositionalDataSource
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.coroutines.CoroutineContext
@@ -30,7 +33,8 @@ internal class CountriesPositionalDataSource(
         callback: LoadInitialCallback<Country>
     ) {
         launch {
-            interactor.setCountriesByRange(params.requestedLoadSize, params.requestedStartPosition,
+            interactor.setCountriesByRange(
+                params.requestedLoadSize, params.requestedStartPosition,
                 { initCountries ->
                     callback.onResult(
                         initCountries.mapModelListToCountryList(),
