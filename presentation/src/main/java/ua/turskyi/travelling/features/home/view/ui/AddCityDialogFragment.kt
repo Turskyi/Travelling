@@ -29,7 +29,6 @@ import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
-import java.io.IOException
 import java.util.*
 
 class AddCityDialogFragment : DialogFragment() {
@@ -49,6 +48,7 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
+    @Suppress("unused", "unused")
     private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
@@ -65,7 +65,7 @@ class AddCityDialogFragment : DialogFragment() {
         val viewGroup: ViewGroup = requireActivity().findViewById(android.R.id.content)
         val dialogView: View = layoutInflater.inflate(
             R.layout.dialogue_city, viewGroup,
-            false
+            false,
         )
 
         builder.setView(dialogView)
@@ -198,7 +198,7 @@ class AddCityDialogFragment : DialogFragment() {
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         } catch (exception: Exception) {
-            exception.printStackTrace()
+            toastLong(exception.localizedMessage ?: exception.stackTraceToString())
         }
         return gpsEnabled
     }
@@ -223,51 +223,43 @@ class AddCityDialogFragment : DialogFragment() {
         } else {
             val findLastLocationTask: Task<Location> = fusedLocationClient.lastLocation
             findLastLocationTask.addOnSuccessListener { location: Location ->
-                addLastLocation(location, editText)
-            }.addOnFailureListener { exception ->
+                setCityName(location, editText)
+            }.addOnFailureListener { exception: java.lang.Exception ->
                 toastLong(exception.localizedMessage ?: exception.stackTraceToString())
                 addChangedLocation(editText)
             }
         }
     }
 
-    private fun addChangedLocation(editText: LinedEditText) = try {
-        val locationListener: LocationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-                val addressesChanged: MutableList<Address> = geoCoder.getFromLocation(
-                    location.latitude,
-                    location.longitude,
-                    1
-                )
-                val cityChanged: String = addressesChanged.first().locality
-                editText.setText(cityChanged)
-            }
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {}
-        }
-        //      Request location updates
-        locationManager.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER,
-            0L,
-            0f,
-            locationListener
-        )
-    } catch (exception: SecurityException) {
-        toastLong(exception.localizedMessage ?: exception.stackTraceToString())
-    }
-
-    private fun addLastLocation(location: Location, editText: LinedEditText) {
-        val geoCoder = Geocoder(requireContext(), Locale.getDefault())
+    private fun addChangedLocation(editText: LinedEditText) {
         try {
-            val addresses: MutableList<Address> = geoCoder.getFromLocation(
-                location.latitude,
-                location.longitude, 1
+            val locationListener: LocationListener = object : LocationListener {
+                override fun onLocationChanged(location: Location) = setCityName(location, editText)
+                override fun onProviderEnabled(provider: String) {}
+                override fun onProviderDisabled(provider: String) {}
+            }
+            //      Request location updates
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                0L,
+                0f,
+                locationListener,
             )
-            val cityName: String = addresses.first().locality
-            editText.setText(cityName)
-        } catch (exception: IOException) {
+        } catch (exception: SecurityException) {
             toastLong(exception.localizedMessage ?: exception.stackTraceToString())
         }
+    }
+
+    private fun setCityName(location: Location, editText: LinedEditText) {
+        val geoCoder = Geocoder(requireContext(), Locale.getDefault())
+
+        @Suppress("DEPRECATION")
+        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+            location.latitude,
+            location.longitude,
+            1,
+        )
+        val cityName: String? = addresses?.first()?.locality
+        editText.setText(cityName)
     }
 }

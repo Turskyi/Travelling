@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package ua.turskyi.travelling.widgets
 
 import android.content.Context
@@ -93,6 +91,7 @@ class ExpandableSearchBar(context: Context, attrs: AttributeSet) : ConstraintLay
     /**
      * The input text of the [ExpandableSearchBar].
      */
+    @Suppress("unused")
     var text: String? = null
         set(value) {
             field = value
