@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityFlagsBinding
-import ua.turskyi.travelling.utils.extensions.openInfoDialog
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
 import ua.turskyi.travelling.utils.extensions.toast
 
 class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener,
@@ -85,13 +85,17 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
             adapter = flagsAdapter
             offscreenPageLimit = 4
             setPageTransformer(ZoomOutPageTransformer())
-            val startPosition = getBundle?.getInt(EXTRA_POSITION)
-            startPosition?.let { position ->
-                post { setCurrentItem(position, true) }
+            val startPosition: Int? = getBundle?.getInt(EXTRA_POSITION)
+            if (startPosition != null) {
+                post { setCurrentItem(startPosition, true) }
             }
         }
     }
 
-    private fun initListeners() = binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+    private fun initListeners() = binding.toolbar.setNavigationOnClickListener {
+        @Suppress("DEPRECATION")
+        onBackPressed()
+    }
+
     private fun initObserver() = lifecycle.addObserver(flagsAdapter)
 }

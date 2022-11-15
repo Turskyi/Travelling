@@ -19,10 +19,13 @@ fun List<CountryModel>.mapModelListToNodeList(): MutableList<VisitedCountry> {
 }
 
 fun CountryModel.mapModelToActual() = Country(id, name, flag, isVisited, selfie)
-fun Country.mapToModel() = CountryModel(id, name, flag, isVisited, selfie)
+fun Country.mapToModel() = CountryModel(id, name, flag, isVisited, filePath)
 fun VisitedCountry.mapNodeToActual(): Country {
-    return Country(id = id, isVisited = isVisited, name = title, flag = img, selfie = selfie)
+    return Country(id = id, isVisited = isVisited, name = title, flag = img, filePath = selfie)
 }
 
-fun CityModel.mapModelToBaseNode(): City = City(id = id, name = name, parentId = parentId, month = month)
-fun City.mapNodeToModel(): CityModel = CityModel(id = id, name = name, parentId = parentId, month = month)
+fun CityModel.mapModelToBaseNode(): City =
+    City(id = id, name = name, parentId = parentId, month = month)
+
+fun City.mapNodeToModel(): CityModel =
+    CityModel(id = id, name = name, parentId = parentId, month = month)

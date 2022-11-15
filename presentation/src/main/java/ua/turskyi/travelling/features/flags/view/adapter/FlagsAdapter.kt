@@ -1,28 +1,29 @@
 package ua.turskyi.travelling.features.flags.view.adapter
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
-import ua.turskyi.travelling.utils.extensions.toastLong
+import ua.turskyi.travelling.utils.extensions.showReportDialog
 
-class FlagsAdapter(private val activity: AppCompatActivity) : FragmentStateAdapter(activity),
+class FlagsAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity),
     LifecycleEventObserver {
     private var flagsActivityViewListener: FlagsActivityView? = null
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        try {
-            flagsActivityViewListener = recyclerView.context as FlagsActivityView?
-        } catch (castException: ClassCastException) {
-            // in this case the activity does not implement the listener.
-            activity.toastLong(
-                castException.localizedMessage ?: castException.stackTraceToString(),
-            )
+        val context: Context = recyclerView.context
+        if (context is FlagsActivityView) {
+            flagsActivityViewListener = context
+        } else {
+            context.showReportDialog()
         }
     }
 

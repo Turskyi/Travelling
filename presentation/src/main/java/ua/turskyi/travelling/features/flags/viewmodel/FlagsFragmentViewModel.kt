@@ -5,9 +5,10 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
+import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
+import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
 
 class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : ViewModel(),
     LifecycleEventObserver {
@@ -26,44 +27,56 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
         get() = _errorMessage
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_CREATE){
-            getVisitedCountriesFromDB()
+        if (event == Lifecycle.Event.ON_CREATE) {
+            setVisitedCountries()
         }
     }
 
-    private fun getVisitedCountriesFromDB() {
+    private fun setVisitedCountries() {
         viewModelScope.launch {
-            interactor.setVisitedCountries({ countries ->
-                visitedCount = countries.size
-                _visitedCountries.run { postValue(countries.mapModelListToCountryList()) }
-                _visibilityLoader.postValue(View.GONE)
-            }, { exception ->
-                _visibilityLoader.postValue(View.GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        // Triggering the event by setting a new Event as a new value
-                        postValue(Event(message))
+            interactor.setVisitedCountries(
+                { countries: List<CountryModel> ->
+                    visitedCount = countries.size
+                    _visitedCountries.postValue(countries.mapModelListToCountryList())
+                    _visibilityLoader.postValue(View.GONE)
+                },
+                onError = { exception: Exception /* = java.lang.Exception */ ->
+                    _visibilityLoader.postValue(View.GONE)
+                    _errorMessage.run {
+                        // Trigger the event by setting a new Event as a new value
+                        postValue(
+                            Event(
+                                exception.localizedMessage ?: exception.stackTraceToString()
+                            )
+                        )
                     }
-                }
-            })
+                },
+            )
         }
     }
 
-    fun updateSelfie(id: Int, selfie: String) {
+    fun updateSelfie(id: Int, filePath: String) {
         _visibilityLoader.postValue(View.VISIBLE)
         viewModelScope.launch(IO) {
-            interactor.updateSelfie(id, selfie, { countries ->
-                _visitedCountries.run { postValue(countries.mapModelListToCountryList()) }
-                _visibilityLoader.postValue(View.GONE)
-            }, { exception ->
-                _visibilityLoader.postValue(View.GONE)
-                _errorMessage.run {
-                    exception.message?.let { message ->
-                        // Triggering the event by setting a new Event as a new value
-                        postValue(Event(message))
+            interactor.updateSelfie(
+                id = id,
+                filePath = filePath,
+                onSuccess = { countries: List<CountryModel> ->
+                    _visitedCountries.postValue(countries.mapModelListToCountryList())
+                    _visibilityLoader.postValue(View.GONE)
+                },
+                onError = { exception: Exception ->
+                    _visibilityLoader.postValue(View.GONE)
+                    _errorMessage.run {
+                        // Trigger the event by setting a new Event as a new value
+                        postValue(
+                            Event(
+                                exception.localizedMessage ?: exception.stackTraceToString()
+                            )
+                        )
                     }
-                }
-            })
+                },
+            )
         }
     }
 }

@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -38,9 +39,14 @@ import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListen
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.extensions.observeOnce
+import ua.turskyi.travelling.utils.extensions.showReportDialog
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class FlagFragment : Fragment() {
 
@@ -60,13 +66,12 @@ class FlagFragment : Fragment() {
         if (context is OnChangeFlagFragmentListener) {
             mChangeFlagListener = context
         } else {
-            throw RuntimeException(getString(R.string.msg_exception_flag_listener, context))
+            toast(getString(R.string.msg_exception_flag_listener, context))
         }
-        try {
-            flagsActivityViewListener = context as FlagsActivityView?
-        } catch (castException: ClassCastException) {
-            // in this case the activity does not implement the listener.
-            castException.printStackTrace()
+        if (context is FlagsActivityView) {
+            flagsActivityViewListener = context
+        } else {
+            toast(getString(R.string.msg_exception_flag_listener, context))
         }
     }
 
@@ -103,53 +108,14 @@ class FlagFragment : Fragment() {
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val photoChooserIntent: Intent? = result.data
-                val position = this.arguments?.getInt(EXTRA_POSITION)
+                val position: Int? = this.arguments?.getInt(EXTRA_POSITION)
                 binding.ivEnlargedFlag.visibility = VISIBLE
                 binding.wvFlag.visibility = GONE
                 val selectedImageUri: Uri? = photoChooserIntent?.data
-                if (selectedImageUri.toString().contains(getString(R.string.media_providers))) {
-                    val imageId: Int? =
-                        selectedImageUri?.lastPathSegment?.takeLastWhile { character -> character.isDigit() }
-                            ?.toInt()
-                    val visitedCountriesObserverForLocalPhotos =
-                        Observer { visitedCountries: List<Country> ->
-                            val contentImg = imageId?.let { contentImgId: Int ->
-                                position?.let {
-                                    getContentUriFromUri(
-                                        visitedCountries[position].id,
-                                        contentImgId,
-                                        visitedCountries[position].name,
-                                        visitedCountries[position].flag
-                                    )
-                                }
-                            }
-                            contentImg?.selfie?.let { uri ->
-                                position?.let {
-                                    viewModel.updateSelfie(
-                                        visitedCountries[position].id,
-                                        uri
-                                    )
-                                }
-                            }
-                        }
-                    viewModel.visitedCountries.observeOnce(
-                        viewLifecycleOwner,
-                        visitedCountriesObserverForLocalPhotos
-                    )
+                if (selectedImageUri != null && position != null) {
+                    createInputStreamAndChangeImage(selectedImageUri, position)
                 } else {
-                    val visitedCountriesObserverForCloudPhotos: Observer<List<Country>> =
-                        Observer<List<Country>> { visitedCountries ->
-                            position?.let {
-                                viewModel.updateSelfie(
-                                    visitedCountries[position].id,
-                                    selectedImageUri.toString()
-                                )
-                            }
-                        }
-                    viewModel.visitedCountries.observeOnce(
-                        viewLifecycleOwner,
-                        visitedCountriesObserverForCloudPhotos
-                    )
+                    requireContext().showReportDialog()
                 }
             } else {
                 toast(R.string.msg_did_not_choose)
@@ -205,37 +171,35 @@ class FlagFragment : Fragment() {
 
     private fun initObservers() {
         lifecycle.addObserver(viewModel)
-        viewModel.errorMessage.observe(this) { event ->
+        viewModel.errorMessage.observe(this) { event: Event<String> ->
             val message = event.getMessageIfNotHandled()
             if (message != null) {
                 toastLong(message)
             }
         }
-        viewModel.visibilityLoader.observe(this) { currentVisibility ->
+        viewModel.visibilityLoader.observe(this) { currentVisibility: Int ->
             if (flagsActivityViewListener != null) {
                 flagsActivityViewListener!!.setLoaderVisibility(currentVisibility)
             }
         }
         val visitedCountriesObserver: Observer<List<Country>> =
             Observer<List<Country>> { countries: List<Country> ->
-                if (this.arguments != null) {
-                    val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
+                val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
-                    if (mChangeFlagListener != null) {
-                        mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
-                    }
+                if (mChangeFlagListener != null) {
+                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                }
 
-                    if (countries[position].selfie.isEmpty()) {
-                        showTheFlag(countries, position)
-                    } else {
-                        showSelfie(countries, position)
-                        binding.ivEnlargedFlag.setOnClickListener(
-                            showFlagClickListener(
-                                countries,
-                                position
-                            )
+                if (countries[position].filePath.isEmpty()) {
+                    showTheFlag(countries, position)
+                } else {
+                    showSelfie(countries, position)
+                    binding.ivEnlargedFlag.setOnClickListener(
+                        showFlagClickListener(
+                            countries,
+                            position
                         )
-                    }
+                    )
                 }
             }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
@@ -282,12 +246,12 @@ class FlagFragment : Fragment() {
     private fun showSelfie(countries: List<Country>, position: Int) {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
-        val uri: Uri = Uri.parse(countries[position].selfie)
         val thumbnailBuilder: RequestBuilder<Drawable> =
             GlideApp.with(binding.ivEnlargedFlag.context)
-                .asDrawable().sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
+                .asDrawable()
+                .sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
         GlideApp.with(this)
-            .load(uri)
+            .load(countries[position].filePath)
             .thumbnail(thumbnailBuilder)
             .apply(
                 RequestOptions()
@@ -329,5 +293,55 @@ class FlagFragment : Fragment() {
             })
             .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
             .load(uri, binding.ivEnlargedFlag)
+    }
+
+    private fun createInputStreamAndChangeImage(selectedImageUri: Uri, position: Int) {
+        val orderBy: String =
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                MediaStore.Images.Media.DATE_TAKEN
+            } else {
+                MediaStore.Images.Media._ID
+            }
+        val projectionColumns: Array<String> =
+            arrayOf(MediaStore.Images.Media.DISPLAY_NAME)
+        // Constructs a selection clause with a replaceable parameter
+        val selectionClause = "var = ?"
+        // Defines a mutable list to contain the selection arguments
+        val selectionArgs: MutableList<String> = mutableListOf()
+        requireContext().contentResolver.query(
+            selectedImageUri,  // The content URI of the image table
+            projectionColumns, // The columns to return for each row
+            selectionClause, // Selection criteria
+            selectionArgs.toTypedArray(), // Selection criteria
+            "$orderBy DESC", // The sort order for the returned rows
+        )?.use { cursor: Cursor ->
+            val inputStream: InputStream? =
+                requireContext().contentResolver.openInputStream(selectedImageUri)
+            if (inputStream != null && cursor.moveToFirst()) {
+                updateFlagImage(cursor, inputStream, position)
+            }
+        }
+        binding.ivEnlargedFlag.visibility = VISIBLE
+        binding.wvFlag.visibility = GONE
+    }
+
+    private fun updateFlagImage(cursor: Cursor, inputStream: InputStream, position: Int) {
+        val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        val name: String = cursor.getString(nameIndex)
+        // create same file with same name
+        val file = File(requireContext().cacheDir, name)
+        val fileOutputStream: FileOutputStream = file.outputStream()
+        fileOutputStream.use { inputStream.copyTo(it) }
+        val visitedCountriesObserverForLocalPhotos: Observer<List<Country>> =
+            Observer<List<Country>> { visitedCountries: List<Country> ->
+                viewModel.updateSelfie(
+                    id = visitedCountries[position].id,
+                    filePath = file.absolutePath,
+                )
+            }
+        viewModel.visitedCountries.observeOnce(
+            viewLifecycleOwner,
+            visitedCountriesObserverForLocalPhotos
+        )
     }
 }

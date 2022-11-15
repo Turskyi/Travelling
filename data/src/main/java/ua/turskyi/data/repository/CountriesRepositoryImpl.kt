@@ -40,12 +40,12 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
 
     override suspend fun updateSelfie(
         id: Int,
-        selfie: String,
+        filePath: String,
         onSuccess: (List<CountryModel>) -> Unit,
         onError: (Exception) -> Unit
     ) {
         applicationScope.launch {
-            databaseSource.updateSelfie(id, selfie)
+            databaseSource.updateSelfie(id, filePath)
             onSuccess(databaseSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
         }
     }
