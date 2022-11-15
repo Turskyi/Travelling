@@ -2,13 +2,13 @@ package ua.turskyi.data.database.room.dao
 
 import androidx.room.*
 import ua.turskyi.data.entities.local.CityEntity
-import ua.turskyi.data.entities.local.CityEntity.Companion.PARAM_PARENT_ID
 import ua.turskyi.data.entities.local.CityEntity.Companion.COLLECTION_CITIES
+import ua.turskyi.data.entities.local.CityEntity.Companion.PARAM_PARENT_ID
 import ua.turskyi.data.entities.local.CountryEntity
+import ua.turskyi.data.entities.local.CountryEntity.Companion.COLLECTION_COUNTRIES
 import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_ID
 import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_NAME
 import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_SELFIE
-import ua.turskyi.data.entities.local.CountryEntity.Companion.COLLECTION_COUNTRIES
 
 @Dao
 interface CountriesDao {

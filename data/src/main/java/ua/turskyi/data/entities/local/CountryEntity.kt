@@ -1,8 +1,8 @@
 package ua.turskyi.data.entities.local
 
 import androidx.room.*
-import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_NAME
 import ua.turskyi.data.entities.local.CountryEntity.Companion.COLLECTION_COUNTRIES
+import ua.turskyi.data.entities.local.CountryEntity.Companion.PARAM_NAME
 
 @Entity(tableName = COLLECTION_COUNTRIES, indices = [Index(value = [PARAM_NAME], unique = true)])
 data class CountryEntity(

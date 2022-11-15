@@ -63,7 +63,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val currentCountry: Country? = getItem(position)
-        if(currentCountry != null){
+        if (currentCountry != null) {
             holder.tvCountry.text = currentCountry.name
             setSelectableItemBackground(holder)
             if (currentCountry.isVisited) {
