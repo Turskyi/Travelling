@@ -401,7 +401,6 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
      * @see .getTitle
      * @attr ref R.styleable#CollapsingToolbarLayout_title
      */
-    @get:Nullable
     var title: CharSequence?
         get() = if (mCollapsingTitleEnabled) mCollapsingTextHelper?.text else null
         set(title) {
@@ -487,8 +486,7 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
      * @attr ref R.styleable#CollapsingToolbarLayout_contentScrim
      * @see .getContentScrim
      */
-    @get:Nullable
-    var contentScrim: Drawable?
+    private var contentScrim: Drawable?
         get() = mContentScrim
         set(drawable) {
             if (mContentScrim !== drawable) {
@@ -557,8 +555,7 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
      * @attr ref R.styleable#CollapsingToolbarLayout_statusBarScrim
      * @see .getStatusBarScrim
      */
-    @get:Nullable
-    var statusBarScrim: Drawable?
+    private var statusBarScrim: Drawable?
         get() = mStatusBarScrim
         set(drawable) {
             if (mStatusBarScrim !== drawable) {
@@ -783,6 +780,7 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
                     LayoutParams.COLLAPSE_MODE_PARALLAX -> offsetHelper.setTopAndBottomOffset(
                         (-verticalOffset * lp.parallaxMultiplier).roundToInt()
                     )
+                    LayoutParams.COLLAPSE_MODE_OFF -> {}
                 }
                 i++
             }
@@ -804,12 +802,12 @@ class CollapsingToolbarLayoutExtension @JvmOverloads constructor(
 
     companion object {
         private const val DEFAULT_SCRIM_ANIMATION_DURATION = 600
-        private fun getHeightWithMargins(@NonNull view: View?): Int {
-            val lp = view!!.layoutParams
+        private fun getHeightWithMargins(view: View?): Int {
+            val lp: ViewGroup.LayoutParams? = view?.layoutParams
             if (lp is MarginLayoutParams) {
                 return view.height + lp.topMargin + lp.bottomMargin
             }
-            return view.height
+            return view?.height ?: 0
         }
 
         fun getViewOffsetHelper(view: View): ViewOffsetHelper {

@@ -94,8 +94,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (viewModel.backPressedTiming + resources.getInteger(R.integer.desired_time_interval) > System.currentTimeMillis()) {
+            @Suppress("DEPRECATION")
             super.onBackPressed()
             return
         } else {

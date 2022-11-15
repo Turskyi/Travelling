@@ -27,8 +27,7 @@ to [deliver](https://appcenter.ms/users/Turskyi/apps/Travelling/build/branches/m
 app bundle to **Google Play** after every push to **master** branch;
 
 • Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
-wrapped
-with [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+and [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 ;
 
 • Architecture

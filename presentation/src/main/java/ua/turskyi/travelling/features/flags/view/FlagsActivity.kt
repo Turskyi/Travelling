@@ -85,13 +85,17 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
             adapter = flagsAdapter
             offscreenPageLimit = 4
             setPageTransformer(ZoomOutPageTransformer())
-            val startPosition = getBundle?.getInt(EXTRA_POSITION)
-            startPosition?.let { position ->
-                post { setCurrentItem(position, true) }
+            val startPosition: Int? = getBundle?.getInt(EXTRA_POSITION)
+            if (startPosition != null) {
+                post { setCurrentItem(startPosition, true) }
             }
         }
     }
 
-    private fun initListeners() = binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+    private fun initListeners() = binding.toolbar.setNavigationOnClickListener {
+        @Suppress("DEPRECATION")
+        onBackPressed()
+    }
+
     private fun initObserver() = lifecycle.addObserver(flagsAdapter)
 }

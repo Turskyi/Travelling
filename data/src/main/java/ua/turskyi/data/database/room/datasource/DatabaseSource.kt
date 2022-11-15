@@ -29,5 +29,5 @@ class DatabaseSource(private val countriesDao: CountriesDao) {
     fun insertCity(cityEntity: CityEntity) = countriesDao.insertCity(cityEntity)
     fun removeCity(city: CityEntity) = countriesDao.delete(city)
     fun removeCitiesByCountry(parentId: Int) = countriesDao.removeCitiesByCountry(parentId)
-    fun updateSelfie(id: Int, selfie: String) = countriesDao.updateSelfie(id, selfie)
+    fun updateSelfie(id: Int, filePath: String) = countriesDao.updateSelfie(id, filePath)
 }

@@ -8,7 +8,7 @@ data class Country(
     val name: String,
     val flag: String,
     var isVisited: Boolean = false,
-    var selfie: String
+    var filePath: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Int::class.java.classLoader) as Int,
@@ -28,7 +28,7 @@ data class Country(
         parcel.writeValue(name)
         parcel.writeValue(flag)
         parcel.writeValue(isVisited)
-        parcel.writeValue(selfie)
+        parcel.writeValue(filePath)
     }
 
     override fun describeContents() = 0

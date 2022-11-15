@@ -32,7 +32,11 @@ import ua.turskyi.travelling.widgets.ExpandableSearchBar.OnSearchActionListener
 class AllCountriesActivity : AppCompatActivity() {
 
     private val viewModel: AllCountriesActivityViewModel by inject()
+
+    @Suppress("unused")
     private val adapter: AllCountriesAdapter by inject()
+
+    @Suppress("unused")
     private lateinit var binding: ActivityAllCountriesBinding
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -52,8 +56,10 @@ class AllCountriesActivity : AppCompatActivity() {
         initObservers()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         setResult(RESULT_CANCELED)
+        @Suppress("DEPRECATION")
         super.onBackPressed()
     }
 
@@ -97,7 +103,10 @@ class AllCountriesActivity : AppCompatActivity() {
                 override fun onButtonClicked(buttonCode: Int) {}
 
             }
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            @Suppress("DEPRECATION")
+            onBackPressed()
+        }
         adapter.onCountryClickListener = ::addToVisited
         adapter.onCountryLongClickListener = ::sendToGoogleMapToShowGeographicalLocation
         binding.rvAllCountries.addOnScrollListener(object : RecyclerView.OnScrollListener() {

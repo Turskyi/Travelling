@@ -5,14 +5,14 @@ buildscript {
     // Defining versions in a single place
     ext {
         // sdk versions
-        compile_sdk_version = 32
+        compile_sdk_version = 33
         build_tools_version = "30.0.3"
         min_sdk_version = 21
-        target_sdk_version = 32
+        target_sdk_version = 33
 /* to check the latest version @see
-[https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview] */
-        version_code = 17
-        version_name = "2.0.6"
+https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview */
+        version_code = 18
+        version_name = "2.0.7"
     }
     repositories {
         // Google's Maven repository
@@ -21,8 +21,8 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
         // Google Services plugin (for firebase)
@@ -69,9 +69,9 @@ subprojects {
             implementation "com.google.android.gms:play-services-basement:$play_services_basement_version"
 
             // Koin testing tools
-            testImplementation "io.insert-koin:koin-test:$insert_koin_version"
+            testImplementation "io.insert-koin:koin-test:$koin_core_version"
             // Needed JUnit version
-            testImplementation "io.insert-koin:koin-test-junit4:$insert_koin_version"
+            testImplementation "io.insert-koin:koin-test-junit4:$koin_core_version"
 
             testImplementation "com.google.truth:truth:1.1.3"
         }

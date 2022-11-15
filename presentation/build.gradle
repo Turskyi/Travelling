@@ -98,11 +98,11 @@ dependencies {
 
     // android
     implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.12'
-    implementation('com.google.firebase:firebase-analytics:21.1.0') {
+    implementation 'com.google.firebase:firebase-crashlytics:18.3.2'
+    implementation('com.google.firebase:firebase-analytics:21.2.0') {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
         exclude module: "play-services-measurement"
@@ -110,8 +110,8 @@ dependencies {
     }
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
-    implementation 'com.google.firebase:firebase-perf-ktx:20.1.0'
-    implementation 'com.google.firebase:firebase-messaging:23.0.7'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.2.0'
+    implementation 'com.google.firebase:firebase-messaging:23.1.0'
 
     // ViewModel and LiveData
     def lifecycle_version = "2.5.1"
@@ -121,7 +121,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     // Glide (Image caching and management)
-    def glideVersion = "4.13.2"
+    def glideVersion = "4.14.2"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "com.github.bumptech.glide:glide:$glideVersion"
 
@@ -147,10 +147,10 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
     // Location
-    implementation "com.google.android.gms:play-services-location:20.0.0"
+    implementation "com.google.android.gms:play-services-location:21.0.1"
 
     // Facebook SDK
-    def facebookVersion = "14.1.0"
+    def facebookVersion = "15.1.0"
     implementation "com.facebook.android:facebook-share:$facebookVersion"
     implementation "com.facebook.android:facebook-applinks:$facebookVersion"
     implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
@@ -160,17 +160,17 @@ dependencies {
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // Koin for Android
-    implementation("io.insert-koin:koin-android:$insert_koin_version")
+    implementation("io.insert-koin:koin-android:$koin_android_version")
 
     // Koin core features
-    implementation("io.insert-koin:koin-core:$insert_koin_version")
+    implementation("io.insert-koin:koin-core:$koin_core_version")
 
     // tests
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-    def jupiter_version = "5.9.0"
+    def jupiter_version = "5.9.1"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
 
