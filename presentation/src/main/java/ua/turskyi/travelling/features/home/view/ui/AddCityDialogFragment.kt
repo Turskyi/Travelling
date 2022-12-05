@@ -29,6 +29,7 @@ import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
+import java.io.IOException
 import java.util.*
 
 class AddCityDialogFragment : DialogFragment() {
@@ -136,15 +137,21 @@ class AddCityDialogFragment : DialogFragment() {
              */
             if (Build.VERSION.RELEASE == getString(R.string.android_5_1)) {
                 alertDialog.cancel()
+            } else if (!isGpsEnabled()) {
+                toastLong(R.string.dialogue_turn_on_gps)
+                /* even if we have GPS enabled, it will not work if there is no internet,
+                 so we have to check that too.*/
+            } else if (!isOnline()) {
+                toastLong(R.string.dialog_no_internet)
             } else {
-                checkIfGpsEnabled(etCity)
+                insertCityIntoAnEmptyField(etCity)
             }
         }
 
         buttonDate.setOnClickListener {
             val monthYear: CharSequence = DateFormat.format(
                 getString(R.string.home_dialog_date_format),
-                Date()
+                Date(),
             )
             etMonth.setText(monthYear)
         }
@@ -174,26 +181,14 @@ class AddCityDialogFragment : DialogFragment() {
     }
 
     private fun initLocationServices() {
-        if (requireContext().getSystemService(Context.LOCATION_SERVICE) is LocationManager) {
-            locationManager = requireContext().getSystemService(
-                Context.LOCATION_SERVICE,
-            ) as LocationManager
+        val systemService: Any = requireContext().getSystemService(Context.LOCATION_SERVICE)
+        if (systemService is LocationManager) {
+            locationManager = systemService
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
-    private fun checkIfGpsEnabled(editText: LinedEditText) {
-        val gpsEnabled: Boolean = checkIfGpsEnabled()
-        if (!gpsEnabled) {
-            toast(R.string.dialogue_turn_on_gps)
-        } else if (!isOnline()) {
-            toast(R.string.dialog_no_internet)
-        } else {
-            insertCityIntoAnEmptyField(editText)
-        }
-    }
-
-    private fun checkIfGpsEnabled(): Boolean {
+    private fun isGpsEnabled(): Boolean {
         var gpsEnabled = false
         try {
             gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -218,12 +213,17 @@ class AddCityDialogFragment : DialogFragment() {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ),
-                resources.getInteger(R.integer.location_access_request_code)
+                resources.getInteger(R.integer.location_access_request_code),
             )
         } else {
             val findLastLocationTask: Task<Location> = fusedLocationClient.lastLocation
-            findLastLocationTask.addOnSuccessListener { location: Location ->
-                setCityName(location, editText)
+            findLastLocationTask.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    setCityName(location, editText)
+                } else {
+                    toastLong(R.string.dialog_hold_on)
+                    addChangedLocation(editText)
+                }
             }.addOnFailureListener { exception: java.lang.Exception ->
                 toastLong(exception.localizedMessage ?: exception.stackTraceToString())
                 addChangedLocation(editText)
@@ -252,14 +252,17 @@ class AddCityDialogFragment : DialogFragment() {
 
     private fun setCityName(location: Location, editText: LinedEditText) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-
-        @Suppress("DEPRECATION")
-        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
-            location.latitude,
-            location.longitude,
-            1,
-        )
-        val cityName: String? = addresses?.first()?.locality
-        editText.setText(cityName)
+        try {
+            @Suppress("DEPRECATION")
+            val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+                location.latitude,
+                location.longitude,
+                1,
+            )
+            val cityName: String? = addresses?.first()?.locality
+            editText.setText(cityName)
+        } catch (exception: IOException) {
+            toastLong(exception.localizedMessage ?: exception.stackTraceToString())
+        }
     }
 }
