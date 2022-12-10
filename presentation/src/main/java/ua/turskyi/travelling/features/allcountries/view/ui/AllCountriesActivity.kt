@@ -4,11 +4,14 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Window
 import android.view.WindowManager
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
@@ -56,13 +59,6 @@ class AllCountriesActivity : AppCompatActivity() {
         initObservers()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        setResult(RESULT_CANCELED)
-        @Suppress("DEPRECATION")
-        super.onBackPressed()
-    }
-
     private fun initView() {
         binding = ActivityAllCountriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -104,8 +100,7 @@ class AllCountriesActivity : AppCompatActivity() {
 
             }
         binding.toolbar.setNavigationOnClickListener {
-            @Suppress("DEPRECATION")
-            onBackPressed()
+            onBackPressedDispatcher.onBackPressed()
         }
         adapter.onCountryClickListener = ::addToVisited
         adapter.onCountryLongClickListener = ::sendToGoogleMapToShowGeographicalLocation
@@ -118,6 +113,21 @@ class AllCountriesActivity : AppCompatActivity() {
             }
         })
         binding.floatBtnInfo.setOnClickListener { openInfoDialog(getString(R.string.txt_info_all_countries)) }
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) { exitOnBackPressed() }
+        } else {
+            onBackPressedDispatcher.addCallback(
+                this,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        exitOnBackPressed()
+                    }
+                },
+            )
+        }
     }
 
     private fun initObservers() {
@@ -202,5 +212,9 @@ class AllCountriesActivity : AppCompatActivity() {
             duration = 400
         }.start()
         showKeyboard()
+    }
+
+    fun exitOnBackPressed() {
+        setResult(RESULT_CANCELED)
     }
 }
