@@ -25,7 +25,7 @@
     <string name="home_dialog_date_format" translatable="false">MMMM yyyy</string>
     <string name="day_month_year" translatable="false">dd.MM.yyyy</string>
     <string name="android_5_1" translatable="false">5.1</string>
-    <string name="media_providers" translatable="false">com.android.providers.media</string>
+    <string name="media_providers" translatable="false" tools:keep="@string/media_providers">com.android.providers.media</string>
     <string name="image_and_jpeg_type" translatable="false">image/jpeg</string>
     <string name="image_type" translatable="false">image/*</string>
     <string name="geo_location" translatable="false">geo:0,0?q=%1$s</string>

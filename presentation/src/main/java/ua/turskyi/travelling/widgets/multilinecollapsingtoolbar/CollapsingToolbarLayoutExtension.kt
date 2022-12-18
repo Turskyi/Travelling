@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package ua.turskyi.travelling.widgets.multilinecollapsingtoolbar
 
 import android.animation.ValueAnimator

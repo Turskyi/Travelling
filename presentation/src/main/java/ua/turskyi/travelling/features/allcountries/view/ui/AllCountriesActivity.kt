@@ -36,7 +36,6 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private val viewModel: AllCountriesActivityViewModel by inject()
 
-    @Suppress("unused")
     private val adapter: AllCountriesAdapter by inject()
 
     @Suppress("unused")

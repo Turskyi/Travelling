@@ -36,7 +36,6 @@ class AddCityDialogFragment : DialogFragment() {
 
     companion object {
         // ARG_ID is used here in this class, without need to make it public
-        @Suppress("unused")
         private const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {

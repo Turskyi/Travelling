@@ -7,8 +7,10 @@ plugins {
 
 android {
     compileSdkVersion rootProject.compile_sdk_version
+    //noinspection GroovyAssignabilityCheck
     buildToolsVersion rootProject.build_tools_version
 
+    //noinspection GroovyAssignabilityCheck
     defaultConfig {
         minSdkVersion rootProject.min_sdk_version
         targetSdkVersion rootProject.target_sdk_version
