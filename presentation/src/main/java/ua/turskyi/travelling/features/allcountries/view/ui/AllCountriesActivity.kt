@@ -38,7 +38,6 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private val adapter: AllCountriesAdapter by inject()
 
-    @Suppress("unused")
     private lateinit var binding: ActivityAllCountriesBinding
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -63,7 +62,7 @@ class AllCountriesActivity : AppCompatActivity() {
         setContentView(binding.root)
         // init animated background
         binding.root.setBackgroundResource(R.drawable.gradient_list)
-        val animationDrawable: AnimationDrawable = binding.root.background as AnimationDrawable
+        val animationDrawable: AnimationDrawable = binding.root.background
         animationDrawable.setEnterFadeDuration(resources.getInteger(R.integer.enter_fade_duration))
         animationDrawable.setExitFadeDuration(resources.getInteger(R.integer.exit_fade_duration))
         animationDrawable.start()

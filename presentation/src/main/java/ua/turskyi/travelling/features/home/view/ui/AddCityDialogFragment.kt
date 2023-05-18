@@ -48,7 +48,6 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    @Suppress("unused")
     private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
