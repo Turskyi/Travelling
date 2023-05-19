@@ -3,12 +3,12 @@ package ua.turskyi.travelling.features.allcountries.view.ui
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Window
 import android.view.WindowManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
@@ -36,10 +36,8 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private val viewModel: AllCountriesActivityViewModel by inject()
 
-    @Suppress("unused")
     private val adapter: AllCountriesAdapter by inject()
 
-    @Suppress("unused")
     private lateinit var binding: ActivityAllCountriesBinding
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -64,10 +62,13 @@ class AllCountriesActivity : AppCompatActivity() {
         setContentView(binding.root)
         // init animated background
         binding.root.setBackgroundResource(R.drawable.gradient_list)
-        val animationDrawable: AnimationDrawable = binding.root.background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(resources.getInteger(R.integer.enter_fade_duration))
-        animationDrawable.setExitFadeDuration(resources.getInteger(R.integer.exit_fade_duration))
-        animationDrawable.start()
+
+        val backgroundDrawable: Drawable = binding.root.background
+        if (backgroundDrawable is AnimationDrawable) {
+            backgroundDrawable.setEnterFadeDuration(resources.getInteger(R.integer.enter_fade_duration))
+            backgroundDrawable.setExitFadeDuration(resources.getInteger(R.integer.exit_fade_duration))
+            backgroundDrawable.start()
+        }
 
         binding.expandableSearchBar.isFocusableInTouchMode = true
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
@@ -75,8 +76,7 @@ class AllCountriesActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         binding.rvAllCountries.adapter = adapter
         binding.rvAllCountries.layoutManager = layoutManager
-        val w: Window = window
-        w.setFlags(
+        window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )

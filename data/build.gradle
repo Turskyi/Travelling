@@ -7,8 +7,10 @@ plugins {
 
 android {
     compileSdkVersion rootProject.compile_sdk_version
+    //noinspection GroovyAssignabilityCheck
     buildToolsVersion rootProject.build_tools_version
 
+    //noinspection GroovyAssignabilityCheck
     defaultConfig {
         minSdkVersion rootProject.min_sdk_version
         targetSdkVersion rootProject.target_sdk_version
@@ -29,12 +31,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = 11
-        targetCompatibility = 11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 
     packagingOptions {

@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.view.*
 import androidx.activity.result.ActivityResult
@@ -94,18 +96,6 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (viewModel.backPressedTiming + resources.getInteger(R.integer.desired_time_interval) > System.currentTimeMillis()) {
-            @Suppress("DEPRECATION")
-            super.onBackPressed()
-            return
-        } else {
-            binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
-        }
-        viewModel.backPressedTiming = System.currentTimeMillis()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -145,6 +135,23 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 }
             }
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (viewModel.isDoubleBackToExitPressed) {
+                finish()
+                return true
+            } else {
+                binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
+            }
+            viewModel.isDoubleBackToExitPressed = true
+            Handler(Looper.getMainLooper()).postDelayed(
+                { viewModel.isDoubleBackToExitPressed = false },
+                resources.getInteger(R.integer.desired_time_interval).toLong(),
+            )
+            return false
+        } else super.onKeyDown(keyCode, event)
     }
 
     private fun initView() {

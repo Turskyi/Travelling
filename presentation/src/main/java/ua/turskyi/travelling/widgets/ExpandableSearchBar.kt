@@ -91,7 +91,6 @@ class ExpandableSearchBar(context: Context, attrs: AttributeSet) : ConstraintLay
     /**
      * The input text of the [ExpandableSearchBar].
      */
-    @Suppress("unused")
     var text: String? = null
         set(value) {
             field = value
@@ -169,7 +168,6 @@ class ExpandableSearchBar(context: Context, attrs: AttributeSet) : ConstraintLay
     /**
      * The listener for search actions.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
     var onSearchActionListener: OnSearchActionListener? = null
 
 
@@ -414,6 +412,7 @@ class ExpandableSearchBar(context: Context, attrs: AttributeSet) : ConstraintLay
     /**
      * Interface definition for ExpandableSearchBar callbacks.
      */
+    @Suppress("EmptyMethod")
     interface OnSearchActionListener {
         /**
          * Invoked when SearchBar opened or closed

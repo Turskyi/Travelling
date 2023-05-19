@@ -29,13 +29,13 @@ import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.isOnline
 import ua.turskyi.travelling.widgets.LinedEditText
+import java.io.IOException
 import java.util.*
 
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
         // ARG_ID is used here in this class, without need to make it public
-        @Suppress("unused")
         private const val ARG_ID = "id"
 
         fun newInstance(id: Int): AddCityDialogFragment {
@@ -48,7 +48,6 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
-    @Suppress("unused")
     private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
@@ -251,13 +250,17 @@ class AddCityDialogFragment : DialogFragment() {
 
     private fun setCityName(location: Location, editText: LinedEditText) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
-        @Suppress("DEPRECATION")
-        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
-            location.latitude,
-            location.longitude,
-            1,
-        )
-        val cityName: String? = addresses?.first()?.locality
-        editText.setText(cityName)
+        try {
+            @Suppress("DEPRECATION")
+            val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+                location.latitude,
+                location.longitude,
+                1,
+            )
+            val cityName: String? = addresses?.first()?.locality
+            editText.setText(cityName)
+        } catch (exception: IOException) {
+            toastLong(exception.localizedMessage ?: exception.stackTraceToString())
+        }
     }
 }

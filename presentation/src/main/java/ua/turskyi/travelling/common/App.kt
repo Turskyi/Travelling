@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package ua.turskyi.travelling.common
 
 import android.app.Application
@@ -29,3 +27,4 @@ class App : Application() {
         }
     }
 }
+

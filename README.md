@@ -26,9 +26,7 @@ after every push to the **dev** branch,
 to [deliver](https://appcenter.ms/users/Turskyi/apps/Travelling/build/branches/master) new release
 app bundle to **Google Play** after every push to **master** branch;
 
-• Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel)
-and [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-;
+• Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel);
 
 • Architecture
 Components: [Paging](https://developer.android.com/topic/libraries/architecture/paging),
@@ -37,7 +35,7 @@ Components: [Paging](https://developer.android.com/topic/libraries/architecture/
 
 • Database: [Room](https://developer.android.com/training/data-storage/room);
 
-• Dependency injection: [Koin](https://insert-koin.io/docs/reference/introduction);
+• Service Locator: [Koin](https://insert-koin.io/docs/reference/introduction);
 
 • Asynchronous programming: [Coroutines](https://developer.android.com/kotlin/coroutines);
 
@@ -60,8 +58,8 @@ Components: [Paging](https://developer.android.com/topic/libraries/architecture/
 
 • Screenshots:
 
-<img src="/screenshots/device-2020-06-05-085243.png?raw=true" width="200" ><img src="/screenshots/device-2020-06-05-085456.png?raw=true" width="200" >
-<img src="/screenshots/device-2020-06-05-090524.png?raw=true" width="200" ><img src="/screenshots/device-2020-06-28-164528.png?raw=true" width="300" >
-<img src="/screenshots/device-2020-10-18-103522.png?raw=true" width="200" ><img src="/screenshots/device-2020-10-18-103111.png?raw=true" width="200" >
-<img src="/screenshots/device-2020-06-05-090129.png?raw=true" width="200" ><img src="/screenshots/device-2020-06-05-091508.png?raw=true" width="200" >
-<img src="/screenshots/device-2020-06-05-094730.png?raw=true" width="300" ><img src="/screenshots/device-2020-06-28-162902.png?raw=true" width="400" >
+<img src="screenshots/device-2020-06-05-085243.png" width="200" ><img src="screenshots/device-2020-06-05-085456.png" width="200" >
+<img src="screenshots/device-2020-06-05-090524.png" width="200" ><img src="screenshots/device-2020-06-28-164528.png" width="300" >
+<img src="screenshots/device-2020-10-18-103522.png" width="200" ><img src="screenshots/device-2020-10-18-103111.png" width="200" >
+<img src="screenshots/device-2020-06-05-090129.png" width="200" ><img src="screenshots/device-2020-06-05-091508.png" width="200" >
+<img src="screenshots/device-2020-06-05-094730.png" width="300" ><img src="screenshots/device-2020-06-28-162902.png" width="400" >

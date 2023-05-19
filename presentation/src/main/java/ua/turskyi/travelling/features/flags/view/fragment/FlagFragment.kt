@@ -183,7 +183,7 @@ class FlagFragment : Fragment() {
             }
         }
         val visitedCountriesObserver: Observer<List<Country>> =
-            Observer<List<Country>> { countries: List<Country> ->
+            Observer { countries: List<Country> ->
                 val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
                 if (mChangeFlagListener != null) {
@@ -333,7 +333,7 @@ class FlagFragment : Fragment() {
         val fileOutputStream: FileOutputStream = file.outputStream()
         fileOutputStream.use { inputStream.copyTo(it) }
         val visitedCountriesObserverForLocalPhotos: Observer<List<Country>> =
-            Observer<List<Country>> { visitedCountries: List<Country> ->
+            Observer { visitedCountries: List<Country> ->
                 viewModel.updateSelfie(
                     id = visitedCountries[position].id,
                     filePath = file.absolutePath,

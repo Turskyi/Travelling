@@ -10,9 +10,10 @@ buildscript {
         min_sdk_version = 21
         target_sdk_version = 33
 /* to check the latest version @see
-https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview */
-        version_code = 18
-        version_name = "2.0.7"
+https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview
+*/
+        version_code = 19
+        version_name = "2.0.8"
     }
     repositories {
         // Google's Maven repository
@@ -21,7 +22,7 @@ https://play.google.com/console/u/0/developers/6867856033872987263/app/497523849
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.android.tools.build:gradle:8.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
@@ -110,6 +111,6 @@ ext {
     SIGNING_KEY_RELEASE_KEY_PASSWORD = getParam("SIGNING_KEY_RELEASE_KEY_PASSWORD")
 }
 
-task clean(type: Delete) {
+tasks.register('clean') {
     delete rootProject.buildDir
 }
