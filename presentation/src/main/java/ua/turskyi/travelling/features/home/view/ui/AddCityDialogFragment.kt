@@ -48,6 +48,10 @@ class AddCityDialogFragment : DialogFragment() {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Suppress("unused")
+>>>>>>> master
     private val viewModel: AddCityDialogViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
@@ -250,6 +254,7 @@ class AddCityDialogFragment : DialogFragment() {
 
     private fun setCityName(location: Location, editText: LinedEditText) {
         val geoCoder = Geocoder(requireContext(), Locale.getDefault())
+<<<<<<< HEAD
         try {
             @Suppress("DEPRECATION")
             val addresses: MutableList<Address>? = geoCoder.getFromLocation(
@@ -262,5 +267,15 @@ class AddCityDialogFragment : DialogFragment() {
         } catch (exception: IOException) {
             toastLong(exception.localizedMessage ?: exception.stackTraceToString())
         }
+=======
+        @Suppress("DEPRECATION")
+        val addresses: MutableList<Address>? = geoCoder.getFromLocation(
+            location.latitude,
+            location.longitude,
+            1,
+        )
+        val cityName: String? = addresses?.first()?.locality
+        editText.setText(cityName)
+>>>>>>> master
     }
 }
