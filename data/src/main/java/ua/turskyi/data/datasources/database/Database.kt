@@ -1,4 +1,4 @@
-package ua.turskyi.data.database.room
+package ua.turskyi.data.datasources.database
 
 import android.content.Context
 import androidx.room.Room.databaseBuilder
@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ua.turskyi.data.BuildConfig
 import ua.turskyi.data.R
-import ua.turskyi.data.database.room.dao.CountriesDao
+import ua.turskyi.data.datasources.database.dao.CountriesDao
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
 import androidx.room.Database as DB

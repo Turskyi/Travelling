@@ -1,4 +1,4 @@
-package ua.turskyi.data.network.service
+package ua.turskyi.data.datasources.webservice
 
 import retrofit2.Call
 import retrofit2.http.GET

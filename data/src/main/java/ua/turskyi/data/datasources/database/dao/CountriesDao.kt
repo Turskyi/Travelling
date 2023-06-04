@@ -1,4 +1,4 @@
-package ua.turskyi.data.database.room.dao
+package ua.turskyi.data.datasources.database.dao
 
 import androidx.room.*
 import ua.turskyi.data.entities.local.CityEntity

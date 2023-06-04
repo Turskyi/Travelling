@@ -26,16 +26,9 @@ after every push to the **dev** branch,
 to [deliver](https://appcenter.ms/users/Turskyi/apps/Travelling/build/branches/master) new release
 app bundle to **Google Play** after every push to **master** branch;
 
-• Architectural pattern: [MVVM](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel);
-
-• Architecture
-Components: [Paging](https://developer.android.com/topic/libraries/architecture/paging),
-[LiveData](https://developer.android.com/topic/libraries/architecture/livedata),
-[ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
-
 • Database: [Room](https://developer.android.com/training/data-storage/room);
 
-• Service Locator: [Koin](https://insert-koin.io/docs/reference/introduction);
+• Dependency injection: [Koin](https://insert-koin.io/docs/reference/introduction);
 
 • Asynchronous programming: [Coroutines](https://developer.android.com/kotlin/coroutines);
 
@@ -48,7 +41,7 @@ Components: [Paging](https://developer.android.com/topic/libraries/architecture/
 • UI components: [Lottie](https://lottiefiles.com/what-is-lottie),
 [PhotoView](https://github.com/Baseflow/PhotoView),
 [ViewPager2](https://developer.android.com/jetpack/androidx/releases/viewpager2),
-[data chart](https://weeklycoding.com/mpandroidchart/),
+[Data chart](https://weeklycoding.com/mpandroidchart/),
 [RecyclerView](http://www.recyclerview.org/),
 [Loading SVG](https://github.com/corouteam/GlideToVectorYou),
 [Glide](https://bumptech.github.io/glide/),
@@ -60,6 +53,14 @@ Components: [Paging](https://developer.android.com/topic/libraries/architecture/
 purpose of the app, all variables, methods, and resource IDs are descriptively named such that
 another developer reading the code can easily understand their function, no unnecessary blank lines,
 no unused variables or methods, no commented out code.
+
+• Architecture Components:
+[Paging](https://developer.android.com/topic/libraries/architecture/paging),
+[LiveData](https://developer.android.com/topic/libraries/architecture/livedata),
+[ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
+
+• Architectural pattern:
+<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel"><img src="documentation/android_model_view_viewmodel.jpeg" width="800" ></a>
 
 • Screenshots:
 

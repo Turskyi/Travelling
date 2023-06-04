@@ -14,10 +14,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ua.turskyi.data.BuildConfig.DATABASE_NAME
 import ua.turskyi.data.BuildConfig.HOST_URL
-import ua.turskyi.data.database.room.Database
-import ua.turskyi.data.database.room.datasource.DatabaseSource
-import ua.turskyi.data.network.datasource.NetSource
-import ua.turskyi.data.network.service.CountriesApi
+import ua.turskyi.data.datasources.database.Database
+import ua.turskyi.data.datasources.database.datasource.DatabaseSource
+import ua.turskyi.data.datasources.webservice.CountriesApi
+import ua.turskyi.data.datasources.webservice.NetSource
 import ua.turskyi.data.repository.CountriesRepositoryImpl
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.domain.interactor.CountriesInteractor
