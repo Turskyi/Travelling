@@ -1,3 +1,4 @@
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
 # Travelling [![Build status](https://build.appcenter.ms/v0.1/apps/6ef58ca2-721c-4622-bfe7-336d4c6d7d01/branches/master/badge)](https://appcenter.ms)
 
 An Android mobile application, which gives a convenient way to collect all countries that you have
@@ -60,8 +61,11 @@ no unused variables or methods, no commented out code.
 [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel);
 
 • Architectural pattern:
-<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel"><img src="documentation/android_model_view_viewmodel.jpeg" width="800" ></a>
-
+<br>
+<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel">
+<img src="documentation/android_model_view_viewmodel.jpeg" width="800" >
+</a>
+</br>
 • Screenshots:
 
 <img src="screenshots/device-2020-06-05-085243.png" width="200" ><img src="screenshots/device-2020-06-05-085456.png" width="200" >
