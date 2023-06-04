@@ -22,7 +22,7 @@ https://play.google.com/console/u/0/developers/6867856033872987263/app/497523849
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.1'
+        classpath 'com.android.tools.build:gradle:8.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 

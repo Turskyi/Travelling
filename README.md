@@ -56,6 +56,11 @@ Components: [Paging](https://developer.android.com/topic/libraries/architecture/
 
 • Api: https://restcountries.com/#api-endpoints-v2-all;
 
+• **Code Readability:** code is easily readable such that a fellow programmer can understand the
+purpose of the app, all variables, methods, and resource IDs are descriptively named such that
+another developer reading the code can easily understand their function, no unnecessary blank lines,
+no unused variables or methods, no commented out code.
+
 • Screenshots:
 
 <img src="screenshots/device-2020-06-05-085243.png" width="200" ><img src="screenshots/device-2020-06-05-085456.png" width="200" >
