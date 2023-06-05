@@ -48,8 +48,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    /* data module which is the inner (lower) layer of the project knows only about domain layer
-    * (a layer with interfaces which communicates with outer (top) level of the project ) */
+    /* data module knows only about the domain layer, a layer with interfaces which communicates
+    with another presentation, outer (top) level of the project */
     implementation project(':domain')
 
     // kotlin

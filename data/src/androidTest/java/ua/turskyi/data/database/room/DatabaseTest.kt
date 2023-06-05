@@ -10,7 +10,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import ua.turskyi.data.database.room.dao.CountriesDao
+import ua.turskyi.data.datasources.database.Database
+import ua.turskyi.data.datasources.database.dao.CountriesDao
 import ua.turskyi.data.entities.local.CountryEntity
 
 @RunWith(AndroidJUnit4::class)

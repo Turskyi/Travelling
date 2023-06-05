@@ -1,6 +1,6 @@
-package ua.turskyi.data.database.room.datasource
+package ua.turskyi.data.datasources.database.datasource
 
-import ua.turskyi.data.database.room.dao.CountriesDao
+import ua.turskyi.data.datasources.database.dao.CountriesDao
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
 
