@@ -12,8 +12,8 @@ buildscript {
 /* to check the latest version @see
 https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview
 */
-        version_code = 20
-        version_name = "2.0.9"
+        version_code = 21
+        version_name = "2.1.0"
     }
     repositories {
         // Google's Maven repository

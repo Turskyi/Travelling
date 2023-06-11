@@ -32,7 +32,6 @@ import ua.turskyi.travelling.widgets.LinedEditText
 import java.io.IOException
 import java.util.*
 
-@Suppress("unused")
 class AddCityDialogFragment : DialogFragment() {
 
     companion object {
