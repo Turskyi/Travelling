@@ -11,53 +11,53 @@ interface CountriesRepository {
         id: Int,
         filePath: String,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun markAsVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun setVisitedModelCountriesFromDb(
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun setCities(
         onSuccess: (List<CityModel>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun setCountNotVisitedCountries(
         onSuccess: (Int) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun removeFromVisited(
         country: CountryModel,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun removeCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun insertCity(
         city: CityModel,
         onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun setCountriesByRange(
         to: Int,
         from: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 
     suspend fun loadCountriesByNameAndRange(
@@ -65,6 +65,6 @@ interface CountriesRepository {
         limit: Int,
         offset: Int,
         onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
+        onError: (Exception) -> Unit,
     )
 }
