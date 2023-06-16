@@ -1,4 +1,5 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
+
 # Travelling [![Build status](https://build.appcenter.ms/v0.1/apps/6ef58ca2-721c-4622-bfe7-336d4c6d7d01/branches/master/badge)](https://appcenter.ms)
 
 An Android mobile application, which gives a convenient way to collect all countries that you have
@@ -6,19 +7,14 @@ visited.
 
 ## PROJECT SPECIFICATION
 
-• App store: [Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling);
-
-• Manual testing invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d;
-
-• Operating system: [Android](https://www.android.com/);
-
 • Programming language: [Kotlin](https://kotlinlang.org/);
-
-• Interface: [XML](https://developer.android.com/guide/topics/ui/declaring-layout);
 
 • SDK: [Android](https://developer.android.com/studio/intro);
 
-• Embedded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
+• Interface: [XML](https://developer.android.com/guide/topics/ui/declaring-layout);
+
+• State management approach:
+[ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel);
 
 • CI/CD: [GitHub Actions](https://docs.github.com/en/actions) is used to deliver new Android
 Package (APK) to [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
@@ -26,6 +22,19 @@ after every push to the **dev** branch,
 [Visual Studio App Center](https://docs.microsoft.com/en-us/appcenter/) is used
 to [deliver](https://appcenter.ms/users/Turskyi/apps/Travelling/build/branches/master) new release
 app bundle to **Google Play** after every push to **master** branch;
+
+• **Code Readability:** code is easily readable with no unnecessary blank lines, no unused variables
+or methods, and no commented-out code, all variables, methods, and resource IDs are descriptively
+named such that
+another developer reading the code can easily understand their function.
+
+• App store: [Google Play](https://play.google.com/store/apps/details?id=ua.turskyi.travelling);
+
+• Manual testing invite link: https://appdistribution.firebase.dev/i/c6a7f44dbe6de66d;
+
+• Operating system: [Android](https://www.android.com/);
+
+• Embedded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
 
 • Database: [Room](https://developer.android.com/training/data-storage/room);
 
@@ -49,11 +58,6 @@ app bundle to **Google Play** after every push to **master** branch;
 [Data Binding](https://developer.android.com/topic/libraries/data-binding);
 
 • Api: https://restcountries.com/#api-endpoints-v2-all;
-
-• **Code Readability:** code is easily readable such that a fellow programmer can understand the
-purpose of the app, all variables, methods, and resource IDs are descriptively named such that
-another developer reading the code can easily understand their function, no unnecessary blank lines,
-no unused variables or methods, no commented out code.
 
 • Architecture Components:
 [Paging](https://developer.android.com/topic/libraries/architecture/paging),
