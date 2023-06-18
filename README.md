@@ -22,6 +22,8 @@ visited.
 
 • Dependency injection: [Koin](https://insert-koin.io/docs/reference/introduction);
 
+• Reactive programming: [Coroutines](https://developer.android.com/kotlin/coroutines);
+
 • Version control system: [Git](https://git-scm.com);
 
 • Git Hosting Service: [GitHub](https://github.com);
@@ -41,8 +43,6 @@ app bundle to **Google Play** after every push to **master** branch;
 • Operating system: [Android](https://www.android.com/);
 
 • Embedded SDK: [Facebook Sharing](https://developers.facebook.com/docs/sharing/android);
-
-• Asynchronous programming: [Coroutines](https://developer.android.com/kotlin/coroutines);
 
 • Google Play services: [Location](https://developer.android.com/training/location);
 
@@ -71,6 +71,7 @@ app bundle to **Google Play** after every push to **master** branch;
 <img src="documentation/android_model_view_viewmodel.jpeg" width="800" >
 </a>
 </br>
+
 • Screenshots:
 
 <img src="screenshots/device-2020-06-05-085243.png" width="200" >
