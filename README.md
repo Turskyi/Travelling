@@ -11,14 +11,14 @@ visited.
 
 • SDK: [Android](https://developer.android.com/studio/intro);
 
-• Database: [Room](https://developer.android.com/training/data-storage/room);
-
-• HTTP client: [Retrofit](https://square.github.io/retrofit/);
-
 • Interface: [XML](https://developer.android.com/guide/topics/ui/declaring-layout);
 
 • State management approach:
 [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel);
+
+• HTTP client: [Retrofit](https://square.github.io/retrofit/);
+
+• Database: [Room](https://developer.android.com/training/data-storage/room);
 
 • Dependency injection: [Koin](https://insert-koin.io/docs/reference/introduction);
 
