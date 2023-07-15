@@ -52,8 +52,8 @@ app bundle to **Google Play** after every push to **master** branch;
 
 • **Code Readability:** code is easily readable such that a fellow programmer can understand the
 purpose of the app, all variables, methods, and resource IDs are descriptively named such that
-another developer reading the code can easily understand their function, no unnecessary blank lines,
-no unused variables or methods, no commented out code.
+another developer reading the code can easily understand their function, with no unnecessary blank lines,
+no unused variables or methods, no commented-out code.
 
 • Architecture Components:
 [Paging](https://developer.android.com/topic/libraries/architecture/paging),
