@@ -5,10 +5,10 @@ buildscript {
     // Defining versions in a single place
     ext {
         // sdk versions
-        compile_sdk_version = 33
+        compile_sdk_version = 34
         build_tools_version = "30.0.3"
         min_sdk_version = 21
-        target_sdk_version = 33
+        target_sdk_version = 34
 /* to check the latest version @see
 https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview
 */
@@ -22,7 +22,7 @@ https://play.google.com/console/u/0/developers/6867856033872987263/app/497523849
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 

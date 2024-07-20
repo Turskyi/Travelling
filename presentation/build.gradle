@@ -114,7 +114,7 @@ dependencies {
     }
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
-    implementation 'com.google.firebase:firebase-perf-ktx:20.3.2'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.3.3'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
 
     // ViewModel and LiveData

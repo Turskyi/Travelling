@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.android.ext.koin.androidContext
@@ -48,8 +49,6 @@ val interactorsModule = module {
     factory { CountriesInteractor() }
 }
 
-// low (inner) level dependency injections
-
 val repositoriesModule = module {
     factory<CountriesRepository> { CountriesRepositoryImpl(CoroutineScope(SupervisorJob())) }
 }
@@ -59,7 +58,7 @@ val dataProvidersModule = module {
     single {
         OkHttpClient.Builder()
             .cache(get())
-            .addInterceptor { chain ->
+            .addInterceptor { chain: Interceptor.Chain ->
                 var request: Request = chain.request()
                 request = if (hasNetwork(androidContext())) {
                     request.newBuilder().header(
