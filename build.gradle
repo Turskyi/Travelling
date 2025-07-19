@@ -5,15 +5,15 @@ buildscript {
     // Defining versions in a single place
     ext {
         // sdk versions
-        compile_sdk_version = 34
+        compile_sdk_version = 35
         build_tools_version = "30.0.3"
         min_sdk_version = 21
-        target_sdk_version = 34
+        target_sdk_version = 35
 /* to check the latest version @see
 https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview
 */
-        version_code = 22
-        version_name = "2.1.1"
+        version_code = 23
+        version_name = "2.1.2"
     }
     repositories {
         // Google's Maven repository
@@ -22,8 +22,8 @@ https://play.google.com/console/u/0/developers/6867856033872987263/app/497523849
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
+        classpath 'com.android.tools.build:gradle:8.11.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
         // Google Services plugin (for firebase)
@@ -45,17 +45,20 @@ subprojects {
 
             // (Asynchronous programming) coroutines
             implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 
             // Retrofit2
             implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
             implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
 //            Room Database
+            //noinspection KaptUsageInsteadOfKsp
             kapt "androidx.room:room-compiler:$room_version"
 
             // Paging
-            implementation "androidx.paging:paging-runtime:$paging_version"
+            // Tried to upgrade to 3.3.6 and all versions between - does not compile.
+            //noinspection GradleDependency
+            implementation "androidx.paging:paging-runtime:2.1.2"
 
             /*  Bill of Materials for the Firebase platform.
              * When using the BoM, no need to specify versions in Firebase library dependencies */
@@ -70,11 +73,11 @@ subprojects {
             implementation "com.google.android.gms:play-services-basement:$play_services_basement_version"
 
             // Koin testing tools
-            testImplementation "io.insert-koin:koin-test:$koin_core_version"
+            testImplementation "io.insert-koin:koin-test:4.1.0"
             // Needed JUnit version
-            testImplementation "io.insert-koin:koin-test-junit4:$koin_core_version"
+            testImplementation "io.insert-koin:koin-test-junit4:4.1.0"
 
-            testImplementation "com.google.truth:truth:1.1.3"
+            testImplementation "com.google.truth:truth:1.4.4"
         }
     }
 }
@@ -112,5 +115,6 @@ ext {
 }
 
 tasks.register('clean') {
+    //noinspection GrDeprecatedAPIUsage
     delete rootProject.buildDir
 }

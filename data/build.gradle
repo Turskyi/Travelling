@@ -8,7 +8,6 @@ plugins {
 android {
     compileSdkVersion rootProject.compile_sdk_version
     //noinspection GroovyAssignabilityCheck
-    buildToolsVersion rootProject.build_tools_version
 
     //noinspection GroovyAssignabilityCheck
     defaultConfig {
@@ -70,6 +69,7 @@ dependencies {
     // database
     api "androidx.room:room-runtime:$room_version"
     api "androidx.room:room-ktx:$room_version"
+    //noinspection KaptUsageInsteadOfKsp
     kapt "androidx.room:room-compiler:$room_version"
 
     // test
