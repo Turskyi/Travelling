@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.internal.KaptGenerateStubsTask
+
 //file:noinspection GrUnresolvedAccess
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
@@ -32,4 +34,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Koin core features
     api "io.insert-koin:koin-core:$koin_core_version"
+}
+
+tasks.withType(KaptGenerateStubsTask.class).configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
 }

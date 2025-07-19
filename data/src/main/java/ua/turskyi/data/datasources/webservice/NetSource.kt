@@ -14,22 +14,24 @@ class NetSource(private val countriesApi: CountriesApi) : KoinComponent {
     fun getCountryNetList(
         onComplete: (List<CountryResponse>?) -> Unit,
         onError: (Exception) -> Unit,
-    ) = countriesApi.getCategoriesFromApi().enqueue(
-        object : Callback<CountriesResponse> {
-            override fun onFailure(call: Call<CountriesResponse>, t: Throwable) {
-                onError(NetworkErrorException(t))
-            }
-
-            override fun onResponse(
-                call: Call<CountriesResponse>,
-                response: Response<CountriesResponse>
-            ) {
-                if (response.isSuccessful) {
-                    onComplete(response.body())
-                } else {
-                    onError(response.code().throwException(response.message()))
+    ) {
+        countriesApi.getCategoriesFromApi().enqueue(
+            object : Callback<CountriesResponse> {
+                override fun onFailure(call: Call<CountriesResponse>, t: Throwable) {
+                    onError(NetworkErrorException(t))
                 }
-            }
-        },
-    )
+
+                override fun onResponse(
+                    call: Call<CountriesResponse>,
+                    response: Response<CountriesResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        onComplete(response.body())
+                    } else {
+                        onError(response.code().throwException(response.message()))
+                    }
+                }
+            },
+        )
+    }
 }

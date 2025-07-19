@@ -32,6 +32,7 @@ class CountriesRepositoryImpl(private val applicationScope: CoroutineScope) : Co
     ) {
         netSource.getCountryNetList(
             onComplete = { countryNetList: List<CountryResponse>? ->
+
                 countryNetList?.mapNetListToModelList()
                     ?.let { modelList: MutableList<CountryModel> ->
                         addModelsToDb(
