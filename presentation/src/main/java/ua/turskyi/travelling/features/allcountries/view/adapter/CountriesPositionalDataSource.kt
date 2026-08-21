@@ -6,27 +6,32 @@ import androidx.paging.PositionalDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
-import java.util.*
-import kotlin.concurrent.schedule
-import kotlin.coroutines.CoroutineContext
 
 internal class CountriesPositionalDataSource(
     private val interactor: CountriesInteractor,
-    private val viewmodelScope: CoroutineScope,
 ) :
     PositionalDataSource<Country>(), CoroutineScope {
 
-    private var job: Job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+    private var job: Job = SupervisorJob()
+    // PagedList waits for the initial callback while it is built on the UI thread.
+    // Dispatching this work to Main would therefore deadlock the screen launch.
+    override val coroutineContext: kotlin.coroutines.CoroutineContext
+        get() = Dispatchers.IO + job
 
     private val _visibilityLoader = MutableLiveData<Int>()
     val visibilityLoader: MutableLiveData<Int>
         get() = _visibilityLoader
+
+    init {
+        addInvalidatedCallback {
+            job.cancel()
+        }
+    }
 
     override fun loadInitial(
         params: LoadInitialParams,
@@ -34,22 +39,18 @@ internal class CountriesPositionalDataSource(
     ) {
         launch {
             interactor.setCountriesByRange(
-                params.requestedLoadSize, params.requestedStartPosition,
-                { initCountries ->
-                    callback.onResult(
-                        initCountries.mapModelListToCountryList(),
-                        params.requestedStartPosition
-                    )
-                    /* creating a little delay of stopping animation for smooth loading*/
-                    Timer().schedule(1500) {
-                        _visibilityLoader.postValue(GONE)
-                    }
-                },
-                { exception ->
-                    exception.printStackTrace()
-                    callback.onResult(emptyList(), params.requestedStartPosition)
-                    _visibilityLoader.postValue(GONE)
-                })
+                params.requestedLoadSize, params.requestedStartPosition
+            ).onSuccess { initCountries ->
+                callback.onResult(
+                    initCountries.mapModelListToCountryList(),
+                    params.requestedStartPosition
+                )
+                _visibilityLoader.postValue(GONE)
+            }.onFailure { exception ->
+                exception.printStackTrace()
+                callback.onResult(emptyList(), params.requestedStartPosition)
+                _visibilityLoader.postValue(GONE)
+            }
         }
     }
 
@@ -57,18 +58,16 @@ internal class CountriesPositionalDataSource(
         params: LoadRangeParams,
         callback: LoadRangeCallback<Country>
     ) {
-        viewmodelScope.launch {
+        launch {
             interactor.setCountriesByRange(params.startPosition + params.loadSize,
-                params.startPosition,
-                { allCountries ->
-                    callback.onResult(allCountries.mapModelListToCountryList())
-                },
-                { exception ->
-                    exception.printStackTrace()
-                    callback.onResult(emptyList())
-                    _visibilityLoader.postValue(GONE)
-                })
+                params.startPosition
+            ).onSuccess { allCountries ->
+                callback.onResult(allCountries.mapModelListToCountryList())
+            }.onFailure { exception ->
+                exception.printStackTrace()
+                callback.onResult(emptyList())
+                _visibilityLoader.postValue(GONE)
+            }
         }
-        job.cancel()
     }
 }

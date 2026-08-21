@@ -3,12 +3,13 @@ package ua.turskyi.travelling.features.allcountries.viewmodel
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
@@ -17,7 +18,6 @@ import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.MainThreadExecutor
 import ua.turskyi.travelling.utils.extensions.mapToModel
-import java.util.concurrent.Executors
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
@@ -25,9 +25,11 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     val notVisitedCountriesNumLiveData: MutableLiveData<Int>
         get() = _notVisitedCountriesNumLiveData
 
-    private var _visibilityLoader = MutableLiveData<Int>()
+    private var _visibilityLoader = MediatorLiveData<Int>()
     val visibilityLoader: LiveData<Int>
         get() = _visibilityLoader
+
+    private var currentVisibilitySource: LiveData<Int>? = null
 
     var pagedList: PagedList<Country>
 
@@ -44,15 +46,13 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     init {
         _visibilityLoader.postValue(VISIBLE)
         pagedList = getCountryList(searchQuery)
-        viewModelScope.launch { getNotVisitedCountriesNum() }
+        getNotVisitedCountriesNum()
     }
 
     private fun getCountryList(searchQuery: String): PagedList<Country> {
 
         // PagedList
         val config: PagedList.Config = PagedList.Config.Builder()
-            /* If "true", then it should be created another viewType in Adapter "onCreateViewHolder"
-              while uploading */
             .setEnablePlaceholders(false)
             .setInitialLoadSizeHint(20)
             .setPageSize(20)
@@ -60,45 +60,53 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
         return if (searchQuery == "" || searchQuery == "%%") {
             // DataSource
-            val dataSource = CountriesPositionalDataSource(interactor, viewModelScope)
-            _visibilityLoader = dataSource.visibilityLoader
+            val dataSource = CountriesPositionalDataSource(interactor)
+            updateVisibilitySource(dataSource.visibilityLoader)
             PagedList.Builder(dataSource, config)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setFetchExecutor(Dispatchers.IO.asExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         } else {
             val filteredDataSource = FilteredPositionalDataSource(countryName = searchQuery, interactor = interactor)
+            updateVisibilitySource(filteredDataSource.visibilityLoader)
             PagedList.Builder(filteredDataSource, config)
-                .setFetchExecutor(Executors.newSingleThreadExecutor())
+                .setFetchExecutor(Dispatchers.IO.asExecutor())
                 .setNotifyExecutor(MainThreadExecutor())
                 .build()
         }
     }
 
-    private fun getNotVisitedCountriesNum(): Job {
-        return viewModelScope.launch {
-            interactor.setNotVisitedCountriesNum({ num: Int ->
+    private fun updateVisibilitySource(source: LiveData<Int>) {
+        currentVisibilitySource?.let { _visibilityLoader.removeSource(it) }
+        currentVisibilitySource = source
+        _visibilityLoader.addSource(source) {
+            _visibilityLoader.value = it
+        }
+    }
+
+    private fun getNotVisitedCountriesNum() {
+        viewModelScope.launch {
+            interactor.setNotVisitedCountriesNum().onSuccess { num ->
                 _notVisitedCountriesNumLiveData.postValue(num)
-            }, { exception: Exception ->
+            }.onFailure { exception ->
                 _visibilityLoader.postValue(GONE)
-                // Trigger the event by setting a new Event as a new value
-                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.stackTraceToString()))
-            })
+                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
+            }
         }
     }
 
     fun markAsVisited(country: Country, onSuccess: () -> Unit) {
         _visibilityLoader.postValue(VISIBLE)
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.markAsVisitedCountryModel(country.mapToModel(), {
+            interactor.markAsVisitedCountryModel(country.mapToModel()).onSuccess {
                 viewModelScope.launch(Dispatchers.Main) {
                     onSuccess()
                 }
-            }, { exception: Exception ->
+            }.onFailure { exception ->
                 _visibilityLoader.postValue(GONE)
-                // Trigger the event by setting a new Event as a new value
-                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.stackTraceToString()))
-            })
+                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
+            }
         }
     }
+
 }

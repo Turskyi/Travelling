@@ -4,10 +4,8 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
+    android:background="@android:color/black"
     android:animationCache="true"
-    android:fitsSystemWindows="true"
-    android:persistentDrawingCache="animation"
     tool:ignore="Overdraw"
     tool:keep="@layout/activity_all_countries">
 
@@ -65,23 +63,23 @@
         android:id="@+id/tv_no_results"
         style="@style/TextViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:fontFamily="casual"
         android:gravity="center"
         android:text="@string/all_countries_no_results"
         android:textColor="@android:color/white"
         android:textSize="@dimen/headline6"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
-    <com.airbnb.lottie.LottieAnimationView
+    <ProgressBar
         android:id="@+id/pb"
-        style="@style/ProgressBarStyle"
-        android:layout_marginTop="@dimen/offset_64"
-        android:padding="@dimen/offset_4"
-        android:scaleType="centerInside"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/anim_flight" />
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
     <!-- END: invisible views -->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

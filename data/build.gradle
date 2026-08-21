@@ -12,13 +12,16 @@ android {
     //noinspection GroovyAssignabilityCheck
     defaultConfig {
         minSdkVersion rootProject.min_sdk_version
-        targetSdkVersion rootProject.target_sdk_version
 
         buildConfigField "String", "HOST_URL", "\"${rootProject.HOST_URL}\""
         buildConfigField "String", "DATABASE_NAME", "\"${rootProject.DATABASE_NAME}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -42,6 +45,12 @@ android {
         resources.excludes.add("META-INF/*")
     }
     namespace 'ua.turskyi.data'
+    testOptions {
+        targetSdk 37
+    }
+    lint {
+        targetSdk 37
+    }
 }
 
 dependencies {
@@ -52,34 +61,34 @@ dependencies {
     implementation project(':domain')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    api libs.kotlin.reflect
 
     // Koin for Android
-    api("io.insert-koin:koin-android:$koin_android_version")
+    api libs.koin.android
     // Koin core features
-    api("io.insert-koin:koin-core:$koin_core_version")
+    api libs.koin.core
 
     // network
-    api "com.squareup.okhttp3:okhttp:$okhttp_version"
-    api "com.squareup.retrofit2:retrofit:$retrofit_version"
-    api "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    api "com.google.code.gson:gson:$gson_version"
-    api "com.auth0:java-jwt:$jwt_version"
+    api libs.okhttp
+    api libs.retrofit
+    api libs.converter.gson
+    api libs.gson
+    api libs.java.jwt
 
     // database
-    api "androidx.room:room-runtime:$room_version"
-    api "androidx.room:room-ktx:$room_version"
+    api libs.room.runtime
+    api libs.room.ktx
     //noinspection KaptUsageInsteadOfKsp
-    kapt "androidx.room:room-compiler:$room_version"
+    kapt libs.room.compiler
 
     // test
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 
     // testImplementation for pure JVM unit tests
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    testImplementation libs.kotlinx.coroutines.test
 
     // androidTestImplementation for Android instrumentation tests
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    androidTestImplementation libs.kotlinx.coroutines.test
 }

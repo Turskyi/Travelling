@@ -12,66 +12,40 @@ class CountriesInteractor : KoinComponent {
     suspend fun loadCountriesByNameAndRange(
         name: String,
         limit: Int,
-        offset: Int,
-        onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.loadCountriesByNameAndRange(name, limit, offset, onSuccess, onError)
+        offset: Int
+    ) = repository.loadCountriesByNameAndRange(name, limit, offset)
 
     suspend fun updateSelfie(
         id: Int,
-        filePath: String,
-        onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.updateSelfie(id, filePath, onSuccess, onError)
+        filePath: String
+    ) = repository.updateSelfie(id, filePath)
 
     suspend fun setCountriesByRange(
         limit: Int,
-        offset: Int,
-        onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.setCountriesByRange(limit, offset, onSuccess, onError)
+        offset: Int
+    ) = repository.setCountriesByRange(limit, offset)
 
-    suspend fun downloadCountries(
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.refreshCountries(onSuccess, onError)
+    suspend fun downloadCountries() = repository.refreshCountries()
 
-    suspend fun setNotVisitedCountriesNum(
-        onSuccess: (Int) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.setCountNotVisitedCountries(onSuccess, onError)
+    suspend fun setNotVisitedCountriesNum() = repository.setCountNotVisitedCountries()
 
-    suspend fun setVisitedCountries(
-        onSuccess: (List<CountryModel>) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.setVisitedModelCountriesFromDb(onSuccess, onError)
+    suspend fun setVisitedCountries() = repository.setVisitedModelCountriesFromDb()
 
-    suspend fun setCities(
-        onSuccess: (List<CityModel>) -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.setCities(onSuccess, onError)
+    suspend fun setCities() = repository.setCities()
 
     suspend fun markAsVisitedCountryModel(
-        country: CountryModel,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.markAsVisited(country, onSuccess = onSuccess, onError = onError)
+        country: CountryModel
+    ) = repository.markAsVisited(country)
 
     suspend fun removeCountryModelFromVisitedList(
-        country: CountryModel,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.removeFromVisited(country, onSuccess = onSuccess, onError = onError)
+        country: CountryModel
+    ) = repository.removeFromVisited(country)
 
     suspend fun removeCity(
-        city: CityModel,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.removeCity(city, onSuccess = onSuccess, onError = onError)
+        city: CityModel
+    ) = repository.removeCity(city)
 
     suspend fun insertCity(
-        city: CityModel,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) = repository.insertCity(city, onSuccess = onSuccess, onError = onError)
+        city: CityModel
+    ) = repository.insertCity(city)
 }
