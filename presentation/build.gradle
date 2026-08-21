@@ -1,16 +1,16 @@
 //file:noinspection GrUnresolvedAccess
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
     id 'kotlin-kapt'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
-    id 'com.google.firebase.firebase-perf'
+    alias libs.plugins.google.services
+    alias libs.plugins.firebase.crashlytics
+    alias libs.plugins.firebase.perf
 }
 
 android {
     //noinspection GrDeprecatedAPIUsage
-    compileSdkVersion rootProject.compile_sdk_version
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
     buildToolsVersion rootProject.build_tools_version
 
     //noinspection GroovyAssignabilityCheck
@@ -69,6 +69,7 @@ android {
         dataBinding true
         //noinspection GroovyAssignabilityCheck
         viewBinding true
+        buildConfig = true
     }
 
     //noinspection GroovyAssignabilityCheck
@@ -93,21 +94,21 @@ dependencies {
     implementation project(':data')
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    api libs.kotlin.reflect
 
     // design components
-    implementation "com.google.android.material:material:$material_version"
+    implementation libs.material
 
-    implementation "androidx.fragment:fragment-ktx:$fragment_version"
-    implementation "androidx.activity:activity-ktx:$activity_version"
+    implementation libs.fragment.ktx
+    implementation libs.activity.ktx
 
     // android
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation libs.appcompat
+    implementation libs.core.ktx
 
     // firebase
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation('com.google.firebase:firebase-analytics') {
+    implementation libs.firebase.messaging
+    implementation(libs.firebase.perf) {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
         exclude module: "play-services-measurement"
@@ -115,74 +116,68 @@ dependencies {
     }
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
-    implementation 'com.google.firebase:firebase-perf-ktx'
-    implementation 'com.google.firebase:firebase-messaging'
+    implementation libs.firebase.analytics
 
     // ViewModel and LiveData
-    def lifecycle_version = "2.9.2"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation libs.lifecycle.viewmodel.ktx
+    implementation libs.lifecycle.livedata.ktx
+    implementation libs.lifecycle.runtime.ktx
+    implementation libs.lifecycle.extensions
 
     // Glide (Image caching and management)
-    def glideVersion = "4.16.0"
     //noinspection KaptUsageInsteadOfKsp
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    kapt libs.compiler
+    implementation libs.glide
 
     // Displaying SVG images
-    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+    implementation libs.glidetovectoryou
 
     // BaseRecyclerViewAdapterHelper
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7'
+    implementation libs.baserecyclerviewadapterhelper
 
     // Recyclerview
-    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation libs.recyclerview
 
     // CardView
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation libs.cardview
 
     // Android chart view / graph view library
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation libs.mpandroidchart
 
     // ViewPager2
-    implementation "androidx.viewpager2:viewpager2:1.1.0"
+    implementation libs.viewpager2
 
     // PhotoView
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    implementation libs.photoview
 
     // Location
-    implementation "com.google.android.gms:play-services-location:21.3.0"
+    implementation libs.play.services.location
 
     // Facebook SDK
-    def facebookVersion = "18.0.3"
-    implementation "com.facebook.android:facebook-share:$facebookVersion"
-    implementation "com.facebook.android:facebook-applinks:$facebookVersion"
-    implementation "com.facebook.android:facebook-android-sdk:$facebookVersion"
+    implementation libs.facebook.share
+    implementation libs.facebook.applinks
+    implementation libs.facebook.android.sdk
 
     // used for animation
-    def lottieVersion = "6.6.7"
-    implementation "com.airbnb.android:lottie:$lottieVersion"
+    implementation libs.lottie
 
     // Koin for Android
-    implementation("io.insert-koin:koin-android:$koin_android_version")
+    implementation(libs.koin.android)
 
     // Koin core features
-    implementation("io.insert-koin:koin-core:$koin_core_version")
+    implementation(libs.koin.core)
 
     // tests
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 
-    def jupiter_version = "5.13.3"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
+    testImplementation libs.junit.jupiter.api
+    testRuntimeOnly libs.junit.jupiter.engine
 
     // testImplementation for pure JVM unit tests
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    testImplementation libs.kotlinx.coroutines.test
 
     // androidTestImplementation for Android instrumentation tests
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    androidTestImplementation libs.kotlinx.coroutines.test
 }

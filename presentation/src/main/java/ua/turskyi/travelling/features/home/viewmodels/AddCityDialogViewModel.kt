@@ -14,7 +14,9 @@ class AddCityDialogViewModel(private val interactor: CountriesInteractor) : View
         onError: (Exception) -> Unit,
     ) {
         viewModelScope.launch {
-            interactor.insertCity(city.mapNodeToModel(), onSuccess = onSuccess, onError = onError)
+            interactor.insertCity(city.mapNodeToModel())
+                .onSuccess { onSuccess() }
+                .onFailure { onError(it as Exception) }
         }
     }
 }

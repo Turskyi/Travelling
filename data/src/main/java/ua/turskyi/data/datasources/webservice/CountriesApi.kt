@@ -6,7 +6,7 @@ import ua.turskyi.data.entities.network.CountriesResponse
 
 interface CountriesApi {
     companion object {
-        const val ENDPOINT_NAME = "v2/all?fields=name,flag"
+        const val ENDPOINT_NAME = "mledoze/countries/master/dist/countries.json"
     }
 
     @GET(ENDPOINT_NAME)

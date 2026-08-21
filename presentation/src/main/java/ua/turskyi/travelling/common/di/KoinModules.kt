@@ -3,8 +3,6 @@ package ua.turskyi.travelling.common.di
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -50,7 +48,7 @@ val interactorsModule = module {
 }
 
 val repositoriesModule = module {
-    factory<CountriesRepository> { CountriesRepositoryImpl(CoroutineScope(SupervisorJob())) }
+    single<CountriesRepository> { CountriesRepositoryImpl() }
 }
 
 val dataProvidersModule = module {

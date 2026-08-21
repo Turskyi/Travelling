@@ -1,11 +1,16 @@
 package ua.turskyi.travelling.features.flags.viewmodel
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.extensions.mapModelListToCountryList
@@ -34,24 +39,18 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
 
     private fun setVisitedCountries() {
         viewModelScope.launch {
-            interactor.setVisitedCountries(
-                { countries: List<CountryModel> ->
-                    visitedCount = countries.size
-                    _visitedCountries.postValue(countries.mapModelListToCountryList())
-                    _visibilityLoader.postValue(View.GONE)
-                },
-                onError = { exception: Exception /* = java.lang.Exception */ ->
-                    _visibilityLoader.postValue(View.GONE)
-                    _errorMessage.run {
-                        // Trigger the event by setting a new Event as a new value
-                        postValue(
-                            Event(
-                                exception.localizedMessage ?: exception.stackTraceToString()
-                            )
-                        )
-                    }
-                },
-            )
+            interactor.setVisitedCountries().onSuccess { countries ->
+                visitedCount = countries.size
+                _visitedCountries.postValue(countries.mapModelListToCountryList())
+                _visibilityLoader.postValue(View.GONE)
+            }.onFailure { exception ->
+                _visibilityLoader.postValue(View.GONE)
+                _errorMessage.postValue(
+                    Event(
+                        exception.localizedMessage ?: exception.toString()
+                    )
+                )
+            }
         }
     }
 
@@ -61,22 +60,17 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
             interactor.updateSelfie(
                 id = id,
                 filePath = filePath,
-                onSuccess = { countries: List<CountryModel> ->
-                    _visitedCountries.postValue(countries.mapModelListToCountryList())
-                    _visibilityLoader.postValue(View.GONE)
-                },
-                onError = { exception: Exception ->
-                    _visibilityLoader.postValue(View.GONE)
-                    _errorMessage.run {
-                        // Trigger the event by setting a new Event as a new value
-                        postValue(
-                            Event(
-                                exception.localizedMessage ?: exception.stackTraceToString()
-                            )
-                        )
-                    }
-                },
-            )
+            ).onSuccess { countries ->
+                _visitedCountries.postValue(countries.mapModelListToCountryList())
+                _visibilityLoader.postValue(View.GONE)
+            }.onFailure { exception ->
+                _visibilityLoader.postValue(View.GONE)
+                _errorMessage.postValue(
+                    Event(
+                        exception.localizedMessage ?: exception.toString()
+                    )
+                )
+            }
         }
     }
 }

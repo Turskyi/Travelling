@@ -4,17 +4,16 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.WindowManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
@@ -52,34 +51,29 @@ class AllCountriesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityAllCountriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initView()
         initListeners()
         initObservers()
     }
 
     private fun initView() {
-        binding = ActivityAllCountriesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        // init animated background
         binding.root.setBackgroundResource(R.drawable.gradient_list)
-
-        val backgroundDrawable: Drawable = binding.root.background
-        if (backgroundDrawable is AnimationDrawable) {
-            backgroundDrawable.setEnterFadeDuration(resources.getInteger(R.integer.enter_fade_duration))
-            backgroundDrawable.setExitFadeDuration(resources.getInteger(R.integer.exit_fade_duration))
-            backgroundDrawable.start()
+        binding.root.post {
+            val backgroundDrawable: Drawable? = binding.root.background
+            if (backgroundDrawable is AnimationDrawable) {
+                backgroundDrawable.setEnterFadeDuration(resources.getInteger(R.integer.enter_fade_duration))
+                backgroundDrawable.setExitFadeDuration(resources.getInteger(R.integer.exit_fade_duration))
+                backgroundDrawable.start()
+            }
         }
 
         binding.expandableSearchBar.isFocusableInTouchMode = true
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
-        adapter.submitList(viewModel.pagedList)
         val layoutManager = LinearLayoutManager(this)
-        binding.rvAllCountries.adapter = adapter
         binding.rvAllCountries.layoutManager = layoutManager
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+        binding.rvAllCountries.adapter = adapter
     }
 
     private fun initListeners() {
@@ -133,6 +127,7 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun initObservers() {
         val emptyListObserver = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
         adapter.registerAdapterDataObserver(emptyListObserver)
+        adapter.submitList(viewModel.pagedList)
         viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum: Int ->
             updateTitle(notVisitedNum)
         }
@@ -150,7 +145,7 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun sendToGoogleMapToShowGeographicalLocation(country: Country) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(getString(R.string.geo_location, country.name))
+            getString(R.string.geo_location, country.name).toUri()
         )
         startActivity(intent)
     }
@@ -216,5 +211,6 @@ class AllCountriesActivity : AppCompatActivity() {
 
     fun exitOnBackPressed() {
         setResult(RESULT_CANCELED)
+        finish()
     }
 }
