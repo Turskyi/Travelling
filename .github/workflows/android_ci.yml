@@ -18,8 +18,17 @@ jobs:
         with:
           java-version: 17
 
+      - name: Set up Keystore
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore/travelling.jks
+
       - name: Generate Release APK
         run: ./gradlew assembleRelease
+        env:
+          SIGNING_KEY_RELEASE_PASSWORD: ${{ secrets.SIGNING_KEY_RELEASE_PASSWORD }}
+          SIGNING_KEY_RELEASE_KEY: ${{ secrets.SIGNING_KEY_RELEASE_KEY }}
+          SIGNING_KEY_RELEASE_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_RELEASE_KEY_PASSWORD }}
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
