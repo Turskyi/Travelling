@@ -41,6 +41,10 @@ internal class CountriesPagingSource(
                 _visibilityLoader.postValue(GONE)
             }
 
+            if (result.isFailure) {
+                return LoadResult.Error(result.exceptionOrNull() ?: RuntimeException("Unknown error"))
+            }
+
             val countries = result.getOrNull()?.mapModelListToCountryList() ?: emptyList()
 
             val nextKey = if (countries.isEmpty() || countries.size < loadSize) null else position + countries.size

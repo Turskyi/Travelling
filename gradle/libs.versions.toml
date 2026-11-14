@@ -6,6 +6,7 @@ appcompat = "1.8.0"
 baserecyclerviewadapterhelper = "3.0.7"
 cardview = "1.0.0"
 coreKtx = "1.19.1"
+coreTesting = "2.2.0"
 espressoCore = "3.7.0"
 firebaseBom = "35.2.0"
 firebaseCrashlyticsGradle = "3.0.8"
@@ -38,6 +39,7 @@ gson = "2.15.0"
 jwt = "4.6.2"
 roomCompiler = "2.8.5"
 truth = "1.4.5"
+mockk = "1.14.12"
 viewpager2 = "1.1.0"
 compileSdk = "37"
 
@@ -47,6 +49,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 baserecyclerviewadapterhelper = { group = "com.github.CymChad", name = "BaseRecyclerViewAdapterHelper", version.ref = "baserecyclerviewadapterhelper" }
 cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -99,6 +102,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 java-jwt = { group = "com.auth0", name = "java-jwt", version.ref = "jwt" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 
 [plugins]
