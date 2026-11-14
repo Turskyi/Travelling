@@ -5,23 +5,23 @@ import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
@@ -96,7 +96,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(resources.getString(R.string.play_market_app_link_to_pro_version))
+                    resources.getString(R.string.play_market_app_link_to_pro_version).toUri()
                 )
             )
         } catch (e: ActivityNotFoundException) {
@@ -104,7 +104,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(resources.getString(R.string.play_market_web_link_to_pro_version))
+                    resources.getString(R.string.play_market_web_link_to_pro_version).toUri()
                 )
             )
         }
@@ -116,6 +116,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 openInfoDialog(R.string.txt_info_home)
                 true
             }
+
             R.id.action_sync -> {
                 val infoDialog: SyncDialog = SyncDialog.newInstance(
                     getString(R.string.txt_info_billing)
@@ -126,6 +127,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 )
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -149,23 +151,6 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 }
             }
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (viewModel.isDoubleBackToExitPressed) {
-                finish()
-                return true
-            } else {
-                binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
-            }
-            viewModel.isDoubleBackToExitPressed = true
-            Handler(Looper.getMainLooper()).postDelayed(
-                { viewModel.isDoubleBackToExitPressed = false },
-                resources.getInteger(R.integer.desired_time_interval).toLong(),
-            )
-            return false
-        } else super.onKeyDown(keyCode, event)
     }
 
     private fun initView() {
@@ -196,6 +181,23 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     }
 
     private fun initListeners() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.isDoubleBackToExitPressed) {
+                        finish()
+                    } else {
+                        binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
+                        viewModel.isDoubleBackToExitPressed = true
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            { viewModel.isDoubleBackToExitPressed = false },
+                            resources.getInteger(R.integer.desired_time_interval).toLong(),
+                        )
+                    }
+                }
+            },
+        )
         homeAdapter.apply {
             onFlagClickListener = { country: VisitedCountry ->
                 // mis-clicking prevention, using threshold of 1000 ms
