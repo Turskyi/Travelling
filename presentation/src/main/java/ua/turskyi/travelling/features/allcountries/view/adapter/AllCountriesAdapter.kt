@@ -14,7 +14,7 @@ import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
@@ -22,7 +22,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
 
-class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
+class AllCountriesAdapter : PagingDataAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
     COUNTRIES_DIFF_CALLBACK
 ) {
 

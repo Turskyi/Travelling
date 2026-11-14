@@ -17,8 +17,12 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
@@ -45,7 +49,6 @@ class AllCountriesActivity : AppCompatActivity() {
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             viewModel.searchQuery = "%$s%"
-            adapter.submitList(viewModel.pagedList)
         }
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -138,7 +141,13 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun initObservers() {
         val emptyListObserver = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
         adapter.registerAdapterDataObserver(emptyListObserver)
-        adapter.submitList(viewModel.pagedList)
+        lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.pagedCountries.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                }
+            }
+        }
         viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum: Int ->
             updateTitle(notVisitedNum)
         }
