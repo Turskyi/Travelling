@@ -25,7 +25,7 @@ class SyncDialog : AppCompatDialogFragment() {
         super.onAttach(context)
         listener = try {
             context as SyncListener
-        } catch (e: ClassCastException) {
+        } catch (_: ClassCastException) {
             throw ClassCastException(context.toString() + "must implement SyncListener")
         }
     }
