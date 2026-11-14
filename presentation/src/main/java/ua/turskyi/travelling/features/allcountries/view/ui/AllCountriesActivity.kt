@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.android.ext.android.inject
@@ -71,6 +74,13 @@ class AllCountriesActivity : AppCompatActivity() {
         }
 
         binding.expandableSearchBar.isFocusableInTouchMode = true
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val cutoutInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(top = cutoutInsets.top)
+            insets
+        }
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         val layoutManager = LinearLayoutManager(this)
         binding.rvAllCountries.layoutManager = layoutManager
