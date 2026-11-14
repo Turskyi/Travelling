@@ -1,5 +1,9 @@
 name: Upload to Firebase App Distribution
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches-ignore:
