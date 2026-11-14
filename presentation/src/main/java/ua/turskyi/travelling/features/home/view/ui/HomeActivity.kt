@@ -53,6 +53,7 @@ import ua.turskyi.travelling.utils.extensions.showSnackBar
 import ua.turskyi.travelling.utils.extensions.showSnackWithAction
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
+import ua.turskyi.travelling.utils.getDisplayName
 import ua.turskyi.travelling.widgets.CirclePieChart
 import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
@@ -167,6 +168,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                     else -> LocaleListCompat.getEmptyLocaleList()
                 }
                 AppCompatDelegate.setApplicationLocales(targetLocales)
+                VisitedCountriesWidgetProvider.updateWidget(this)
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.home_dialog_btn_cancel, null)
@@ -266,11 +268,12 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             }
             onLongClickListener = { countryNode: VisitedCountry ->
                 val country: Country = countryNode.mapNodeToActual()
+                val displayName: String = country.getDisplayName(this@HomeActivity)
 
-                binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)) {
+                binding.root.showSnackWithAction(getString(R.string.delete_it, displayName)) {
                     action(R.string.yes) {
                         viewModel.removeFromVisited(country)
-                        toastLong(getString(R.string.deleted, country.name))
+                        toastLong(getString(R.string.deleted, displayName))
                     }
                 }
             }

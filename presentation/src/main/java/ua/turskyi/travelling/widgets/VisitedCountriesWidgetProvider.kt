@@ -45,6 +45,19 @@ class VisitedCountriesWidgetProvider : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.widget_container, pendingIntent)
 
+            val appLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+            val localizedContext = if (!appLocales.isEmpty && appLocales[0] != null) {
+                val config = android.content.res.Configuration(context.resources.configuration)
+                config.setLocale(appLocales[0])
+                context.createConfigurationContext(config)
+            } else {
+                context
+            }
+            views.setTextViewText(
+                R.id.tv_widget_visited_label,
+                localizedContext.getString(R.string.widget_visited_countries_title),
+            )
+
             CoroutineScope(Dispatchers.IO).launch {
                 val visitedCount = try {
                     Database.invoke(context).countriesDao().getVisitedCountries().size

@@ -53,6 +53,7 @@ import ua.turskyi.travelling.utils.extensions.observeOnce
 import ua.turskyi.travelling.utils.extensions.showReportDialog
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
+import ua.turskyi.travelling.utils.getDisplayName
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -196,7 +197,7 @@ class FlagFragment : Fragment() {
                 val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
                 if (mChangeFlagListener != null) {
-                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].getDisplayName(requireContext()))
                 }
 
                 if (!isSelfieAvailable(countries[position].filePath)) {

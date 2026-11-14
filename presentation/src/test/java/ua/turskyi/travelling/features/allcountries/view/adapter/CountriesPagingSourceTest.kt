@@ -47,7 +47,7 @@ class CountriesPagingSourceTest {
         val countryModels = listOf(
             CountryModel(id = 2, name = "Poland", flag = "", isVisited = false, selfie = "")
         )
-        coEvery { interactor.loadCountriesByNameAndRange("Poland", any(), any()) } returns Result.success(countryModels)
+        coEvery { interactor.loadCountriesByNameAndRange("Poland", any(), any(), any()) } returns Result.success(countryModels)
 
         val pagingSource = CountriesPagingSource(interactor, searchQuery = "Poland")
         val result = pagingSource.load(

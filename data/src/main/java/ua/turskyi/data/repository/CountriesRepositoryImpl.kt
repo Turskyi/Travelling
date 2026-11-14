@@ -158,11 +158,12 @@ class CountriesRepositoryImpl : CountriesRepository,
     override suspend fun loadCountriesByNameAndRange(
         name: String,
         limit: Int,
-        offset: Int
+        offset: Int,
+        matchingNames: List<String>
     ): Result<List<CountryModel>> = withContext(Dispatchers.IO) {
         return@withContext try {
             Result.success(
-                databaseSource.loadCountriesByNameAndRange(name, limit, offset)
+                databaseSource.loadCountriesByNameAndRange(name, limit, offset, matchingNames)
                     .mapEntityListToModelList()
             )
         } catch (exception: Exception) {

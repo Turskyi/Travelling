@@ -28,10 +28,13 @@ internal class CountriesPagingSource(
                     offset = position
                 )
             } else {
+                val rawQuery = searchQuery.trim('%').trim()
+                val matchingNames = ua.turskyi.travelling.utils.CountryLocalizationUtils.findMatchingEnglishNames(rawQuery)
                 interactor.loadCountriesByNameAndRange(
                     name = searchQuery,
                     limit = loadSize,
-                    offset = position
+                    offset = position,
+                    matchingNames = matchingNames
                 )
             }
 

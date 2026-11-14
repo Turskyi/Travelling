@@ -17,6 +17,7 @@ import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.VisitedCountry
+import ua.turskyi.travelling.utils.getDisplayName
 
 class CountryNodeProvider : BaseNodeProvider() {
     override val itemViewType: Int
@@ -39,7 +40,7 @@ class CountryNodeProvider : BaseNodeProvider() {
             true
         }
         showPicturesInSVG(item, helper)
-        helper.setText(R.id.tv_country, visitedCountry.title)
+        helper.setText(R.id.tv_country, visitedCountry.getDisplayName(helper.itemView.context))
         setSelectableBorderLessFor(helper.getView<ImageView>(R.id.iv_flag))
         helper.getView<ImageView>(R.id.iv_flag).setOnClickListener {
             onImageClickListener?.invoke(visitedCountry)
