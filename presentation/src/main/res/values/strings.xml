@@ -134,4 +134,10 @@
     <string name="no" tools:keep="@string/no">Not really</string>
     <string name="error_message_try_tomorrow" tools:keep="@string/error_message_try_tomorrow">Then try tomorrow ;)</string>
     <string name="dialog_hold_on">Hold on a moment, trying to find your location.</string>
+
+    <!-- widget strings -->
+    <string name="widget_visited_countries_name">Visited Countries</string>
+    <string name="widget_visited_countries_title">Countries Visited</string>
+    <string name="widget_default_count">0</string>
+    <string name="btn_pin_widget">Pin Widget</string>
 </resources>

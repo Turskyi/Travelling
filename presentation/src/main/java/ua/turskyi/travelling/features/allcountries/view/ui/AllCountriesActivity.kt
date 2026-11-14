@@ -29,6 +29,7 @@ import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
 import ua.turskyi.travelling.widgets.ExpandableSearchBar.OnSearchActionListener
+import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
 
 class AllCountriesActivity : AppCompatActivity() {
@@ -152,6 +153,7 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private fun addToVisited(country: Country) {
         viewModel.markAsVisited(country) {
+            VisitedCountriesWidgetProvider.updateWidget(this)
             hideKeyboard()
             val intent = Intent()
             setResult(RESULT_OK, intent)

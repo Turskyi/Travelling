@@ -10,7 +10,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.*
+import android.view.Gravity
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,8 +38,17 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Event
-import ua.turskyi.travelling.utils.extensions.*
+import ua.turskyi.travelling.utils.extensions.action
+import ua.turskyi.travelling.utils.extensions.getScreenWidth
+import ua.turskyi.travelling.utils.extensions.mapNodeToActual
+import ua.turskyi.travelling.utils.extensions.openActivityWithArgs
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
+import ua.turskyi.travelling.utils.extensions.showSnackBar
+import ua.turskyi.travelling.utils.extensions.showSnackWithAction
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.widgets.CirclePieChart
+import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
@@ -232,6 +246,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         viewModel.visitedCountriesWithCities.observe(this) { visitedCountries ->
             initTitleWithNumberOf(visitedCountries)
             updateAdapterWith(visitedCountries)
+            VisitedCountriesWidgetProvider.updateWidget(this)
         }
         viewModel.visitedCountries.observe(this) { visitedCountries ->
             binding.circlePieChart.apply {

@@ -103,6 +103,18 @@
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
+
+        <receiver
+            android:name=".widgets.VisitedCountriesWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_visited_countries_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/visited_countries_widget_info" />
+        </receiver>
     </application>
 
     <queries>
