@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="s">
+        tools:targetApi="33">
 
         <!-- remove advertising dependency -->
         <meta-data
@@ -35,8 +35,8 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/pic_logo" />
-        <!-- This color used with incoming notification messages.
-         This is used when no color is set for the incoming notification message.  -->
+        <!-- This colour used with incoming notification messages.
+         This is used when no colour is set for the incoming notification message.  -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorLightGrey" />
