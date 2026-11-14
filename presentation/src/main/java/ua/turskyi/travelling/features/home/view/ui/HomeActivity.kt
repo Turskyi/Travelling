@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
@@ -158,6 +161,14 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         binding.viewModel = this.viewModel
         binding.lifecycleOwner = this
         setSupportActionBar(binding.toolbar)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val cutoutInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(top = cutoutInsets.top)
+            insets
+        }
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         // set drawable icon
         if (supportActionBar != null) {
             supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)

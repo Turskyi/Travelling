@@ -6,6 +6,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityFlagsBinding
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
@@ -71,6 +74,13 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
         binding = ActivityFlagsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val cutoutInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(top = cutoutInsets.top)
+            insets
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
