@@ -27,6 +27,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Priority
@@ -55,7 +56,6 @@ import ua.turskyi.travelling.utils.extensions.toastLong
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import androidx.core.net.toUri
 
 class FlagFragment : Fragment() {
 
@@ -398,7 +398,11 @@ class FlagFragment : Fragment() {
     private fun updateFlagImage(cursor: Cursor, inputStream: InputStream, position: Int) {
         val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         val rawName: String? = cursor.getString(nameIndex)
-        val sanitizedName: String = File(rawName ?: "temp_flag.jpg").name
+        val sanitizedName: String = (rawName ?: "temp_flag.jpg")
+            .substringAfterLast(File.separatorChar)
+            .substringAfterLast('/')
+            .replace("..", "")
+            .ifBlank { "temp_flag.jpg" }
         val file = File(requireContext().cacheDir, sanitizedName)
         val fileOutputStream: FileOutputStream = file.outputStream()
         fileOutputStream.use { inputStream.copyTo(it) }
