@@ -140,4 +140,11 @@
     <string name="widget_visited_countries_title">Countries Visited</string>
     <string name="widget_default_count">0</string>
     <string name="btn_pin_widget">Pin Widget</string>
+
+    <!-- language selector -->
+    <string name="action_language">Language</string>
+    <string name="language_dialog_title">Choose language</string>
+    <string name="language_system_default">System default</string>
+    <string name="language_en">English</string>
+    <string name="language_uk">Українська</string>
 </resources>

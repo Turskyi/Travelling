@@ -22,6 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:enableOnBackInvokedCallback="true"
+        android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
 
         <!-- remove advertising dependency -->
@@ -115,6 +116,16 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/visited_countries_widget_info" />
         </receiver>
+
+        <!-- Service for AppCompat auto-storing locales on Android 12 and below -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
     <queries>

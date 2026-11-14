@@ -18,10 +18,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -75,6 +78,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         super.onResume()
         // makes info icon visible
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        invalidateOptionsMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -120,6 +124,11 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 true
             }
 
+            R.id.action_language -> {
+                showLanguageDialog()
+                true
+            }
+
             R.id.action_sync -> {
                 val infoDialog: SyncDialog = SyncDialog.newInstance(
                     getString(R.string.txt_info_billing)
@@ -133,6 +142,35 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showLanguageDialog() {
+        val languages = arrayOf(
+            getString(R.string.language_system_default),
+            getString(R.string.language_en),
+            getString(R.string.language_uk),
+        )
+        val currentLocales: LocaleListCompat = AppCompatDelegate.getApplicationLocales()
+        val currentLanguageIndex = when {
+            currentLocales.isEmpty -> 0
+            currentLocales[0]?.language == "en" -> 1
+            currentLocales[0]?.language == "uk" -> 2
+            else -> 0
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.language_dialog_title)
+            .setSingleChoiceItems(languages, currentLanguageIndex) { dialog, which ->
+                val targetLocales = when (which) {
+                    1 -> LocaleListCompat.forLanguageTags("en")
+                    2 -> LocaleListCompat.forLanguageTags("uk")
+                    else -> LocaleListCompat.getEmptyLocaleList()
+                }
+                AppCompatDelegate.setApplicationLocales(targetLocales)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.home_dialog_btn_cancel, null)
+            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -168,6 +206,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             view.updatePadding(top = cutoutInsets.top)
             insets
         }
+        @Suppress("DEPRECATION")
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         // set drawable icon
         if (supportActionBar != null) {
