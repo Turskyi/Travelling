@@ -16,6 +16,7 @@ import ua.turskyi.data.extensions.mapNetListToModelList
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
 import ua.turskyi.domain.repository.CountriesRepository
+import java.io.File
 
 class CountriesRepositoryImpl : CountriesRepository,
     KoinComponent {
@@ -49,7 +50,9 @@ class CountriesRepositoryImpl : CountriesRepository,
         withContext(Dispatchers.IO) {
             return@withContext try {
                 databaseSource.updateSelfie(id, filePath)
-                Result.success(databaseSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
+                val visitedEntities = databaseSource.getVisitedLocalCountriesFromDb()
+                cleanupUnavailableSelfies(visitedEntities)
+                Result.success(visitedEntities.mapEntityListToModelList())
             } catch (exception: Exception) {
                 Result.failure(exception)
             }
@@ -102,11 +105,30 @@ class CountriesRepositoryImpl : CountriesRepository,
     override suspend fun setVisitedModelCountriesFromDb(): Result<List<CountryModel>> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                Result.success(databaseSource.getVisitedLocalCountriesFromDb().mapEntityListToModelList())
+                val visitedEntities = databaseSource.getVisitedLocalCountriesFromDb()
+                cleanupUnavailableSelfies(visitedEntities)
+                Result.success(visitedEntities.mapEntityListToModelList())
             } catch (exception: Exception) {
                 Result.failure(exception)
             }
         }
+
+    private fun cleanupUnavailableSelfies(visitedEntities: List<CountryEntity>) {
+        visitedEntities.forEach { entity ->
+            if (entity.selfie.isNotEmpty() && !entity.selfie.startsWith("content://")) {
+                val path = if (entity.selfie.startsWith("file://")) {
+                    entity.selfie.removePrefix("file://")
+                } else {
+                    entity.selfie
+                }
+                val file = File(path)
+                if (!file.exists() || (file.length() == 0L)) {
+                    databaseSource.updateSelfie(entity.id, "")
+                    entity.selfie = ""
+                }
+            }
+        }
+    }
 
     override suspend fun setCities(): Result<List<CityModel>> = withContext(Dispatchers.IO) {
         return@withContext try {
