@@ -95,6 +95,7 @@ dependencies {
 
     // kotlin
     api libs.kotlin.reflect
+    implementation libs.firebase.crashlytics
 
     // design components
     implementation libs.material
