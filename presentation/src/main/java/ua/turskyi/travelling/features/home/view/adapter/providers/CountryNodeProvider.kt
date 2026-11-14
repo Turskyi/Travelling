@@ -10,6 +10,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -90,7 +91,7 @@ class CountryNodeProvider : BaseNodeProvider() {
         visitedCountry: VisitedCountry,
         holder: BaseViewHolder
     ) {
-        val uri: Uri = Uri.parse(visitedCountry.img)
+        val uri: Uri = visitedCountry.img.toUri()
         GlideToVectorYou
             .init()
             .with(holder.itemView.context)

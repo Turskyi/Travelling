@@ -169,9 +169,9 @@ object CountryLocalizationUtils {
             }
         }
 
-        for (entry in countryIndex) {
-            if (entry.ukrainianName.lowercase().contains(cleanQuery) || entry.englishName.lowercase().contains(cleanQuery)) {
-                matching.add(entry.englishName)
+        for ((_, englishName, ukrainianName) in countryIndex) {
+            if (ukrainianName.lowercase().contains(cleanQuery) || englishName.lowercase().contains(cleanQuery)) {
+                matching.add(englishName)
             }
         }
 
