@@ -90,7 +90,8 @@ ext {
     getParam = { key ->
         def value = System.getenv(key) ?: project.findProperty("env.$key")
         if (value) {
-            println "$key = $value"
+            def isSensitive = key.toUpperCase() ==~ /.*(PASSWORD|API[_-]?KEY|TOKEN|SECRET|CREDENTIALS).*/
+            println "$key = ${isSensitive ? '<redacted>' : value}"
         }
         return value
     }
