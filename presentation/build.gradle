@@ -9,6 +9,10 @@ plugins {
 }
 
 android {
+    def debugKeystorePath = rootProject.SIGNING_KEY_DEBUG_PATH
+    def debugKeystoreFile = debugKeystorePath ? file(debugKeystorePath) : null
+    def hasDebugKeystore = debugKeystoreFile?.isFile() == true
+
     //noinspection GrDeprecatedAPIUsage
     compileSdkVersion libs.versions.compileSdk.get().toInteger()
     buildToolsVersion rootProject.build_tools_version
@@ -42,11 +46,13 @@ android {
                 keyPassword rootProject.SIGNING_KEY_RELEASE_KEY_PASSWORD
             }
         }
-        dev {
-            storeFile file(rootProject.SIGNING_KEY_DEBUG_PATH)
-            storePassword rootProject.SIGNING_KEY_DEBUG_PASSWORD
-            keyAlias rootProject.SIGNING_KEY_DEBUG_KEY
-            keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
+        if (hasDebugKeystore) {
+            dev {
+                storeFile debugKeystoreFile
+                storePassword rootProject.SIGNING_KEY_DEBUG_PASSWORD
+                keyAlias rootProject.SIGNING_KEY_DEBUG_KEY
+                keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
+            }
         }
     }
 
@@ -64,7 +70,9 @@ android {
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
         debug {
-            signingConfig signingConfigs.dev
+            if (hasDebugKeystore) {
+                signingConfig signingConfigs.dev
+            }
 // used in manifest provider authorities
             resValue "string", "content_provider",
                     "com.facebook.app.FacebookContentProvider285452062466394"
