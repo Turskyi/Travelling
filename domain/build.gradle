@@ -11,12 +11,16 @@ buildscript {
 repositories {
 }
 compileKotlin {
+    //noinspection GrDeprecatedAPIUsage
     kotlinOptions {
+        //noinspection GrDeprecatedAPIUsage
         jvmTarget = "11"
     }
 }
 compileTestKotlin {
+    //noinspection GrDeprecatedAPIUsage
     kotlinOptions {
+        //noinspection GrDeprecatedAPIUsage
         jvmTarget = "11"
     }
 }
@@ -33,7 +37,9 @@ dependencies {
 }
 
 tasks.withType(KaptGenerateStubsTask.class).configureEach {
+    //noinspection GrDeprecatedAPIUsage
     kotlinOptions {
+        //noinspection GrDeprecatedAPIUsage
         jvmTarget = "11"
         freeCompilerArgs += [
                 "-Xjvm-default=all",

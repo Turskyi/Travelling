@@ -15,7 +15,11 @@ import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.OnClickListener
+import android.view.View.OnLongClickListener
+import android.view.View.OnTouchListener
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -23,11 +27,16 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideApp
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
@@ -44,6 +53,7 @@ import ua.turskyi.travelling.utils.extensions.observeOnce
 import ua.turskyi.travelling.utils.extensions.showReportDialog
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
+import ua.turskyi.travelling.utils.getDisplayName
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -187,10 +197,16 @@ class FlagFragment : Fragment() {
                 val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
                 if (mChangeFlagListener != null) {
-                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].name)
+                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].getDisplayName(requireContext()))
                 }
 
-                if (countries[position].filePath.isEmpty()) {
+                if (!isSelfieAvailable(countries[position].filePath)) {
+                    if (countries[position].filePath.isNotEmpty()) {
+                        countries[position].filePath = ""
+                        viewModel.updateSelfie(countries[position].id, "")
+                    }
+                    binding.ivEnlargedFlag.setOnClickListener(null)
+                    binding.wvFlag.setOnTouchListener(null)
                     showTheFlag(countries, position)
                 } else {
                     showSelfie(countries, position)
@@ -203,6 +219,25 @@ class FlagFragment : Fragment() {
                 }
             }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
+    }
+
+    private fun isSelfieAvailable(filePath: String): Boolean {
+        return filePath.isNotBlank() && try {
+            if (filePath.startsWith("content://")) {
+                val uri = filePath.toUri()
+                context?.contentResolver?.openInputStream(uri)?.use { true } ?: false
+            } else {
+                val path = if (filePath.startsWith("file://")) {
+                    filePath.removePrefix("file://")
+                } else {
+                    filePath
+                }
+                val file = File(path)
+                file.exists() && file.length() > 0
+            }
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun showFlagClickListener(countries: List<Country>, position: Int): OnClickListener {
@@ -220,15 +255,22 @@ class FlagFragment : Fragment() {
             when (motionEvent.action) {
                 MotionEvent.ACTION_UP -> {
                     // perform click
-                    showSelfie(countries, position)
-                    view.performClick()
-                    // return first clickListener
-                    binding.ivEnlargedFlag.setOnClickListener(
-                        showFlagClickListener(
-                            countries,
-                            position
+                    if (isSelfieAvailable(countries[position].filePath)) {
+                        showSelfie(countries, position)
+                        view.performClick()
+                        // return first clickListener
+                        binding.ivEnlargedFlag.setOnClickListener(
+                            showFlagClickListener(
+                                countries,
+                                position
+                            )
                         )
-                    )
+                    } else {
+                        countries[position].filePath = ""
+                        viewModel.updateSelfie(countries[position].id, "")
+                        binding.ivEnlargedFlag.setOnClickListener(null)
+                        binding.wvFlag.setOnTouchListener(null)
+                    }
                 }
             }
             false
@@ -237,9 +279,16 @@ class FlagFragment : Fragment() {
 
     private fun showSelfieClickListener(countries: List<Country>, position: Int): OnClickListener {
         return OnClickListener {
-            showSelfie(countries, position)
-            // return first clickListener
-            binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+            if (isSelfieAvailable(countries[position].filePath)) {
+                showSelfie(countries, position)
+                // return first clickListener
+                binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+            } else {
+                countries[position].filePath = ""
+                viewModel.updateSelfie(countries[position].id, "")
+                binding.ivEnlargedFlag.setOnClickListener(null)
+                binding.wvFlag.setOnTouchListener(null)
+            }
         }
     }
 
@@ -256,9 +305,31 @@ class FlagFragment : Fragment() {
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.anim_loading)
-                    .error(R.drawable.ic_broken_image)
                     .priority(Priority.IMMEDIATE)
             )
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    countries[position].filePath = ""
+                    binding.ivEnlargedFlag.setOnClickListener(null)
+                    binding.wvFlag.setOnTouchListener(null)
+                    showTheFlag(countries, position)
+                    viewModel.updateSelfie(countries[position].id, "")
+                    return true
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean = false
+            })
             .into(binding.ivEnlargedFlag)
     }
 
@@ -266,7 +337,7 @@ class FlagFragment : Fragment() {
         /**
          * @Description Opens the pictureUri in full size
          *  */
-        val uri: Uri = Uri.parse(countries[position].flag)
+        val uri: Uri = countries[position].flag.toUri()
         GlideToVectorYou
             .init()
             .with(activity)
@@ -327,9 +398,13 @@ class FlagFragment : Fragment() {
 
     private fun updateFlagImage(cursor: Cursor, inputStream: InputStream, position: Int) {
         val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        val name: String = cursor.getString(nameIndex)
-        // create same file with same name
-        val file = File(requireContext().cacheDir, name)
+        val rawName: String? = cursor.getString(nameIndex)
+        val sanitizedName: String = (rawName ?: "temp_flag.jpg")
+            .substringAfterLast(File.separatorChar)
+            .substringAfterLast('/')
+            .replace("..", "")
+            .ifBlank { "temp_flag.jpg" }
+        val file = File(requireContext().cacheDir, sanitizedName)
         val fileOutputStream: FileOutputStream = file.outputStream()
         fileOutputStream.use { inputStream.copyTo(it) }
         val visitedCountriesObserverForLocalPhotos: Observer<List<Country>> =

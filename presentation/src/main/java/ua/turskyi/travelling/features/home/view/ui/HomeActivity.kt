@@ -5,18 +5,29 @@ import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.os.LocaleListCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.inject
@@ -33,8 +44,18 @@ import ua.turskyi.travelling.models.City
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.models.VisitedCountry
 import ua.turskyi.travelling.utils.Event
-import ua.turskyi.travelling.utils.extensions.*
+import ua.turskyi.travelling.utils.extensions.action
+import ua.turskyi.travelling.utils.extensions.getScreenWidth
+import ua.turskyi.travelling.utils.extensions.mapNodeToActual
+import ua.turskyi.travelling.utils.extensions.openActivityWithArgs
+import ua.turskyi.travelling.utils.extensions.openInfoDialog
+import ua.turskyi.travelling.utils.extensions.showSnackBar
+import ua.turskyi.travelling.utils.extensions.showSnackWithAction
+import ua.turskyi.travelling.utils.extensions.toast
+import ua.turskyi.travelling.utils.extensions.toastLong
+import ua.turskyi.travelling.utils.getDisplayName
 import ua.turskyi.travelling.widgets.CirclePieChart
+import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
 class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
@@ -58,6 +79,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         super.onResume()
         // makes info icon visible
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        invalidateOptionsMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -82,7 +104,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(resources.getString(R.string.play_market_app_link_to_pro_version))
+                    resources.getString(R.string.play_market_app_link_to_pro_version).toUri()
                 )
             )
         } catch (e: ActivityNotFoundException) {
@@ -90,7 +112,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(resources.getString(R.string.play_market_web_link_to_pro_version))
+                    resources.getString(R.string.play_market_web_link_to_pro_version).toUri()
                 )
             )
         }
@@ -102,6 +124,12 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 openInfoDialog(R.string.txt_info_home)
                 true
             }
+
+            R.id.action_language -> {
+                showLanguageDialog()
+                true
+            }
+
             R.id.action_sync -> {
                 val infoDialog: SyncDialog = SyncDialog.newInstance(
                     getString(R.string.txt_info_billing)
@@ -112,8 +140,39 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 )
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showLanguageDialog() {
+        val languages = arrayOf(
+            getString(R.string.language_system_default),
+            getString(R.string.language_en),
+            getString(R.string.language_uk),
+        )
+        val currentLocales: LocaleListCompat = AppCompatDelegate.getApplicationLocales()
+        val currentLanguageIndex = when {
+            currentLocales.isEmpty -> 0
+            currentLocales[0]?.language == "en" -> 1
+            currentLocales[0]?.language == "uk" -> 2
+            else -> 0
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.language_dialog_title)
+            .setSingleChoiceItems(languages, currentLanguageIndex) { dialog, which ->
+                val targetLocales = when (which) {
+                    1 -> LocaleListCompat.forLanguageTags("en")
+                    2 -> LocaleListCompat.forLanguageTags("uk")
+                    else -> LocaleListCompat.getEmptyLocaleList()
+                }
+                AppCompatDelegate.setApplicationLocales(targetLocales)
+                VisitedCountriesWidgetProvider.updateWidget(this)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.home_dialog_btn_cancel, null)
+            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -137,28 +196,20 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (viewModel.isDoubleBackToExitPressed) {
-                finish()
-                return true
-            } else {
-                binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
-            }
-            viewModel.isDoubleBackToExitPressed = true
-            Handler(Looper.getMainLooper()).postDelayed(
-                { viewModel.isDoubleBackToExitPressed = false },
-                resources.getInteger(R.integer.desired_time_interval).toLong(),
-            )
-            return false
-        } else super.onKeyDown(keyCode, event)
-    }
-
     private fun initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.viewModel = this.viewModel
         binding.lifecycleOwner = this
         setSupportActionBar(binding.toolbar)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val cutoutInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(top = cutoutInsets.top)
+            insets
+        }
+        @Suppress("DEPRECATION")
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         // set drawable icon
         if (supportActionBar != null) {
             supportActionBar?.setHomeAsUpIndicator(R.drawable.btn_info_ripple)
@@ -182,6 +233,23 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     }
 
     private fun initListeners() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.isDoubleBackToExitPressed) {
+                        finish()
+                    } else {
+                        binding.root.showSnackBar(R.string.tap_back_button_in_order_to_exit)
+                        viewModel.isDoubleBackToExitPressed = true
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            { viewModel.isDoubleBackToExitPressed = false },
+                            resources.getInteger(R.integer.desired_time_interval).toLong(),
+                        )
+                    }
+                }
+            },
+        )
         homeAdapter.apply {
             onFlagClickListener = { country: VisitedCountry ->
                 // mis-clicking prevention, using threshold of 1000 ms
@@ -200,11 +268,12 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
             }
             onLongClickListener = { countryNode: VisitedCountry ->
                 val country: Country = countryNode.mapNodeToActual()
+                val displayName: String = country.getDisplayName(this@HomeActivity)
 
-                binding.root.showSnackWithAction(getString(R.string.delete_it, country.name)) {
+                binding.root.showSnackWithAction(getString(R.string.delete_it, displayName)) {
                     action(R.string.yes) {
                         viewModel.removeFromVisited(country)
-                        toastLong(getString(R.string.deleted, country.name))
+                        toastLong(getString(R.string.deleted, displayName))
                     }
                 }
             }
@@ -232,6 +301,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         viewModel.visitedCountriesWithCities.observe(this) { visitedCountries ->
             initTitleWithNumberOf(visitedCountries)
             updateAdapterWith(visitedCountries)
+            VisitedCountriesWidgetProvider.updateWidget(this)
         }
         viewModel.visitedCountries.observe(this) { visitedCountries ->
             binding.circlePieChart.apply {

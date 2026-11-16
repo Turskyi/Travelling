@@ -14,15 +14,17 @@ import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.paging.PagedListAdapter
+import androidx.core.net.toUri
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.models.Country
+import ua.turskyi.travelling.utils.getDisplayName
 
-class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
+class AllCountriesAdapter : PagingDataAdapter<Country, AllCountriesAdapter.CountryViewHolder>(
     COUNTRIES_DIFF_CALLBACK
 ) {
 
@@ -64,7 +66,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val currentCountry: Country? = getItem(position)
         if (currentCountry != null) {
-            holder.tvCountry.text = currentCountry.name
+            holder.tvCountry.text = currentCountry.getDisplayName(holder.itemView.context)
             setSelectableItemBackground(holder)
             if (currentCountry.isVisited) {
                 holder.tvCountry.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -90,7 +92,7 @@ class AllCountriesAdapter : PagedListAdapter<Country, AllCountriesAdapter.Countr
         country: Country,
         holder: CountryViewHolder
     ) {
-        val uri: Uri = Uri.parse(country.flag)
+        val uri: Uri = country.flag.toUri()
         GlideToVectorYou
             .init()
             .with(holder.itemView.context)

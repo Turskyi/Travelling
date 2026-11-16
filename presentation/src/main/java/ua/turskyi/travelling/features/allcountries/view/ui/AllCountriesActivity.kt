@@ -14,8 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityAllCountriesBinding
@@ -29,6 +36,7 @@ import ua.turskyi.travelling.utils.extensions.toastLong
 import ua.turskyi.travelling.utils.hideKeyboard
 import ua.turskyi.travelling.utils.showKeyboard
 import ua.turskyi.travelling.widgets.ExpandableSearchBar.OnSearchActionListener
+import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
 
 class AllCountriesActivity : AppCompatActivity() {
@@ -41,7 +49,6 @@ class AllCountriesActivity : AppCompatActivity() {
     private val textWatcher: TextWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             viewModel.searchQuery = "%$s%"
-            adapter.submitList(viewModel.pagedList)
         }
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -70,6 +77,13 @@ class AllCountriesActivity : AppCompatActivity() {
         }
 
         binding.expandableSearchBar.isFocusableInTouchMode = true
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBar) { view, insets ->
+            val cutoutInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            view.updatePadding(top = cutoutInsets.top)
+            insets
+        }
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         val layoutManager = LinearLayoutManager(this)
         binding.rvAllCountries.layoutManager = layoutManager
@@ -127,7 +141,13 @@ class AllCountriesActivity : AppCompatActivity() {
     private fun initObservers() {
         val emptyListObserver = EmptyListObserver(binding.rvAllCountries, binding.tvNoResults)
         adapter.registerAdapterDataObserver(emptyListObserver)
-        adapter.submitList(viewModel.pagedList)
+        lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.pagedCountries.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                }
+            }
+        }
         viewModel.notVisitedCountriesNumLiveData.observe(this) { notVisitedNum: Int ->
             updateTitle(notVisitedNum)
         }
@@ -152,6 +172,7 @@ class AllCountriesActivity : AppCompatActivity() {
 
     private fun addToVisited(country: Country) {
         viewModel.markAsVisited(country) {
+            VisitedCountriesWidgetProvider.updateWidget(this)
             hideKeyboard()
             val intent = Intent()
             setResult(RESULT_OK, intent)

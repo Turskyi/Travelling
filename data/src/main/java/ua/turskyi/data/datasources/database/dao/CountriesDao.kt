@@ -1,6 +1,10 @@
 package ua.turskyi.data.datasources.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CityEntity.Companion.COLLECTION_CITIES
 import ua.turskyi.data.entities.local.CityEntity.Companion.PARAM_PARENT_ID
@@ -16,6 +20,14 @@ interface CountriesDao {
     @Query("SELECT * FROM  $COLLECTION_COUNTRIES WHERE $PARAM_NAME LIKE :name LIMIT :limit OFFSET :offset")
     fun loadAllCountriesByNameAndRange(
         name: String,
+        limit: Int,
+        offset: Int
+    ): MutableList<CountryEntity>
+
+    @Query("SELECT * FROM $COLLECTION_COUNTRIES WHERE $PARAM_NAME LIKE :name OR $PARAM_NAME IN (:matchingNames) LIMIT :limit OFFSET :offset")
+    fun loadAllCountriesByNameOrNamesAndRange(
+        name: String,
+        matchingNames: List<String>,
         limit: Int,
         offset: Int
     ): MutableList<CountryEntity>

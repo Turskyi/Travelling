@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import ua.turskyi.travelling.R
+import ua.turskyi.travelling.widgets.VisitedCountriesWidgetProvider
 
 class InfoDialog : AppCompatDialogFragment() {
     companion object {
@@ -26,6 +27,12 @@ class InfoDialog : AppCompatDialogFragment() {
             .setPositiveButton(getString(R.string.dialog_btn_ok)) { _, _ ->
                 dismiss()
             }
+        if (VisitedCountriesWidgetProvider.isPinWidgetSupported(requireContext())) {
+            builder.setNeutralButton(getString(R.string.btn_pin_widget)) { _, _ ->
+                VisitedCountriesWidgetProvider.requestPinWidget(requireContext())
+                dismiss()
+            }
+        }
         return builder.create()
     }
 }

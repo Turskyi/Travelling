@@ -1,6 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg)](https://stand-with-ukraine.pp.ua)
 [![Upload to Firebase App Distribution](https://github.com/Turskyi/Travelling/actions/workflows/android_ci.yml/badge.svg?event=push)](https://github.com/Turskyi/Travelling/actions/workflows/android_ci.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Turskyi/Travelling)
+[![wakatime](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/de45b9b9-0a05-4f95-b1f0-1310aa18aa37.svg)](https://wakatime.com/badge/user/f9df5074-b4ea-4c17-b001-fff428ab82aa/project/de45b9b9-0a05-4f95-b1f0-1310aa18aa37)
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/Turskyi/Travelling">
 
 # Travelling

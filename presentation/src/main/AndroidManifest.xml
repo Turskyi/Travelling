@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="s">
+        android:localeConfig="@xml/locales_config"
+        tools:targetApi="33">
 
         <!-- remove advertising dependency -->
         <meta-data
@@ -35,8 +36,8 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/pic_logo" />
-        <!-- This color used with incoming notification messages.
-         This is used when no color is set for the incoming notification message.  -->
+        <!-- This colour used with incoming notification messages.
+         This is used when no colour is set for the incoming notification message.  -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorLightGrey" />
@@ -103,6 +104,28 @@
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
+
+        <receiver
+            android:name=".widgets.VisitedCountriesWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_visited_countries_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/visited_countries_widget_info" />
+        </receiver>
+
+        <!-- Service for AppCompat auto-storing locales on Android 12 and below -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
     <queries>

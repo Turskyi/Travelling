@@ -8,9 +8,14 @@ class DatabaseSource(private val countriesDao: CountriesDao) {
     fun loadCountriesByNameAndRange(
         name: String,
         limit: Int,
-        offset: Int
+        offset: Int,
+        matchingNames: List<String> = emptyList()
     ): MutableList<CountryEntity> {
-        return countriesDao.loadAllCountriesByNameAndRange(name, limit, offset)
+        return if (matchingNames.isEmpty()) {
+            countriesDao.loadAllCountriesByNameAndRange(name, limit, offset)
+        } else {
+            countriesDao.loadAllCountriesByNameOrNamesAndRange(name, matchingNames, limit, offset)
+        }
     }
 
     fun getLocalCountriesByRange(limit: Int, offset: Int): List<CountryEntity> {

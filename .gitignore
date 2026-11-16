@@ -19,3 +19,5 @@ node_modules
 /presentation/release/
 presentation/release
 /.artifacts/
+/keystore/
+/.kotlin/sessions/

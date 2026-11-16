@@ -14,5 +14,10 @@ interface CountriesRepository {
     suspend fun removeCity(city: CityModel): Result<Unit>
     suspend fun insertCity(city: CityModel): Result<Unit>
     suspend fun setCountriesByRange(limit: Int, offset: Int): Result<List<CountryModel>>
-    suspend fun loadCountriesByNameAndRange(name: String, limit: Int, offset: Int): Result<List<CountryModel>>
+    suspend fun loadCountriesByNameAndRange(
+        name: String,
+        limit: Int,
+        offset: Int,
+        matchingNames: List<String> = emptyList()
+    ): Result<List<CountryModel>>
 }

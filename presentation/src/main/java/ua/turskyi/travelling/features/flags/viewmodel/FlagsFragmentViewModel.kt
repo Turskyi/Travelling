@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.travelling.models.Country
@@ -55,8 +54,10 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
     }
 
     fun updateSelfie(id: Int, filePath: String) {
-        _visibilityLoader.postValue(View.VISIBLE)
-        viewModelScope.launch(IO) {
+        if (filePath.isNotEmpty()) {
+            _visibilityLoader.postValue(View.VISIBLE)
+        }
+        viewModelScope.launch {
             interactor.updateSelfie(
                 id = id,
                 filePath = filePath,

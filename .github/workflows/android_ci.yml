@@ -1,5 +1,9 @@
 name: Upload to Firebase App Distribution
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches-ignore:
@@ -18,15 +22,26 @@ jobs:
         with:
           java-version: 17
 
+      - name: Run Regression Unit Tests
+        run: ./gradlew test
+
+      - name: Set up Keystore
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore/travelling.jks
+
       - name: Generate Release APK
         run: ./gradlew assembleRelease
+        env:
+          SIGNING_KEY_RELEASE_PASSWORD: ${{ secrets.SIGNING_KEY_RELEASE_PASSWORD }}
+          SIGNING_KEY_RELEASE_KEY: ${{ secrets.SIGNING_KEY_RELEASE_KEY }}
+          SIGNING_KEY_RELEASE_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_RELEASE_KEY_PASSWORD }}
 
       - name: upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_ANDROID_APPID}}
-          token: ${{secrets.FIREBASE_TOKEN}}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           groups: testers
           releaseNotes: "Travelling Android App Build"
           file: presentation/build/outputs/apk/release/presentation-release.apk
-

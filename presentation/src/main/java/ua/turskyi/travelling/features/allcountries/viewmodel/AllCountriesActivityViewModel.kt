@@ -7,22 +7,25 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import ua.turskyi.domain.interactor.CountriesInteractor
-import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPositionalDataSource
-import ua.turskyi.travelling.features.allcountries.view.adapter.FilteredPositionalDataSource
+import ua.turskyi.travelling.features.allcountries.view.adapter.CountriesPagingSource
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
-import ua.turskyi.travelling.utils.MainThreadExecutor
 import ua.turskyi.travelling.utils.extensions.mapToModel
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
     private val _notVisitedCountriesNumLiveData = MutableLiveData<Int>()
-    val notVisitedCountriesNumLiveData: MutableLiveData<Int>
+    val notVisitedCountriesNumLiveData: LiveData<Int>
         get() = _notVisitedCountriesNumLiveData
 
     private var _visibilityLoader = MediatorLiveData<Int>()
@@ -31,12 +34,28 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
     private var currentVisibilitySource: LiveData<Int>? = null
 
-    var pagedList: PagedList<Country>
+    private val searchQueryFlow = MutableStateFlow("")
+
+    val pagedCountries: Flow<PagingData<Country>> = searchQueryFlow
+        .flatMapLatest { query ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    initialLoadSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    val pagingSource = CountriesPagingSource(interactor, query)
+                    updateVisibilitySource(pagingSource.visibilityLoader)
+                    pagingSource
+                }
+            ).flow
+        }.cachedIn(viewModelScope)
 
     var searchQuery = ""
         set(value) {
             field = value
-            pagedList = getCountryList(value)
+            searchQueryFlow.value = value
         }
 
     private val _errorMessage = MutableLiveData<Event<String>>()
@@ -45,35 +64,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
     init {
         _visibilityLoader.postValue(VISIBLE)
-        pagedList = getCountryList(searchQuery)
         getNotVisitedCountriesNum()
-    }
-
-    private fun getCountryList(searchQuery: String): PagedList<Country> {
-
-        // PagedList
-        val config: PagedList.Config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(20)
-            .setPageSize(20)
-            .build()
-
-        return if (searchQuery == "" || searchQuery == "%%") {
-            // DataSource
-            val dataSource = CountriesPositionalDataSource(interactor)
-            updateVisibilitySource(dataSource.visibilityLoader)
-            PagedList.Builder(dataSource, config)
-                .setFetchExecutor(Dispatchers.IO.asExecutor())
-                .setNotifyExecutor(MainThreadExecutor())
-                .build()
-        } else {
-            val filteredDataSource = FilteredPositionalDataSource(countryName = searchQuery, interactor = interactor)
-            updateVisibilitySource(filteredDataSource.visibilityLoader)
-            PagedList.Builder(filteredDataSource, config)
-                .setFetchExecutor(Dispatchers.IO.asExecutor())
-                .setNotifyExecutor(MainThreadExecutor())
-                .build()
-        }
     }
 
     private fun updateVisibilitySource(source: LiveData<Int>) {
@@ -108,5 +99,4 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             }
         }
     }
-
 }

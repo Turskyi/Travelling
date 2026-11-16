@@ -7,13 +7,13 @@ buildscript {
         // sdk versions
         compile_sdk_version = 37
         build_tools_version = "37.0.0"
-        min_sdk_version = 23
+        min_sdk_version = 24
         target_sdk_version = 37
 /* to check the latest version @see
 https://play.google.com/console/u/0/developers/6867856033872987263/app/4975238491076611804/releases/overview
 */
-        version_code = 24
-        version_name = "2.2.4"
+        version_code = 25
+        version_name = "2.2.5"
     }
     repositories {
     }
@@ -51,6 +51,7 @@ subprojects {
 //            Room Database
                 //noinspection KaptUsageInsteadOfKsp
                 kapt libs.room.compiler
+                kapt libs.kotlin.metadata
 
                 // Paging
                 // Tried to upgrade to 3.3.6 and all versions between - does not compile.
