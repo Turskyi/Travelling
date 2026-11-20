@@ -14,6 +14,7 @@ android {
         minSdkVersion rootProject.min_sdk_version
 
         buildConfigField "String", "HOST_URL", "\"${rootProject.HOST_URL}\""
+        buildConfigField "String", "BACKEND_BASE_URL", "\"https://travelling.turskyi.com\""
         buildConfigField "String", "DATABASE_NAME", "\"${rootProject.DATABASE_NAME}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -75,6 +76,13 @@ dependencies {
     api libs.converter.gson
     api libs.gson
     api libs.java.jwt
+
+    // firebase & play services
+    api platform(libs.firebase.bom)
+    api libs.firebase.auth
+    api libs.firebase.storage
+    api libs.play.services.auth
+    api libs.billing.ktx
 
     // database
     api libs.room.runtime

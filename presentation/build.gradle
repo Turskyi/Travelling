@@ -125,6 +125,8 @@ dependencies {
 
     // firebase
     implementation libs.firebase.messaging
+    implementation libs.firebase.auth
+    implementation libs.firebase.storage
     implementation(libs.firebase.perf) {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
@@ -134,6 +136,13 @@ dependencies {
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
     implementation libs.firebase.analytics
+
+    // Google Play Services & Billing & Credential Manager
+    implementation libs.play.services.auth
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth
+    implementation libs.googleid
+    implementation libs.billing.ktx
 
     // ViewModel and LiveData
     implementation libs.lifecycle.viewmodel.ktx

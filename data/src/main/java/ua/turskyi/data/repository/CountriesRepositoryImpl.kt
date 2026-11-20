@@ -1,6 +1,8 @@
 package ua.turskyi.data.repository
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -15,6 +17,8 @@ import ua.turskyi.data.extensions.mapModelToEntity
 import ua.turskyi.data.extensions.mapNetListToModelList
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
+import ua.turskyi.domain.repository.AuthRepository
+import ua.turskyi.domain.repository.CloudSyncRepository
 import ua.turskyi.domain.repository.CountriesRepository
 import java.io.File
 
@@ -23,6 +27,8 @@ class CountriesRepositoryImpl : CountriesRepository,
 
     private val netSource: NetSource by inject()
     private val databaseSource: DatabaseSource by inject()
+    private val cloudSyncRepository: CloudSyncRepository by inject()
+    private val authRepository: AuthRepository by inject()
 
     override suspend fun refreshCountries(): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
@@ -37,11 +43,13 @@ class CountriesRepositoryImpl : CountriesRepository,
                     }
                 },
                 onError = { exception: Exception ->
+                    exception.printStackTrace()
                     result = Result.failure(exception)
                 },
             )
             result
         } catch (exception: Exception) {
+            exception.printStackTrace()
             Result.failure(exception)
         }
     }
@@ -52,8 +60,10 @@ class CountriesRepositoryImpl : CountriesRepository,
                 databaseSource.updateSelfie(id, filePath)
                 val visitedEntities = databaseSource.getVisitedLocalCountriesFromDb()
                 cleanupUnavailableSelfies(visitedEntities)
+                tryBackgroundSync()
                 Result.success(visitedEntities.mapEntityListToModelList())
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 Result.failure(exception)
             }
         }
@@ -64,8 +74,10 @@ class CountriesRepositoryImpl : CountriesRepository,
                 val countryLocal: CountryEntity = country.mapModelToEntity()
                 countryLocal.isVisited = true
                 databaseSource.insertCountry(countryLocal)
+                tryBackgroundSync()
                 Result.success(Unit)
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 Result.failure(exception)
             }
         }
@@ -77,8 +89,10 @@ class CountriesRepositoryImpl : CountriesRepository,
                 countryLocal.isVisited = false
                 databaseSource.removeCitiesByCountry(country.id)
                 databaseSource.insertCountry(countryLocal)
+                tryBackgroundSync()
                 Result.success(Unit)
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 Result.failure(exception)
             }
         }
@@ -86,8 +100,10 @@ class CountriesRepositoryImpl : CountriesRepository,
     override suspend fun insertCity(city: CityModel): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
             databaseSource.insertCity(city.mapModelToEntity())
+            tryBackgroundSync()
             Result.success(Unit)
         } catch (exception: Exception) {
+            exception.printStackTrace()
             Result.failure(exception)
         }
     }
@@ -96,9 +112,23 @@ class CountriesRepositoryImpl : CountriesRepository,
         return@withContext try {
             val cityLocal: ua.turskyi.data.entities.local.CityEntity = city.mapModelToEntity()
             databaseSource.removeCity(cityLocal)
+            tryBackgroundSync()
             Result.success(Unit)
         } catch (exception: Exception) {
+            exception.printStackTrace()
             Result.failure(exception)
+        }
+    }
+
+    private fun tryBackgroundSync() {
+        if (authRepository.getCurrentUser() != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    cloudSyncRepository.syncLocalChanges()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -109,6 +139,7 @@ class CountriesRepositoryImpl : CountriesRepository,
                 cleanupUnavailableSelfies(visitedEntities)
                 Result.success(visitedEntities.mapEntityListToModelList())
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 Result.failure(exception)
             }
         }
@@ -134,6 +165,7 @@ class CountriesRepositoryImpl : CountriesRepository,
         return@withContext try {
             Result.success(databaseSource.getCities().mapEntitiesToModelList())
         } catch (exception: Exception) {
+            exception.printStackTrace()
             Result.failure(exception)
         }
     }
@@ -142,6 +174,7 @@ class CountriesRepositoryImpl : CountriesRepository,
         return@withContext try {
             Result.success(databaseSource.getCountNotVisitedCountries())
         } catch (exception: Exception) {
+            exception.printStackTrace()
             Result.failure(exception)
         }
     }
@@ -151,6 +184,7 @@ class CountriesRepositoryImpl : CountriesRepository,
             return@withContext try {
                 Result.success(databaseSource.getLocalCountriesByRange(limit, offset).mapEntityListToModelList())
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 Result.failure(exception)
             }
         }
@@ -167,7 +201,8 @@ class CountriesRepositoryImpl : CountriesRepository,
                     .mapEntityListToModelList()
             )
         } catch (exception: Exception) {
-            Result.failure(exception)
+            exception.printStackTrace()
+            Result.failure(Exception(exception))
         }
     }
 }

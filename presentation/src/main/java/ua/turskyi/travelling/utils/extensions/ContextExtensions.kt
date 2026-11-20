@@ -25,7 +25,9 @@ import ua.turskyi.travelling.features.home.view.ui.HomeActivity
  * the optional [configIntent] lambda.
  */
 inline fun <reified A : Activity> Context.start(configIntent: Intent.() -> Unit = {}) {
-    startActivity(Intent(this, A::class.java).apply(configIntent))
+    startActivity(
+        Intent(this, A::class.java).apply(configIntent),
+    )
 }
 
 fun Context.isFacebookInstalled() = try {
@@ -36,6 +38,7 @@ fun Context.isFacebookInstalled() = try {
     )
     true
 } catch (e: PackageManager.NameNotFoundException) {
+    e.printStackTrace()
     false
 }
 
@@ -83,7 +86,10 @@ fun Context.convertPictureToSpannableString(imgRes: Int): SpannableString {
     return spannableString
 }
 
-fun <T> Context.openActivityWithArgs(destination: Class<T>, extras: Bundle.() -> Unit = {}) {
+fun <T> Context.openActivityWithArgs(
+    destination: Class<T>,
+    extras: Bundle.() -> Unit = {},
+) {
     val intent = Intent(this, destination)
     intent.putExtras(Bundle().apply(extras))
     startActivity(intent)
@@ -101,13 +107,21 @@ fun Context.toast(@StringRes msgResId: Int) {
     Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+fun Context.toast(msg: String) = Toast.makeText(
+    this,
+    msg,
+    Toast.LENGTH_SHORT,
+).show()
 
 fun Context.toastLong(@StringRes msgResId: Int) {
     Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
 }
 
-fun Context.toastLong(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+fun Context.toastLong(msg: String) = Toast.makeText(
+    this,
+    msg,
+    Toast.LENGTH_LONG,
+).show()
 
 fun Context.showReportDialog() {
     val lastDialog: AlertDialog = AlertDialog.Builder(this)
@@ -143,4 +157,53 @@ fun Context.showReportDialog() {
             startActivity(newIntent)
         }.create()
     lastDialog.show()
+}
+
+fun Context.showErrorWithReportDialog(errorMessage: String) {
+    val supportEmail = getString(R.string.email)
+    AlertDialog.Builder(this)
+        .setTitle(getString(R.string.error_cloud_sync_title))
+        .setMessage(
+            getString(
+                R.string.error_cloud_sync_message,
+                errorMessage,
+                supportEmail,
+            ),
+        )
+        .setPositiveButton(getString(R.string.btn_report_issue)) { _, _ ->
+            val intent = Intent(
+                Intent.ACTION_SENDTO,
+                Uri.fromParts(
+                    getString(R.string.scheme_mailto),
+                    supportEmail,
+                    null
+                )
+            ).apply {
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    getString(R.string.error_email_subject),
+                )
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(
+                        R.string.error_email_body,
+                        errorMessage,
+                        android.os.Build.MODEL,
+                        android.os.Build.VERSION.SDK_INT
+                    )
+                )
+            }
+            try {
+                startActivity(
+                    Intent.createChooser(
+                        intent,
+                        getString(R.string.chooser_send_email),
+                    ),
+                )
+            } catch (_: Exception) {
+                toast(getString(R.string.msg_no_email_client))
+            }
+        }
+        .setNegativeButton(getString(R.string.no), null)
+        .show()
 }

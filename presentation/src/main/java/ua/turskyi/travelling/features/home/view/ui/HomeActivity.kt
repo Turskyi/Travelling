@@ -29,7 +29,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityHomeBinding
@@ -61,6 +63,7 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     SyncDialog.SyncListener {
     private val viewModel: HomeActivityViewModel by inject()
     private val homeAdapter: HomeAdapter by inject()
+    private val authInteractor: ua.turskyi.domain.interactor.AuthInteractor by inject()
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
@@ -80,13 +83,52 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         // makes info icon visible
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         invalidateOptionsMenu()
+        viewModel.showListOfVisitedCountries()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // makes sync icon visible
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_sync, menu)
+        updateAccountIcon(menu.findItem(R.id.action_account))
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        updateAccountIcon(menu.findItem(R.id.action_account))
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun updateAccountIcon(accountItem: MenuItem?) {
+        if (accountItem == null) return
+        val user = authInteractor.getCurrentUser()
+        if (user != null && user.photoUrl.isNotEmpty()) {
+            com.bumptech.glide.Glide.with(this)
+                .asBitmap()
+                .load(user.photoUrl)
+                .circleCrop()
+                .into(object :
+                    com.bumptech.glide.request.target.CustomTarget<android.graphics.Bitmap>(
+                        96,
+                        96
+                    ) {
+                    override fun onResourceReady(
+                        resource: android.graphics.Bitmap,
+                        transition: com.bumptech.glide.request.transition.Transition<in android.graphics.Bitmap>?
+                    ) {
+                        accountItem.icon =
+                            androidx.core.graphics.drawable.RoundedBitmapDrawableFactory.create(
+                                resources,
+                                resource
+                            ).apply {
+                                isCircular = true
+                            }
+                    }
+
+                    override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {}
+                })
+        } else {
+            accountItem.icon = ContextCompat.getDrawable(this, android.R.drawable.ic_menu_myplaces)
+        }
     }
 
     /**
@@ -99,6 +141,44 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
     /**
      * Calling when user clicks "ok" button in "sync dialogue".
      */
+    private var pendingKeepSignedIn = false
+
+    override fun onInitiateGoogleSignIn(keepSignedIn: Boolean) {
+        pendingKeepSignedIn = keepSignedIn
+        lifecycleScope.launch {
+            try {
+                val credentialManager = androidx.credentials.CredentialManager.create(this@HomeActivity)
+                val googleIdOption = com.google.android.libraries.identity.googleid.GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(getString(R.string.default_web_client_id))
+                    .build()
+
+                val request = androidx.credentials.GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOption)
+                    .build()
+
+                val result = credentialManager.getCredential(this@HomeActivity, request)
+                val googleIdTokenCredential = com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.createFrom(result.credential.data)
+                val idToken = googleIdTokenCredential.idToken
+
+                val authInteractor: ua.turskyi.domain.interactor.AuthInteractor by inject()
+                val signInResult = authInteractor.signInWithGoogleCredential(idToken, pendingKeepSignedIn)
+                signInResult.onSuccess { user ->
+                    toast(getString(R.string.status_signed_in_as, user.email.ifEmpty { user.displayName }))
+                    val syncDialog = SyncDialog.newInstance()
+                    syncDialog.show(
+                        supportFragmentManager,
+                        resources.getString(R.string.tag_sync_dialog)
+                    )
+                }.onFailure { e ->
+                    toast(getString(R.string.msg_sign_in_failed, e.localizedMessage ?: e.toString()))
+                }
+            } catch (e: Exception) {
+                toast(getString(R.string.msg_google_signin_failed, e.localizedMessage ?: e.toString()))
+            }
+        }
+    }
+
     override fun showTravellingPro() {
         try {
             startActivity(
@@ -130,11 +210,19 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 true
             }
 
-            R.id.action_sync -> {
-                val infoDialog: SyncDialog = SyncDialog.newInstance(
-                    getString(R.string.txt_info_billing)
+            R.id.action_account -> {
+                startActivity(
+                    Intent(
+                        this,
+                        ua.turskyi.travelling.features.account.view.AccountActivity::class.java
+                    )
                 )
-                infoDialog.show(
+                true
+            }
+
+            R.id.action_sync -> {
+                val syncDialog: SyncDialog = SyncDialog.newInstance()
+                syncDialog.show(
                     this.supportFragmentManager,
                     resources.getString(R.string.tag_sync_dialog),
                 )

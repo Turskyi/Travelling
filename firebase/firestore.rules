@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Server-managed collections (Firebase Admin SDK bypasses rules)
+    match /entitlements/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false;
+    }
+
+    match /purchase_tokens/{tokenId} {
+      allow read, write: if false;
+    }
+
+    match /rejections/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false;
+    }
+
+    match /rtdn_messages/{msgId} {
+      allow read, write: if false;
+    }
+
+    // Free App Cloud Backup & Sync paths (UID-scoped & owner-only)
+    match /user_backups/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // Travelling Pro app paths (Preserved compatibility)
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (resource.data.isVisible == true || isOwner(userId));
+      allow write: if isOwner(userId);
+
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    match /countries/{countryId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+  }
+}

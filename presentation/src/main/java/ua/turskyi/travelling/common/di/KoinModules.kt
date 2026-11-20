@@ -41,18 +41,37 @@ val viewModelsModule = module {
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsFragmentViewModel(get()) }
     factory { AddCityDialogViewModel(get()) }
+    factory { ua.turskyi.travelling.features.account.viewmodel.AccountActivityViewModel() }
 }
 
 val interactorsModule = module {
     factory { CountriesInteractor() }
+    factory { ua.turskyi.domain.interactor.AuthInteractor() }
+    factory { ua.turskyi.domain.interactor.CloudSyncInteractor() }
+    factory { ua.turskyi.domain.interactor.BillingInteractor() }
 }
 
 val repositoriesModule = module {
     single<CountriesRepository> { CountriesRepositoryImpl() }
+    single<ua.turskyi.domain.repository.AuthRepository> {
+        ua.turskyi.data.repository.AuthRepositoryImpl(androidContext())
+    }
+    single<ua.turskyi.domain.repository.CloudSyncRepository> {
+        ua.turskyi.data.repository.CloudSyncRepositoryImpl(androidContext())
+    }
+    single<ua.turskyi.domain.repository.BillingRepository> {
+        ua.turskyi.data.repository.BillingRepositoryImpl(androidContext())
+    }
 }
 
+@Suppress("DEPRECATION")
 val dataProvidersModule = module {
-    single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            Database::class.java, DATABASE_NAME
+        ).build()
+    }
     single {
         OkHttpClient.Builder()
             .cache(get())
