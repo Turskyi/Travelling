@@ -37,7 +37,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.github.twocoffeesoneteam.glidetovectoryou.GlideApp
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
@@ -316,10 +315,10 @@ class FlagFragment : Fragment() {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
         val thumbnailBuilder: RequestBuilder<Drawable> =
-            GlideApp.with(binding.ivEnlargedFlag.context)
+            com.bumptech.glide.Glide.with(binding.ivEnlargedFlag.context)
                 .asDrawable()
                 .sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
-        GlideApp.with(this)
+        com.bumptech.glide.Glide.with(this)
             .load(countries[position].filePath)
             .thumbnail(thumbnailBuilder)
             .apply(
