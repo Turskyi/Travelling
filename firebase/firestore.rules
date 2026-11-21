@@ -41,38 +41,36 @@ service cloud.firestore {
     // Travelling Pro app paths (Preserved compatibility)
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create, update: if isOwner(userId);
-      allow delete: if isOwner(userId);
+      allow create, update, delete: if isOwner(userId);
 
-      // Public read: any authenticated user can view another traveller's countries, visited_countries, and cities
       match /countries/{countryId} {
         allow read: if isAuthenticated();
-        allow write: if isOwner(userId);
+        allow write, delete: if isOwner(userId);
 
         match /cities/{cityId} {
           allow read: if isAuthenticated();
-          allow write: if isOwner(userId);
+          allow write, delete: if isOwner(userId);
         }
       }
 
       match /visited_countries/{countryId} {
         allow read: if isAuthenticated();
-        allow write: if isOwner(userId);
+        allow write, delete: if isOwner(userId);
 
         match /cities/{cityId} {
           allow read: if isAuthenticated();
-          allow write: if isOwner(userId);
+          allow write, delete: if isOwner(userId);
         }
       }
 
       match /cities/{cityId} {
         allow read: if isAuthenticated();
-        allow write: if isOwner(userId);
+        allow write, delete: if isOwner(userId);
       }
 
       // All other subcollections remain owner-only
       match /{allSubcollections=**} {
-        allow read, write: if isOwner(userId);
+        allow read, write, delete: if isOwner(userId);
       }
     }
 
