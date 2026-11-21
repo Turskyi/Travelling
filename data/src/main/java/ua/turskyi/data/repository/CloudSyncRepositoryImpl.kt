@@ -3,6 +3,7 @@ package ua.turskyi.data.repository
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -54,10 +55,16 @@ class CloudSyncRepositoryImpl(
                 val missingSelfiesMap = mutableMapOf<String, String>()
 
                 visitedCountries.forEach { country ->
-                    if (country.selfie.isNotEmpty() && !country.selfie.startsWith("https://")) {
+                    if (country.selfie.isNotEmpty() && !country.selfie.startsWith(
+                            "https://",
+                        )
+                    ) {
                         val isAvailable = if (country.selfie.startsWith("content://")) {
                             try {
-                                val inputStream = context.contentResolver.openInputStream(Uri.parse(country.selfie))
+                                val inputStream =
+                                    context.contentResolver.openInputStream(
+                                        country.selfie.toUri(),
+                                    )
                                 val size = inputStream?.available() ?: 0
                                 inputStream?.close()
                                 size > 0
@@ -150,7 +157,8 @@ class CloudSyncRepositoryImpl(
                                 "selfies/${user.uid}_${c.id}.jpg"
                             )
                             if (c.selfie.startsWith("content://")) {
-                                val inputStream = context.contentResolver.openInputStream(Uri.parse(c.selfie))
+                                val inputStream =
+                                    context.contentResolver.openInputStream(c.selfie.toUri())
                                 if (inputStream != null) {
                                     storageRef.putStream(inputStream).await()
                                     inputStream.close()
@@ -168,7 +176,12 @@ class CloudSyncRepositoryImpl(
                             }
                             selfieUrl = storageRef.downloadUrl.await().toString()
                         } catch (e: Exception) {
-                            Log.e(TAG, "Optional selfie upload failed for ${c.name}, continuing sync", e)
+                            Log.e(
+                                TAG,
+                                "Optional selfie upload failed for ${c.name}, " +
+                                        "continuing sync",
+                                e
+                            )
                             selfieUrl = ""
                         }
                     }
@@ -206,14 +219,20 @@ class CloudSyncRepositoryImpl(
                 val request = Request.Builder()
                     .url("$backendBaseUrl/api/sync/data")
                     .addHeader("Authorization", "Bearer $idToken")
-                    .post(payload.toString().toRequestBody("application/json".toMediaType()))
+                    .post(
+                        payload.toString().toRequestBody(
+                            "application/json".toMediaType()
+                        ),
+                    )
                     .build()
 
                 val response = okHttpClient.newCall(request).execute()
                 val responseBody = response.body.string()
                 if (!response.isSuccessful) {
                     val errorMsg = try {
-                        JSONObject(responseBody).optString("error", "HTTP ${response.code}")
+                        JSONObject(responseBody).optString(
+                            "error", "HTTP ${response.code}",
+                        )
                     } catch (e: Exception) {
                         Log.e(TAG, "Error parsing error response body", e)
                         "HTTP ${response.code}"
@@ -222,9 +241,15 @@ class CloudSyncRepositoryImpl(
                 }
 
                 val resJson = JSONObject(responseBody)
-                val serverCountryCount = resJson.optInt("serverCountryCount", visitedCountries.size)
+                val serverCountryCount = resJson.optInt(
+                    "serverCountryCount",
+                    visitedCountries.size,
+                )
                 if (serverCountryCount != visitedCountries.size) {
-                    throw Exception("Server verification count mismatch: expected ${visitedCountries.size}, got $serverCountryCount")
+                    throw Exception(
+                        "Server verification count mismatch: expected " +
+                                "${visitedCountries.size}, got $serverCountryCount",
+                    )
                 }
 
                 Result.success(Unit)
@@ -271,7 +296,9 @@ class CloudSyncRepositoryImpl(
         }
     }
 
-    override suspend fun performBidirectionalSync(): Result<Unit> = withContext(Dispatchers.IO) {
+    override suspend fun performBidirectionalSync(): Result<Unit> = withContext(
+        Dispatchers.IO,
+    ) {
         return@withContext try {
             val idToken = authRepository.getIdToken().getOrThrow()
 
@@ -286,7 +313,10 @@ class CloudSyncRepositoryImpl(
             val responseBody = response.body.string()
             if (!response.isSuccessful) {
                 val errorMsg = try {
-                    JSONObject(responseBody).optString("error", "HTTP ${response.code}")
+                    JSONObject(responseBody).optString(
+                        "error",
+                        "HTTP ${response.code}",
+                    )
                 } catch (e: Exception) {
                     Log.e(TAG, "Error parsing sync response body", e)
                     "HTTP ${response.code}"
@@ -294,12 +324,16 @@ class CloudSyncRepositoryImpl(
                 return@withContext Result.failure(Exception(errorMsg))
             }
 
-            // 2. Merge cloud data into local database (selfie is already HTTPS download URL compatible with TravellingPro)
+            // 2. Merge cloud data into local database (selfie is already HTTPS download URL
+            // compatible with TravellingPro)
             val json = JSONObject(responseBody)
             val serverCountries = json.optJSONArray("countries") ?: JSONArray()
             for (i in 0 until serverCountries.length()) {
                 val cObj = serverCountries.getJSONObject(i)
-                val countryName = cObj.optString("name", cObj.optString("title", ""))
+                val countryName = cObj.optString(
+                    "name",
+                    cObj.optString("title", ""),
+                )
                 val existing = databaseSource.getCountryByName(countryName)
                 val selfieUrl = cObj.optString("selfie", "")
 
@@ -347,8 +381,13 @@ class CloudSyncRepositoryImpl(
 
     override suspend fun syncLocalChanges(): Result<Unit> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val idToken = authRepository.getIdToken().getOrNull() ?: return@withContext Result.failure(Exception("Not signed in"))
-            val user = authRepository.getCurrentUser() ?: return@withContext Result.failure(Exception("Not signed in"))
+            val idToken =
+                authRepository.getIdToken().getOrNull() ?: return@withContext Result.failure(
+                    Exception("Not signed in")
+                )
+            val user = authRepository.getCurrentUser() ?: return@withContext Result.failure(
+                Exception("Not signed in")
+            )
             val visitedCountries = databaseSource.getVisitedLocalCountriesFromDb()
             val cities = databaseSource.getCities()
 
@@ -361,7 +400,8 @@ class CloudSyncRepositoryImpl(
                             "selfies/${user.uid}_${c.id}.jpg"
                         )
                         if (c.selfie.startsWith("content://")) {
-                            val inputStream = context.contentResolver.openInputStream(Uri.parse(c.selfie))
+                            val inputStream =
+                                context.contentResolver.openInputStream(c.selfie.toUri())
                             if (inputStream != null) {
                                 storageRef.putStream(inputStream).await()
                                 inputStream.close()
@@ -379,7 +419,12 @@ class CloudSyncRepositoryImpl(
                         }
                         selfieUrl = storageRef.downloadUrl.await().toString()
                     } catch (e: Exception) {
-                        Log.e(TAG, "Failed to upload selfie during syncLocalChanges for country ${c.name}", e)
+                        Log.e(
+                            TAG,
+                            "Failed to upload selfie during syncLocalChanges for " +
+                                    "country ${c.name}",
+                            e
+                        )
                         selfieUrl = ""
                     }
                 }
@@ -413,14 +458,21 @@ class CloudSyncRepositoryImpl(
             val request = Request.Builder()
                 .url("$backendBaseUrl/api/sync/data")
                 .addHeader("Authorization", "Bearer $idToken")
-                .post(payload.toString().toRequestBody("application/json".toMediaType()))
+                .post(
+                    payload.toString().toRequestBody(
+                        "application/json".toMediaType()
+                    ),
+                )
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
             val responseBody = response.body.string()
             if (!response.isSuccessful) {
                 val errorMsg = try {
-                    JSONObject(responseBody).optString("error", "HTTP ${response.code}")
+                    JSONObject(responseBody).optString(
+                        "error",
+                        "HTTP ${response.code}",
+                    )
                 } catch (e: Exception) {
                     Log.e(TAG, "Error parsing response error body", e)
                     "HTTP ${response.code}"
