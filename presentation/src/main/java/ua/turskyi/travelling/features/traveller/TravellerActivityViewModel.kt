@@ -46,7 +46,11 @@ class TravellerActivityViewModel : ViewModel() {
                 val nodesList = mutableListOf<VisitedCountryNode>()
 
                 for (doc in querySnapshot.documents) {
-                    val id = doc.getLong("id")?.toInt() ?: doc.id.toIntOrNull() ?: 0
+                    val id = when (val idObj = doc.get("id")) {
+                        is Number -> idObj.toInt()
+                        is String -> idObj.toIntOrNull() ?: doc.id.toIntOrNull() ?: 0
+                        else -> doc.id.toIntOrNull() ?: 0
+                    }
                     val title = doc.getString("title") ?: doc.getString("name") ?: ""
                     val flag = doc.getString("flag") ?: ""
                     val selfie = doc.getString("selfie") ?: ""
@@ -63,9 +67,17 @@ class TravellerActivityViewModel : ViewModel() {
                         val cityNodes =
                             mutableListOf<com.chad.library.adapter.base.entity.node.BaseNode>()
                         for (cityDoc in citiesSnapshot.documents) {
-                            val cityId = cityDoc.getLong("id")?.toInt() ?: 0
+                            val cityId = when (val cityIdObj = cityDoc.get("id")) {
+                                is Number -> cityIdObj.toInt()
+                                is String -> cityIdObj.toIntOrNull() ?: 0
+                                else -> 0
+                            }
                             val cityName = cityDoc.getString("name") ?: ""
-                            val parentId = cityDoc.getLong("parentId")?.toInt() ?: id
+                            val parentId = when (val parentIdObj = cityDoc.get("parentId")) {
+                                is Number -> parentIdObj.toInt()
+                                is String -> parentIdObj.toIntOrNull() ?: id
+                                else -> id
+                            }
                             val month = cityDoc.getString("month") ?: ""
                             cityNodes.add(City(cityId, cityName, parentId, month))
                         }
@@ -76,8 +88,8 @@ class TravellerActivityViewModel : ViewModel() {
                     nodesList.add(node)
                 }
 
-                _visitedCountries.postValue(visitedCountriesList)
-                _visitedCountriesWithCitiesNode.postValue(nodesList)
+                _visitedCountries.postValue(visitedCountriesList.distinctBy { it.title.lowercase().trim() })
+                _visitedCountriesWithCitiesNode.postValue(nodesList.distinctBy { it.title.lowercase().trim() })
                 _visibilityLoader.postValue(GONE)
             } catch (e: Exception) {
                 _visibilityLoader.postValue(GONE)

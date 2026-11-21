@@ -63,15 +63,20 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
                     val querySnapshot = countriesRef.get().await()
                     val countriesList = mutableListOf<Country>()
                     for (doc in querySnapshot.documents) {
-                        val id = doc.getLong("id")?.toInt() ?: doc.id.toIntOrNull() ?: 0
+                        val id = when (val idObj = doc.get("id")) {
+                            is Number -> idObj.toInt()
+                            is String -> idObj.toIntOrNull() ?: doc.id.toIntOrNull() ?: 0
+                            else -> doc.id.toIntOrNull() ?: 0
+                        }
                         val title = doc.getString("title") ?: doc.getString("name") ?: ""
                         val flag = doc.getString("flag") ?: ""
                         val selfie = doc.getString("selfie") ?: ""
                         val isVisited = doc.getBoolean("isVisited") ?: true
                         countriesList.add(Country(id, title, flag, isVisited, selfie))
                     }
-                    visitedCount = countriesList.size
-                    visitedCountries.postValue(countriesList)
+                    val distinctCountries = countriesList.distinctBy { it.name.lowercase().trim() }
+                    visitedCount = distinctCountries.size
+                    visitedCountries.postValue(distinctCountries)
                     _visibilityLoader.postValue(View.GONE)
                 } catch (e: Exception) {
                     _visibilityLoader.postValue(View.GONE)
