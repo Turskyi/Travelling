@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -35,7 +34,6 @@ class TravellerActivityViewModel : ViewModel() {
     val errorMessage: LiveData<Event<String>> = _errorMessage
 
     private val db = FirebaseFirestore.getInstance()
-    private val storage = FirebaseStorage.getInstance()
 
     fun showListOfVisitedCountriesById(userId: String) {
         _visibilityLoader.postValue(VISIBLE)
@@ -55,14 +53,7 @@ class TravellerActivityViewModel : ViewModel() {
                     }
                     val title = doc.getString("title") ?: doc.getString("name") ?: ""
                     val flag = doc.getString("flag") ?: ""
-                    var selfie = doc.getString("selfie") ?: ""
-                    if (selfie.isNotEmpty() && selfie.startsWith("cloud_sync/")) {
-                        try {
-                            selfie = storage.reference.child(selfie).downloadUrl.await().toString()
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
+                    val selfie = doc.getString("selfie") ?: ""
                     val isVisited = doc.getBoolean("isVisited") ?: true
 
                     val country = VisitedCountry(id, title, flag, isVisited, selfie)

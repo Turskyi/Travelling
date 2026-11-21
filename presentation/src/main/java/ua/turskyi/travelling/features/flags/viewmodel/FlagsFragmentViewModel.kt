@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -59,7 +58,6 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
                 visibilityLoader.postValue(View.VISIBLE)
                 try {
                     val db = FirebaseFirestore.getInstance()
-                    val storage = FirebaseStorage.getInstance()
                     val countriesRef = db.collection("users").document(targetUserId).collection("visited_countries")
                     val querySnapshot = countriesRef.get().await()
                     val countriesList = mutableListOf<Country>()
@@ -71,14 +69,7 @@ class FlagsFragmentViewModel(private val interactor: CountriesInteractor) : View
                         }
                         val title = doc.getString("title") ?: doc.getString("name") ?: ""
                         val flag = doc.getString("flag") ?: ""
-                        var selfie = doc.getString("selfie") ?: ""
-                        if (selfie.isNotEmpty() && selfie.startsWith("cloud_sync/")) {
-                            try {
-                                selfie = storage.reference.child(selfie).downloadUrl.await().toString()
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
+                        val selfie = doc.getString("selfie") ?: ""
                         val isVisited = doc.getBoolean("isVisited") ?: true
                         countriesList.add(Country(id, title, flag, isVisited, selfie))
                     }
