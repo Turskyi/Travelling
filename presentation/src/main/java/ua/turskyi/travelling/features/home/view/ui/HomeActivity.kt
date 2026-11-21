@@ -67,6 +67,12 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var allCountriesResultLauncher: ActivityResultLauncher<Intent>
+    private var isTravelersFlow = false
+
+    fun refreshData() {
+        viewModel.showListOfVisitedCountries()
+        invalidateOptionsMenu()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
@@ -165,7 +171,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 val signInResult = authInteractor.signInWithGoogleCredential(idToken, pendingKeepSignedIn)
                 signInResult.onSuccess { user ->
                     toast(getString(R.string.status_signed_in_as, user.email.ifEmpty { user.displayName }))
-                    val syncDialog = SyncDialog.newInstance()
+                    val travellerRepo: ua.turskyi.domain.repository.TravellerRepository by inject()
+                    travellerRepo.saveTraveller({}, {})
+                    refreshData()
+                    val syncDialog = SyncDialog.newInstance(isTravelersFlow)
                     syncDialog.show(
                         supportFragmentManager,
                         resources.getString(R.string.tag_sync_dialog)
@@ -220,8 +229,24 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                 true
             }
 
+            R.id.action_travellers -> {
+                if (authInteractor.getCurrentUser() != null) {
+                    startActivity(
+                        Intent(
+                            this,
+                            ua.turskyi.travelling.features.travellers.view.TravellersActivity::class.java
+                        )
+                    )
+                } else {
+                    isTravelersFlow = true
+                    showTravelersLoginDialog()
+                }
+                true
+            }
+
             R.id.action_sync -> {
-                val syncDialog: SyncDialog = SyncDialog.newInstance()
+                isTravelersFlow = false
+                val syncDialog: SyncDialog = SyncDialog.newInstance(false)
                 syncDialog.show(
                     this.supportFragmentManager,
                     resources.getString(R.string.tag_sync_dialog),
@@ -345,8 +370,10 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
                         R.integer.click_interval
                     )
                 ) {
+                    val position = viewModel.visitedCountries.value?.indexOfFirst { it.id == country.id }
+                        ?.takeIf { it != -1 } ?: getItemPosition(country)
                     openActivityWithArgs(FlagsActivity::class.java) {
-                        putInt(EXTRA_POSITION, getItemPosition(country))
+                        putInt(EXTRA_POSITION, position)
                         if (viewModel.visitedCountries.value != null) {
                             putInt(EXTRA_ITEM_COUNT, viewModel.visitedCountries.value!!.size)
                         }
@@ -581,4 +608,25 @@ class HomeActivity : AppCompatActivity(), DialogInterface.OnDismissListener,
         ),
         resources.getInteger(R.integer.location_and_storage_request_code)
     )
+
+    private fun showTravelersLoginDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_sync_explanation, null)
+        val tvMessage = view.findViewById<android.widget.TextView>(R.id.tvExplanation)
+        val cbKeepSignedIn = view.findViewById<android.widget.CheckBox>(R.id.cbKeepSignedIn)
+
+        tvMessage.text = getString(R.string.travelers_sync_explanation)
+        cbKeepSignedIn.isChecked = false
+
+        AlertDialog.Builder(this)
+            .setView(view)
+            .setTitle(getString(R.string.travelers_dialog_title))
+            .setPositiveButton(getString(R.string.btn_sign_in_google)) { _, _ ->
+                authInteractor.setKeepSignedIn(cbKeepSignedIn.isChecked)
+                onInitiateGoogleSignIn(cbKeepSignedIn.isChecked)
+            }
+            .setNegativeButton(getString(R.string.home_dialog_btn_cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
 }

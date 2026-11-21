@@ -1,10 +1,12 @@
 package ua.turskyi.data.extensions
 
+import ua.turskyi.data.datasources.local.entities.TravellerEntity
 import ua.turskyi.data.entities.local.CityEntity
 import ua.turskyi.data.entities.local.CountryEntity
 import ua.turskyi.data.entities.network.CountryResponse
 import ua.turskyi.domain.model.CityModel
 import ua.turskyi.domain.model.CountryModel
+import ua.turskyi.domain.model.TravellerModel
 
 fun List<CountryModel>.mapModelListToEntityList(): MutableList<CountryEntity> {
     return mapTo(mutableListOf()) { countryModel -> countryModel.mapModelToEntity() }
@@ -34,5 +36,19 @@ fun List<CityEntity>.mapEntitiesToModelList(): MutableList<CityModel> {
 
 fun List<CountryEntity>.mapEntityListToModelList(): MutableList<CountryModel> {
     return mapTo(mutableListOf()) { countryEntity: CountryEntity -> countryEntity.mapEntityToModel() }
+}
+
+fun TravellerEntity.mapEntityToModel(): TravellerModel {
+    return TravellerModel(
+        id = id,
+        name = name,
+        avatar = avatar,
+        isVisible = isVisible,
+        counter = counter.toInt()
+    )
+}
+
+fun List<TravellerEntity>.mapFirestoreListToModelList(): MutableList<TravellerModel> {
+    return mapTo(mutableListOf()) { entity -> entity.mapEntityToModel() }
 }
 

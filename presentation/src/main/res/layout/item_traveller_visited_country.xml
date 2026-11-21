@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/ll_country"
+    style="@style/LinearLayoutForListItemStyle"
+    android:background="@drawable/bg_round_shape_gray"
+    android:weightSum="10">
+
+    <ImageView
+        android:id="@+id/iv_flag"
+        style="@style/ImageViewStyle"
+        android:contentDescription="@string/content_description.flag"
+        tool:src="@android:drawable/ic_menu_gallery"
+        tool:visibility="gone" />
+
+    <ua.turskyi.travelling.widgets.ClickableWebView
+        android:id="@+id/wv_flag"
+        style="@style/ImageViewStyle"
+        android:contentDescription="@string/content_description.flag"
+        android:gravity="center"
+        android:visibility="gone"
+        tool:drawableStart="@android:drawable/ic_menu_gallery"
+        tool:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_country"
+        style="@style/TextViewStyle"
+        tool:text="visited country" />
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/content_description.item_arrow"
+        android:gravity="end|center"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:src="@drawable/ic_arrow_expandable_down"
+        android:visibility="gone"
+        tool:visibility="visible" />
+
+</LinearLayout>

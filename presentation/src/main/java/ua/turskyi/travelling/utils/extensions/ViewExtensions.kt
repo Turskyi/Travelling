@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.FileProvider
+import androidx.core.graphics.createBitmap
 import androidx.fragment.app.Fragment
 import com.facebook.share.model.ShareHashtag
 import com.facebook.share.model.ShareMediaContent
@@ -20,7 +21,8 @@ import ua.turskyi.travelling.BuildConfig.APPLICATION_ID
 import ua.turskyi.travelling.R
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 fun View.setDynamicVisibility(visibility: Boolean) = if (visibility) {
     this.animate().alpha(1.0f).duration = 2000
@@ -29,7 +31,7 @@ fun View.setDynamicVisibility(visibility: Boolean) = if (visibility) {
 }
 
 fun View.convertViewToBitmap(): Bitmap {
-    val bitmap: Bitmap = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+    val bitmap: Bitmap = createBitmap(this.width, this.height)
     val canvas = Canvas(bitmap)
     this.draw(canvas)
     return bitmap
@@ -69,7 +71,7 @@ inline fun View.showSnackWithAction(
     function: Snackbar.() -> Unit
 ): Unit = longSnackWithAction(message, length, function)
 
-fun View.toast(@StringRes msgResId: Int) = context.toast(msgResId)
+fun View.toast(@StringRes msgResId: Int) = context.toast(context.getString(msgResId))
 
 fun View.shareImageViaChooser() {
     val fileName: String = resources.getString(
@@ -103,6 +105,7 @@ fun View.shareImageViaChooser() {
             )
         )
     } catch (exception: ActivityNotFoundException) {
+        exception.printStackTrace()
         toast(R.string.msg_no_app_installed)
     }
 }

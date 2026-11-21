@@ -177,4 +177,71 @@
         <item name="textColor">@color/searchBarTextColor</item>
         <item name="hintColor">@color/searchBarHintColor</item>
     </style>
+
+    <style name="CoordinatorLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="CollapsingToolbarLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/height_app_bar</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="contentScrim">?attr/colorPrimary</item>
+        <item name="expandedTitleMarginEnd">@dimen/offset_64</item>
+        <item name="expandedTitleMarginStart">@dimen/offset_40</item>
+        <item name="toolbarId">@id/toolbar</item>
+    </style>
+
+    <style name="MultilineCollapsingToolbarStyle" parent="Widget.Design.MultilineCollapsingToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/height_app_bar</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="contentScrim">?attr/colorPrimary</item>
+        <item name="expandedTitleMarginEnd">@dimen/offset_64</item>
+        <item name="expandedTitleMarginStart">@dimen/offset_40</item>
+        <item name="toolbarId">@id/toolbar</item>
+    </style>
+
+    <style name="FrameLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="CirclePieChartStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="ToolbarStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="theme">@style/ToolbarTitleStyle</item>
+    </style>
+
+    <style name="NoResultsTextViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:fontFamily">casual</item>
+        <item name="android:gravity">center</item>
+        <item name="android:text">@string/all_countries_no_results</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/headline6</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="FloatingActionButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="elevation">@dimen/elevation_4</item>
+        <item name="fabSize">normal</item>
+        <item name="useCompatPadding">true</item>
+    </style>
 </resources>

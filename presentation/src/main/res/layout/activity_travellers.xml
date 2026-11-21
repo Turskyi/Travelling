@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dark_space"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="ua.turskyi.travelling.features.travellers.view.TravellersActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/action_travellers"
+        app:titleTextColor="@android:color/white" />
+
+    <ua.turskyi.travelling.widgets.ExpandableSearchBar
+        android:id="@+id/expandableSearchBar"
+        style="@style/ExpandableSearchBarDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:autoCollapse="true"
+        app:hint="Search"
+        app:isRounded="true"
+        app:searchBarBackgroundColor="#50ffffff"
+        app:searchBarBackgroundColorFocused="#64ffffff" />
+
+    <TextView
+        android:id="@+id/tvTopPercentage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="10% of travellers visited more countries than you" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_travellers"
+            style="@style/RecyclerViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="?attr/actionBarSize" />
+
+        <TextView
+            android:id="@+id/tv_no_results"
+            style="@style/NoResultsTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <ProgressBar
+            android:id="@+id/pb"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/float_btn_visibility"
+            style="@style/FloatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/offset_16"
+            android:layout_marginBottom="@dimen/fab_bottom_margin"
+            android:contentDescription="Visibility Button"
+            android:tag="@drawable/btn_hide_ripple"
+            android:visibility="visible"
+            app:srcCompat="@drawable/btn_hide_ripple" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>

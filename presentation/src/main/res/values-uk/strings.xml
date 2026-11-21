@@ -102,6 +102,7 @@
     <!-- Account & Cloud Sync strings -->
     <string name="action_account">Обліковий запис / Синхронізація</string>
     <string name="action_sync">Хмарна синхронізація</string>
+    <string name="action_travellers">Мандрівники</string>
     <string name="sync_explanation">Увійдіть через Google, щоб створити резервну копію вашої історії подорожей із цього телефону в хмару або відновити наявну хмарну копію на цьому пристрої. Синхронізація вимагає підписку. Безкоштовне користування додатком залишається повністю доступним без входу.</string>
     <string name="btn_sign_in_google">Увійти через Google</string>
     <string name="keep_me_signed_in">Залишатися в системі</string>
@@ -141,4 +142,17 @@
     <string name="msg_cloud_restored_success">Дані успішно відновлено з хмари!</string>
     <string name="msg_cloud_restore_failed">Не вдалося відновити дані з хмари</string>
     <string name="error_email_body">Деталі помилки:\n\n%1$s\n\nПристрій: %2$s (SDK %3$d)</string>
+    <string name="txt_info_all_travellers">Якщо ви натиснете на мандрівника, ви зможете переглянути відвідані ним країни та міста.</string>
+    <string name="title_activity_travellers">%d%% мандрівників відвідали більше країн, ніж ви</string>
+    <string name="title_most">Ви відвідали більше країн, ніж будь-хто в цьому додатку</string>
+    <string name="name_and_counter">%1$s %2$s</string>
+    <string name="travelers_dialog_title">Спільнота мандрівників</string>
+    <string name="travelers_sync_explanation">Увійдіть через Google, щоб досліджувати інших мандрівників, переглядати їхні країни та фотографії, а також ділитися власними подорожами зі спільнотою!</string>
+    <string name="msg_user_not_found">Користувача не знайдено</string>
+    <plurals name="travellerCounter">
+        <item quantity="one">%d країну</item>
+        <item quantity="few">%d країни</item>
+        <item quantity="many">%d країн</item>
+        <item quantity="other">%d країн</item>
+    </plurals>
 </resources>

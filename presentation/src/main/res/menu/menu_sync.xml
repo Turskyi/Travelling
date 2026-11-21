@@ -7,6 +7,10 @@
         android:title="@string/action_account"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_travellers"
+        android:title="@string/action_travellers"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_language"
         android:title="@string/action_language"
         app:showAsAction="never" />

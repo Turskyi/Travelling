@@ -9,13 +9,16 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import ua.turskyi.travelling.entities.Traveller
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_USER
 import ua.turskyi.travelling.features.flags.view.fragment.FlagFragment
 import ua.turskyi.travelling.utils.extensions.showReportDialog
 
 class FlagsAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity),
     LifecycleEventObserver {
+    var traveller: Traveller? = null
     private var flagsActivityViewListener: FlagsActivityView? = null
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -30,7 +33,11 @@ class FlagsAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity)
     override fun getItemCount(): Int = flagsActivityViewListener?.getItemCount() ?: 0
 
     override fun createFragment(position: Int): Fragment = FlagFragment().apply {
-        arguments = bundleOf(EXTRA_POSITION to position)
+        @Suppress("DEPRECATION")
+        arguments = bundleOf(
+            EXTRA_POSITION to position,
+            EXTRA_USER to traveller,
+        )
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

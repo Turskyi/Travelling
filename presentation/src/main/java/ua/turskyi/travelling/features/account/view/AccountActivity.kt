@@ -96,6 +96,8 @@ class AccountActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     viewModel.loadUser()
+                    val travellerRepo: ua.turskyi.domain.repository.TravellerRepository by inject()
+                    travellerRepo.saveTraveller({}, {})
                     performRestore()
                 }.onFailure { e ->
                     Toast.makeText(

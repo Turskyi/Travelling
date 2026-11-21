@@ -11,17 +11,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.ActivityFlagsBinding
+import ua.turskyi.travelling.entities.Traveller
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.view.adapter.ZoomOutPageTransformer
 import ua.turskyi.travelling.utils.extensions.openInfoDialog
+import ua.turskyi.travelling.utils.extensions.parcelable
 import ua.turskyi.travelling.utils.extensions.toast
 
 class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFragmentListener,
     FlagsActivityView {
 
     companion object {
+        const val EXTRA_USER = "ua.turskyi.travelling.USER"
         const val EXTRA_POSITION = "ua.turskyi.travelling.POSITION"
         const val EXTRA_ITEM_COUNT = "ua.turskyi.travelling.ITEM_COUNT"
     }
@@ -83,14 +86,17 @@ class FlagsActivity : AppCompatActivity(R.layout.activity_flags), OnChangeFlagFr
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        @Suppress("DEPRECATION")
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorBlack)
         initAdapter()
     }
 
     private fun initAdapter() {
-        /* flagsAdapter cannot by implemented in koin modules
+        /* flagsAdapter cannot be implemented in koin modules
    since "view pager 2" required exact context */
         flagsAdapter = FlagsAdapter(this)
+        val traveller: Traveller? = getBundle?.parcelable(EXTRA_USER)
+        flagsAdapter.traveller = traveller
         binding.pager.apply {
             adapter = flagsAdapter
             offscreenPageLimit = 4

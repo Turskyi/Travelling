@@ -6,24 +6,21 @@ import android.content.ContextWrapper
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.TypedArray
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.SpannableString
 import android.text.style.ImageSpan
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.features.home.view.ui.HomeActivity
 
-/**
- * Starts the Activity [A], in a more concise way, while still allowing to configure the [Intent] in
- * the optional [configIntent] lambda.
- */
 inline fun <reified A : Activity> Context.start(configIntent: Intent.() -> Unit = {}) {
     startActivity(
         Intent(this, A::class.java).apply(configIntent),
@@ -44,6 +41,13 @@ fun Context.isFacebookInstalled() = try {
 
 fun Context.spToPix(@DimenRes sizeRes: Int): Float {
     return resources.getDimension(sizeRes) / resources.displayMetrics.density
+}
+
+fun Context.getToolbarHeight(): Int {
+    val styledAttributes = theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+    val toolbarHeight = styledAttributes.getDimension(0, 0f).toInt()
+    styledAttributes.recycle()
+    return toolbarHeight
 }
 
 fun Context.getHomeActivity(): HomeActivity? {
@@ -86,6 +90,16 @@ fun Context.convertPictureToSpannableString(imgRes: Int): SpannableString {
     return spannableString
 }
 
+fun <T> Context.openActivityWithObject(
+    destination: Class<T>,
+    argId: String,
+    extra: Parcelable
+) {
+    val intent = Intent(this, destination)
+    intent.putExtra(argId, extra)
+    startActivity(intent)
+}
+
 fun <T> Context.openActivityWithArgs(
     destination: Class<T>,
     extras: Bundle.() -> Unit = {},
@@ -95,33 +109,43 @@ fun <T> Context.openActivityWithArgs(
     startActivity(intent)
 }
 
-fun Context.getToolbarHeight(): Int {
-    val styledAttributes: TypedArray =
-        theme.obtainStyledAttributes(intArrayOf(R.attr.actionBarSize))
-    val toolbarHeight = styledAttributes.getDimension(0, 0f).toInt()
-    styledAttributes.recycle()
-    return toolbarHeight
-}
-
-fun Context.toast(@StringRes msgResId: Int) {
-    Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
-}
-
 fun Context.toast(msg: String) = Toast.makeText(
     this,
     msg,
     Toast.LENGTH_SHORT,
 ).show()
 
-fun Context.toastLong(@StringRes msgResId: Int) {
-    Toast.makeText(this, msgResId, Toast.LENGTH_LONG).show()
-}
-
 fun Context.toastLong(msg: String) = Toast.makeText(
     this,
     msg,
     Toast.LENGTH_LONG,
 ).show()
+
+fun Context.hideKeyboard() {
+    val systemService = getSystemService(Activity.INPUT_METHOD_SERVICE)
+    if (systemService is InputMethodManager) {
+        var view: View? = (this as? Activity)?.currentFocus
+        if (view == null) {
+            view = View(this)
+        }
+        systemService.hideSoftInputFromWindow(view.windowToken, 0)
+        view.clearFocus()
+    }
+}
+
+fun Context.showKeyboard() {
+    val systemService = getSystemService(Activity.INPUT_METHOD_SERVICE)
+    if (systemService is InputMethodManager) {
+        var view: View? = (this as? Activity)?.currentFocus
+        if (view == null) {
+            view = View(this)
+        }
+        @Suppress("DEPRECATION")
+        systemService.showSoftInput(
+            view, InputMethodManager.SHOW_IMPLICIT,
+        )
+    }
+}
 
 fun Context.showReportDialog() {
     val lastDialog: AlertDialog = AlertDialog.Builder(this)
@@ -136,8 +160,6 @@ fun Context.showReportDialog() {
                 Uri.fromParts(
                     getString(R.string.scheme_mailto),
                     getString(R.string.email),
-                    /* Gets the decoded fragment part of this URI,
-                     * everything after the '#', null if undefined. */
                     null
                 )
             )
@@ -151,7 +173,7 @@ fun Context.showReportDialog() {
         }.setNegativeButton(
             getString(R.string.no)
         ) { dialog: DialogInterface, _: Int ->
-            toast(R.string.error_message_try_tomorrow)
+            toast(getString(R.string.error_message_try_tomorrow))
             dialog.cancel()
             val newIntent = Intent(this, javaClass)
             startActivity(newIntent)

@@ -12,6 +12,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,9 +25,8 @@ import ua.turskyi.travelling.utils.extensions.mapToModel
 
 class AllCountriesActivityViewModel(private val interactor: CountriesInteractor) : ViewModel() {
 
-    private val _notVisitedCountriesNumLiveData = MutableLiveData<Int>()
     val notVisitedCountriesNumLiveData: LiveData<Int>
-        get() = _notVisitedCountriesNumLiveData
+        field = MutableLiveData<Int>()
 
     private var _visibilityLoader = MediatorLiveData<Int>()
     val visibilityLoader: LiveData<Int>
@@ -36,6 +36,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
 
     private val searchQueryFlow = MutableStateFlow("")
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val pagedCountries: Flow<PagingData<Country>> = searchQueryFlow
         .flatMapLatest { query ->
             Pager(
@@ -58,9 +59,8 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
             searchQueryFlow.value = value
         }
 
-    private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>>
-        get() = _errorMessage
+        field = MutableLiveData<Event<String>>()
 
     init {
         _visibilityLoader.postValue(VISIBLE)
@@ -78,10 +78,10 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
     private fun getNotVisitedCountriesNum() {
         viewModelScope.launch {
             interactor.setNotVisitedCountriesNum().onSuccess { num ->
-                _notVisitedCountriesNumLiveData.postValue(num)
+                notVisitedCountriesNumLiveData.postValue(num)
             }.onFailure { exception ->
                 _visibilityLoader.postValue(GONE)
-                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
+                errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
             }
         }
     }
@@ -95,7 +95,7 @@ class AllCountriesActivityViewModel(private val interactor: CountriesInteractor)
                 }
             }.onFailure { exception ->
                 _visibilityLoader.postValue(GONE)
-                _errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
+                errorMessage.postValue(Event(exception.localizedMessage ?: exception.toString()))
             }
         }
     }

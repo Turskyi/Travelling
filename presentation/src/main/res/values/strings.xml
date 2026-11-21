@@ -138,7 +138,7 @@
     <!-- widget strings -->
     <string name="widget_visited_countries_name">Visited Countries</string>
     <string name="widget_visited_countries_title">Countries Visited</string>
-    <string name="widget_default_count">0</string>
+    <string name="widget_default_count" translatable="false">0</string>
     <string name="btn_pin_widget">Pin Widget</string>
 
     <!-- language selector -->
@@ -151,6 +151,7 @@
     <!-- Account & Cloud Sync strings -->
     <string name="action_account">Account / Backup</string>
     <string name="action_sync">Cloud Sync</string>
+    <string name="action_travellers">Travelers</string>
     <string name="sync_explanation">Sign in with Google to back up your travel history from this phone to the cloud or restore your existing cloud backup onto this device. Ongoing cloud synchronization requires an active subscription. Free use of the app remains fully available without signing in.</string>
     <string name="btn_sign_in_google">Sign in with Google</string>
     <string name="keep_me_signed_in">Keep me signed in</string>
@@ -190,4 +191,16 @@
     <string name="msg_cloud_restored_success">Cloud data restored successfully!</string>
     <string name="msg_cloud_restore_failed">Failed to restore cloud data</string>
     <string name="error_email_body">Error details:\n\n%1$s\n\nDevice: %2$s (SDK %3$d)</string>
+    <string name="tag_visibility_dialog" translatable="false">visibility dialog</string>
+    <string name="txt_info_all_travellers">If you click on a traveller, you will be able to see their visited countries and cities.</string>
+    <string name="title_activity_travellers">%d%% of travellers visited more countries than you</string>
+    <string name="title_most">You visited more countries than anyone in this app</string>
+    <string name="name_and_counter">%1$s %2$s</string>
+    <string name="travelers_dialog_title">Travelers Community</string>
+    <string name="travelers_sync_explanation">Sign in with Google to explore other travelers, view their visited countries and photos, and share your own travel journey with the community!</string>
+    <string name="msg_user_not_found">User not found</string>
+    <plurals name="travellerCounter">
+        <item quantity="one">%d country</item>
+        <item quantity="other">%d countries</item>
+    </plurals>
 </resources>

@@ -2,7 +2,9 @@ package ua.turskyi.travelling.features.home.view.ui
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
@@ -19,9 +21,18 @@ import ua.turskyi.travelling.utils.extensions.showErrorWithReportDialog
 
 class SyncDialog : AppCompatDialogFragment(), KoinComponent {
 
+    var isTravelersFlow: Boolean = false
+
     companion object {
-        fun newInstance(): SyncDialog {
-            return SyncDialog()
+        private const val TAG = "SyncDialog"
+        private const val ARG_IS_TRAVELERS = "arg_is_travelers"
+        fun newInstance(isTravelersFlow: Boolean = false): SyncDialog {
+            return SyncDialog().apply {
+                this.isTravelersFlow = isTravelersFlow
+                arguments = Bundle().apply {
+                    putBoolean(ARG_IS_TRAVELERS, isTravelersFlow)
+                }
+            }
         }
     }
 
@@ -43,6 +54,7 @@ class SyncDialog : AppCompatDialogFragment(), KoinComponent {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val user = authInteractor.getCurrentUser()
+        Log.d(TAG, "onCreateDialog: user = $user, isTravelersFlow = $isTravelersFlow")
         if (user == null) {
             return buildExplanationDialog()
         } else {
@@ -59,6 +71,17 @@ class SyncDialog : AppCompatDialogFragment(), KoinComponent {
                     dialog.dismiss()
                     syncResult.onSuccess {
                         Toast.makeText(requireContext(), getString(R.string.msg_cloud_sync_success), Toast.LENGTH_SHORT).show()
+                        (activity as? HomeActivity)?.let { home ->
+                            home.refreshData()
+                            if (isTravelersFlow) {
+                                home.startActivity(
+                                    Intent(
+                                        home,
+                                        ua.turskyi.travelling.features.travellers.view.TravellersActivity::class.java
+                                    )
+                                )
+                            }
+                        }
                     }.onFailure { e ->
                         requireContext().showErrorWithReportDialog(e.localizedMessage ?: e.toString())
                     }
@@ -69,16 +92,21 @@ class SyncDialog : AppCompatDialogFragment(), KoinComponent {
     }
 
     private fun buildExplanationDialog(): Dialog {
+        Log.d(TAG, "buildExplanationDialog: isTravelersFlow = $isTravelersFlow")
         val view = layoutInflater.inflate(R.layout.dialog_sync_explanation, null)
         val tvMessage = view.findViewById<TextView>(R.id.tvExplanation)
         val cbKeepSignedIn = view.findViewById<CheckBox>(R.id.cbKeepSignedIn)
 
-        tvMessage.text = getString(R.string.sync_explanation)
+        tvMessage.text = if (isTravelersFlow) {
+            getString(R.string.travelers_sync_explanation)
+        } else {
+            getString(R.string.sync_explanation)
+        }
         cbKeepSignedIn.isChecked = false
 
         val builder = AlertDialog.Builder(requireActivity())
         builder.setView(view)
-            .setTitle(getString(R.string.paywall_title))
+            .setTitle(if (isTravelersFlow) getString(R.string.travelers_dialog_title) else getString(R.string.paywall_title))
             .setPositiveButton(getString(R.string.btn_sign_in_google)) { _, _ ->
                 authInteractor.setKeepSignedIn(cbKeepSignedIn.isChecked)
                 syncListener.onInitiateGoogleSignIn(cbKeepSignedIn.isChecked)
