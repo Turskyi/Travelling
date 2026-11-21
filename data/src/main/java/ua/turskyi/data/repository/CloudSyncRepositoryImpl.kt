@@ -299,14 +299,22 @@ class CloudSyncRepositoryImpl(
             val serverCountries = json.optJSONArray("countries") ?: JSONArray()
             for (i in 0 until serverCountries.length()) {
                 val cObj = serverCountries.getJSONObject(i)
+                val countryName = cObj.optString("name", cObj.optString("title", ""))
+                val existing = databaseSource.getCountryByName(countryName)
                 val selfieUrl = cObj.optString("selfie", "")
 
+                val finalSelfie = if (selfieUrl.isNotEmpty()) {
+                    selfieUrl
+                } else {
+                    existing?.selfie ?: ""
+                }
+
                 val country = CountryEntity(
-                    id = cObj.optInt("id", 0),
-                    name = cObj.optString("name", cObj.optString("title", "")),
+                    id = existing?.id ?: cObj.optInt("id", 0),
+                    name = countryName,
                     flag = cObj.optString("flag", ""),
                     isVisited = cObj.optBoolean("isVisited", true),
-                    selfie = selfieUrl,
+                    selfie = finalSelfie,
                 )
                 databaseSource.insertCountry(country)
             }

@@ -146,7 +146,11 @@ class CountriesRepositoryImpl : CountriesRepository,
 
     private fun cleanupUnavailableSelfies(visitedEntities: List<CountryEntity>) {
         visitedEntities.forEach { entity ->
-            if (entity.selfie.isNotEmpty() && !entity.selfie.startsWith("content://")) {
+            if (entity.selfie.isNotEmpty() &&
+                !entity.selfie.startsWith("content://") &&
+                !entity.selfie.startsWith("http://") &&
+                !entity.selfie.startsWith("https://")
+            ) {
                 val path = if (entity.selfie.startsWith("file://")) {
                     entity.selfie.removePrefix("file://")
                 } else {
