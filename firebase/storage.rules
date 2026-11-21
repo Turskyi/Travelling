@@ -1,9 +1,10 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Free App Cloud Sync selfies: strictly UID-scoped
+    // Cloud Sync selfies: public read for authenticated community members, owner-only write/delete
     match /cloud_sync/selfies/{userId}/{allPaths=**} {
-      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+      allow write, delete: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
