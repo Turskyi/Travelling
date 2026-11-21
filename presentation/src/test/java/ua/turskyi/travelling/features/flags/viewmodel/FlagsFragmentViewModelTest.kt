@@ -43,6 +43,21 @@ class FlagsFragmentViewModelTest {
     }
 
     @Test
+    fun `setVisitedCountries preserves remote https selfie URLs`() = runTest {
+        val remoteSelfieUrl = "https://firebasestorage.googleapis.com/v0/b/bucket/o/selfies%2Fphoto.jpg"
+        val countries = listOf(
+            CountryModel(id = 1, name = "Canada", flag = "flag_url", isVisited = true, selfie = remoteSelfieUrl),
+        )
+        coEvery { interactor.setVisitedCountries() } returns Result.success(countries)
+
+        val viewModel = FlagsFragmentViewModel(interactor)
+        viewModel.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE)
+
+        assertThat(viewModel.visitedCountries.value?.first()?.filePath).isEqualTo(remoteSelfieUrl)
+        assertThat(viewModel.visibilityLoader.value).isEqualTo(View.GONE)
+    }
+
+    @Test
     fun `updateSelfie with non-empty filePath updates countries`() = runTest {
         val countries = listOf(
             CountryModel(id = 1, name = "Canada", flag = "flag_url", isVisited = true, selfie = "/path/to/selfie.jpg"),
