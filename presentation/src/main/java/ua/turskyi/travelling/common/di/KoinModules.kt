@@ -3,6 +3,9 @@ package ua.turskyi.travelling.common.di
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,22 +21,32 @@ import ua.turskyi.data.datasources.database.datasource.DatabaseSource
 import ua.turskyi.data.datasources.webservice.CountriesApi
 import ua.turskyi.data.datasources.webservice.NetSource
 import ua.turskyi.data.repository.CountriesRepositoryImpl
+import ua.turskyi.data.repository.TravellerRepositoryImpl
 import ua.turskyi.data.util.hasNetwork
 import ua.turskyi.domain.interactor.CountriesInteractor
 import ua.turskyi.domain.repository.CountriesRepository
+import ua.turskyi.domain.repository.TravellerRepository
+import ua.turskyi.travelling.features.account.viewmodel.AccountActivityViewModel
 import ua.turskyi.travelling.features.allcountries.view.adapter.AllCountriesAdapter
 import ua.turskyi.travelling.features.allcountries.viewmodel.AllCountriesActivityViewModel
 import ua.turskyi.travelling.features.flags.view.adapter.FlagsAdapter
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
+import ua.turskyi.travelling.features.flags.viewmodel.FriendFlagsFragmentViewModel
 import ua.turskyi.travelling.features.home.view.adapter.HomeAdapter
 import ua.turskyi.travelling.features.home.viewmodels.AddCityDialogViewModel
 import ua.turskyi.travelling.features.home.viewmodels.HomeActivityViewModel
+import ua.turskyi.travelling.features.traveller.TravellerActivityViewModel
+import ua.turskyi.travelling.features.traveller.view.VisitedCountriesAdapter
+import ua.turskyi.travelling.features.travellers.TravellersActivityViewModel
+import ua.turskyi.travelling.features.travellers.view.adapter.TravellersAdapter
 
 // top (outer) level dependency injections
 val adaptersModule = module {
     factory { HomeAdapter() }
     factory { AllCountriesAdapter() }
     factory { FlagsAdapter(get()) }
+    factory { TravellersAdapter() }
+    factory { VisitedCountriesAdapter() }
 }
 
 val viewModelsModule = module {
@@ -41,18 +54,45 @@ val viewModelsModule = module {
     factory { AllCountriesActivityViewModel(get()) }
     factory { FlagsFragmentViewModel(get()) }
     factory { AddCityDialogViewModel(get()) }
+    factory { AccountActivityViewModel() }
+    factory { TravellersActivityViewModel(get()) }
+    factory { TravellerActivityViewModel() }
+    factory { FriendFlagsFragmentViewModel() }
 }
 
 val interactorsModule = module {
     factory { CountriesInteractor() }
+    factory { ua.turskyi.domain.interactor.AuthInteractor() }
+    factory { ua.turskyi.domain.interactor.CloudSyncInteractor() }
+    factory { ua.turskyi.domain.interactor.BillingInteractor() }
+    factory { ua.turskyi.domain.interactor.TravellersInteractor() }
 }
 
 val repositoriesModule = module {
     single<CountriesRepository> { CountriesRepositoryImpl() }
+    single<ua.turskyi.domain.repository.AuthRepository> {
+        ua.turskyi.data.repository.AuthRepositoryImpl(androidContext())
+    }
+    single<ua.turskyi.domain.repository.CloudSyncRepository> {
+        ua.turskyi.data.repository.CloudSyncRepositoryImpl(androidContext())
+    }
+    single<ua.turskyi.domain.repository.BillingRepository> {
+        ua.turskyi.data.repository.BillingRepositoryImpl(androidContext())
+    }
+    single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
+    single<TravellerRepository> {
+        TravellerRepositoryImpl(get())
+    }
 }
 
+@Suppress("DEPRECATION")
 val dataProvidersModule = module {
-    single { Room.databaseBuilder(androidContext(), Database::class.java, DATABASE_NAME).build() }
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            Database::class.java, DATABASE_NAME
+        ).build()
+    }
     single {
         OkHttpClient.Builder()
             .cache(get())
@@ -92,7 +132,7 @@ val sourcesModule = module {
     single { get<Retrofit>().create(CountriesApi::class.java) }
     single { DatabaseSource(get()) }
     single { NetSource(get()) }
+    single<ua.turskyi.data.datasources.local.firestore.FirestoreDatabaseSource> {
+        ua.turskyi.data.datasources.local.firestore.FirestoreDatabaseSourceImpl()
+    }
 }
-
-
-

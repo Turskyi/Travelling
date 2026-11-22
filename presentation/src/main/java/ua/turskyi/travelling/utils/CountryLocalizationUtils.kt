@@ -184,3 +184,6 @@ fun Country.getDisplayName(context: Context?): String =
 
 fun VisitedCountry.getDisplayName(context: Context?): String =
     CountryLocalizationUtils.getDisplayName(title, img, context)
+
+fun ua.turskyi.travelling.entities.VisitedCountryNode.getDisplayName(context: Context?): String =
+    CountryLocalizationUtils.getDisplayName(title, flag, context)

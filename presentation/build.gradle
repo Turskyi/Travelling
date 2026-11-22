@@ -3,12 +3,17 @@ plugins {
     alias libs.plugins.android.application
     alias libs.plugins.kotlin.android
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
     alias libs.plugins.google.services
     alias libs.plugins.firebase.crashlytics
     alias libs.plugins.firebase.perf
 }
 
 android {
+    def debugKeystorePath = rootProject.SIGNING_KEY_DEBUG_PATH
+    def debugKeystoreFile = debugKeystorePath ? file(debugKeystorePath) : null
+    def hasDebugKeystore = debugKeystoreFile?.isFile() == true
+
     //noinspection GrDeprecatedAPIUsage
     compileSdkVersion libs.versions.compileSdk.get().toInteger()
     buildToolsVersion rootProject.build_tools_version
@@ -42,11 +47,13 @@ android {
                 keyPassword rootProject.SIGNING_KEY_RELEASE_KEY_PASSWORD
             }
         }
-        dev {
-            storeFile file(rootProject.SIGNING_KEY_DEBUG_PATH)
-            storePassword rootProject.SIGNING_KEY_DEBUG_PASSWORD
-            keyAlias rootProject.SIGNING_KEY_DEBUG_KEY
-            keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
+        if (hasDebugKeystore) {
+            dev {
+                storeFile debugKeystoreFile
+                storePassword rootProject.SIGNING_KEY_DEBUG_PASSWORD
+                keyAlias rootProject.SIGNING_KEY_DEBUG_KEY
+                keyPassword rootProject.SIGNING_KEY_DEBUG_KEY_PASSWORD
+            }
         }
     }
 
@@ -64,7 +71,9 @@ android {
                     "com.facebook.app.FacebookContentProvider285452062466394"
         }
         debug {
-            signingConfig signingConfigs.dev
+            if (hasDebugKeystore) {
+                signingConfig signingConfigs.dev
+            }
 // used in manifest provider authorities
             resValue "string", "content_provider",
                     "com.facebook.app.FacebookContentProvider285452062466394"
@@ -117,6 +126,9 @@ dependencies {
 
     // firebase
     implementation libs.firebase.messaging
+    implementation libs.firebase.auth
+    implementation libs.firebase.firestore
+    implementation libs.firebase.storage
     implementation(libs.firebase.perf) {
         // remove advertising dependency
         exclude module: "play-services-ads-identifier"
@@ -126,6 +138,13 @@ dependencies {
     /* Declare the dependency for the Performance Monitoring library.
        When using the BoM, we don't specify versions in Firebase library dependencies. */
     implementation libs.firebase.analytics
+
+    // Google Play Services & Billing & Credential Manager
+    implementation libs.play.services.auth
+    implementation libs.credentials
+    implementation libs.credentials.play.services.auth
+    implementation libs.googleid
+    implementation libs.billing.ktx
 
     // ViewModel and LiveData
     implementation libs.lifecycle.viewmodel.ktx

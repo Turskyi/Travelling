@@ -74,6 +74,17 @@
             android:name=".features.flags.view.FlagsActivity"
             android:parentActivityName=".features.home.view.ui.HomeActivity" />
 
+        <activity
+            android:name=".features.travellers.view.TravellersActivity"
+            android:parentActivityName=".features.home.view.ui.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".features.traveller.view.TravellerActivity"
+            android:parentActivityName=".features.travellers.view.TravellersActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <provider
             android:name=".utils.TravellingFileProvider"
             android:authorities="ua.turskyi.travelling.provider"
@@ -116,6 +127,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/visited_countries_widget_info" />
         </receiver>
+
+        <activity
+            android:name=".features.account.view.AccountActivity"
+            android:exported="false"
+            android:label="@string/account_title" />
 
         <!-- Service for AppCompat auto-storing locales on Android 12 and below -->
         <service

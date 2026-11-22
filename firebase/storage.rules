@@ -1,0 +1,10 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Selfies path: public read for authenticated users, authenticated write/delete
+    match /selfies/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write, delete: if request.auth != null;
+    }
+  }
+}

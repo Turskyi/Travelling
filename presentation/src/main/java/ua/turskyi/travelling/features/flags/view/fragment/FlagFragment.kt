@@ -37,19 +37,21 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.github.twocoffeesoneteam.glidetovectoryou.GlideApp
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYouListener
 import org.koin.android.ext.android.inject
 import ua.turskyi.travelling.R
 import ua.turskyi.travelling.databinding.FragmentFlagBinding
+import ua.turskyi.travelling.entities.Traveller
 import ua.turskyi.travelling.features.flags.callbacks.FlagsActivityView
 import ua.turskyi.travelling.features.flags.callbacks.OnChangeFlagFragmentListener
 import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_POSITION
+import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_USER
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
 import ua.turskyi.travelling.utils.extensions.observeOnce
+import ua.turskyi.travelling.utils.extensions.parcelable
 import ua.turskyi.travelling.utils.extensions.showReportDialog
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
@@ -175,11 +177,18 @@ class FlagFragment : Fragment() {
 
     private fun initListeners() {
         binding.wvFlag.isLongClickable = true
-        binding.ivEnlargedFlag.setOnLongClickListener(addSelfieLongClickListener())
-        binding.wvFlag.setOnLongClickListener(addSelfieLongClickListener())
+        val traveller: Traveller? = arguments?.parcelable(EXTRA_USER)
+            ?: activity?.intent?.extras?.parcelable(EXTRA_USER)
+        if (traveller == null) {
+            binding.ivEnlargedFlag.setOnLongClickListener(addSelfieLongClickListener())
+            binding.wvFlag.setOnLongClickListener(addSelfieLongClickListener())
+        }
     }
 
     private fun initObservers() {
+        val traveller: Traveller? = arguments?.parcelable(EXTRA_USER)
+            ?: activity?.intent?.extras?.parcelable(EXTRA_USER)
+        viewModel.userId = traveller?.id
         lifecycle.addObserver(viewModel)
         viewModel.errorMessage.observe(this) { event: Event<String> ->
             val message = event.getMessageIfNotHandled()
@@ -196,26 +205,30 @@ class FlagFragment : Fragment() {
             Observer { countries: List<Country> ->
                 val position: Int = this.requireArguments().getInt(EXTRA_POSITION)
 
-                if (mChangeFlagListener != null) {
-                    mChangeFlagListener!!.onChangeToolbarTitle(countries[position].getDisplayName(requireContext()))
-                }
-
-                if (!isSelfieAvailable(countries[position].filePath)) {
-                    if (countries[position].filePath.isNotEmpty()) {
-                        countries[position].filePath = ""
-                        viewModel.updateSelfie(countries[position].id, "")
+                if (position in countries.indices) {
+                    if (mChangeFlagListener != null) {
+                        mChangeFlagListener!!.onChangeToolbarTitle(countries[position].getDisplayName(requireContext()))
                     }
-                    binding.ivEnlargedFlag.setOnClickListener(null)
-                    binding.wvFlag.setOnTouchListener(null)
-                    showTheFlag(countries, position)
-                } else {
-                    showSelfie(countries, position)
-                    binding.ivEnlargedFlag.setOnClickListener(
-                        showFlagClickListener(
-                            countries,
-                            position
+
+                    if (!isSelfieAvailable(countries[position].filePath)) {
+                        if (countries[position].filePath.isNotEmpty()) {
+                            countries[position].filePath = ""
+                            if (viewModel.userId == null) {
+                                viewModel.updateSelfie(countries[position].id, "")
+                            }
+                        }
+                        binding.ivEnlargedFlag.setOnClickListener(null)
+                        binding.wvFlag.setOnTouchListener(null)
+                        showTheFlag(countries, position)
+                    } else {
+                        showSelfie(countries, position)
+                        binding.ivEnlargedFlag.setOnClickListener(
+                            showFlagClickListener(
+                                countries,
+                                position
+                            )
                         )
-                    )
+                    }
                 }
             }
         viewModel.visitedCountries.observe(viewLifecycleOwner, visitedCountriesObserver)
@@ -226,6 +239,8 @@ class FlagFragment : Fragment() {
             if (filePath.startsWith("content://")) {
                 val uri = filePath.toUri()
                 context?.contentResolver?.openInputStream(uri)?.use { true } ?: false
+            } else if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
+                true
             } else {
                 val path = if (filePath.startsWith("file://")) {
                     filePath.removePrefix("file://")
@@ -267,7 +282,9 @@ class FlagFragment : Fragment() {
                         )
                     } else {
                         countries[position].filePath = ""
-                        viewModel.updateSelfie(countries[position].id, "")
+                        if (viewModel.userId == null) {
+                            viewModel.updateSelfie(countries[position].id, "")
+                        }
                         binding.ivEnlargedFlag.setOnClickListener(null)
                         binding.wvFlag.setOnTouchListener(null)
                     }
@@ -285,7 +302,9 @@ class FlagFragment : Fragment() {
                 binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
             } else {
                 countries[position].filePath = ""
-                viewModel.updateSelfie(countries[position].id, "")
+                if (viewModel.userId == null) {
+                    viewModel.updateSelfie(countries[position].id, "")
+                }
                 binding.ivEnlargedFlag.setOnClickListener(null)
                 binding.wvFlag.setOnTouchListener(null)
             }
@@ -296,10 +315,10 @@ class FlagFragment : Fragment() {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
         val thumbnailBuilder: RequestBuilder<Drawable> =
-            GlideApp.with(binding.ivEnlargedFlag.context)
+            com.bumptech.glide.Glide.with(binding.ivEnlargedFlag.context)
                 .asDrawable()
                 .sizeMultiplier(ResourcesCompat.getFloat(resources, R.dimen.thumbnail))
-        GlideApp.with(this)
+        com.bumptech.glide.Glide.with(this)
             .load(countries[position].filePath)
             .thumbnail(thumbnailBuilder)
             .apply(
@@ -318,7 +337,9 @@ class FlagFragment : Fragment() {
                     binding.ivEnlargedFlag.setOnClickListener(null)
                     binding.wvFlag.setOnTouchListener(null)
                     showTheFlag(countries, position)
-                    viewModel.updateSelfie(countries[position].id, "")
+                    if (viewModel.userId == null) {
+                        viewModel.updateSelfie(countries[position].id, "")
+                    }
                     return true
                 }
 

@@ -2,13 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_language"
-        android:icon="@drawable/btn_language_ripple"
-        android:title="@string/action_language"
+        android:id="@+id/action_account"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/action_account"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_travellers"
+        android:title="@string/action_travellers"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_language"
+        android:title="@string/action_language"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_sync"
-        android:title=""
         android:icon="@drawable/btn_sync_ripple"
-        app:showAsAction="ifRoom" />
+        android:title="@string/action_sync"
+        app:showAsAction="never" />
 </menu>

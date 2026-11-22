@@ -48,6 +48,9 @@ interface CountriesDao {
     @Query("SELECT * FROM $COLLECTION_CITIES")
     fun getCities(): List<CityEntity>
 
+    @Query("SELECT * FROM $COLLECTION_COUNTRIES WHERE $PARAM_NAME = :name LIMIT 1")
+    fun getCountryByName(name: String): CountryEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCountry(country: CountryEntity)
 
