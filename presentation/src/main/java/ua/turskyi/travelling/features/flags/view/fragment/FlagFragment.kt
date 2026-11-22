@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Color.TRANSPARENT
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -22,7 +21,6 @@ import android.view.View.OnTouchListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -50,8 +48,11 @@ import ua.turskyi.travelling.features.flags.view.FlagsActivity.Companion.EXTRA_U
 import ua.turskyi.travelling.features.flags.viewmodel.FlagsFragmentViewModel
 import ua.turskyi.travelling.models.Country
 import ua.turskyi.travelling.utils.Event
+import ua.turskyi.travelling.utils.extensions.isHttpUrl
+import ua.turskyi.travelling.utils.extensions.loadFlagFallback
 import ua.turskyi.travelling.utils.extensions.observeOnce
 import ua.turskyi.travelling.utils.extensions.parcelable
+import ua.turskyi.travelling.utils.extensions.showFlagText
 import ua.turskyi.travelling.utils.extensions.showReportDialog
 import ua.turskyi.travelling.utils.extensions.toast
 import ua.turskyi.travelling.utils.extensions.toastLong
@@ -123,6 +124,7 @@ class FlagFragment : Fragment() {
                 val position: Int? = this.arguments?.getInt(EXTRA_POSITION)
                 binding.ivEnlargedFlag.visibility = VISIBLE
                 binding.wvFlag.visibility = GONE
+                binding.tvFlagFallback.visibility = GONE
                 val selectedImageUri: Uri? = photoChooserIntent?.data
                 if (selectedImageUri != null && position != null) {
                     createInputStreamAndChangeImage(selectedImageUri, position)
@@ -228,6 +230,9 @@ class FlagFragment : Fragment() {
                                 position
                             )
                         )
+                        binding.tvFlagFallback.setOnClickListener(
+                            showFlagClickListener(countries, position)
+                        )
                     }
                 }
             }
@@ -259,7 +264,9 @@ class FlagFragment : Fragment() {
         return OnClickListener {
             showTheFlag(countries, position)
             // change clickListener
-            binding.ivEnlargedFlag.setOnClickListener(showSelfieClickListener(countries, position))
+            val showSelfie = showSelfieClickListener(countries, position)
+            binding.ivEnlargedFlag.setOnClickListener(showSelfie)
+            binding.tvFlagFallback.setOnClickListener(showSelfie)
             val wvFlag: WebView = binding.wvFlag
             wvFlag.setOnTouchListener(onWebViewClickListener(countries, position))
         }
@@ -299,13 +306,16 @@ class FlagFragment : Fragment() {
             if (isSelfieAvailable(countries[position].filePath)) {
                 showSelfie(countries, position)
                 // return first clickListener
-                binding.ivEnlargedFlag.setOnClickListener(showFlagClickListener(countries, position))
+                val showFlag = showFlagClickListener(countries, position)
+                binding.ivEnlargedFlag.setOnClickListener(showFlag)
+                binding.tvFlagFallback.setOnClickListener(showFlag)
             } else {
                 countries[position].filePath = ""
                 if (viewModel.userId == null) {
                     viewModel.updateSelfie(countries[position].id, "")
                 }
                 binding.ivEnlargedFlag.setOnClickListener(null)
+                binding.tvFlagFallback.setOnClickListener(null)
                 binding.wvFlag.setOnTouchListener(null)
             }
         }
@@ -314,6 +324,7 @@ class FlagFragment : Fragment() {
     private fun showSelfie(countries: List<Country>, position: Int) {
         binding.ivEnlargedFlag.visibility = VISIBLE
         binding.wvFlag.visibility = GONE
+        binding.tvFlagFallback.visibility = GONE
         val thumbnailBuilder: RequestBuilder<Drawable> =
             com.bumptech.glide.Glide.with(binding.ivEnlargedFlag.context)
                 .asDrawable()
@@ -355,36 +366,37 @@ class FlagFragment : Fragment() {
     }
 
     private fun showTheFlag(countries: List<Country>, position: Int) {
-        /**
-         * @Description Opens the pictureUri in full size
-         *  */
-        val uri: Uri = countries[position].flag.toUri()
+        val flag = countries[position].flag
+        if (!flag.isHttpUrl()) {
+            binding.ivEnlargedFlag.visibility = GONE
+            binding.wvFlag.visibility = GONE
+            binding.tvFlagFallback.showFlagText(flag)
+            return
+        }
+        binding.tvFlagFallback.visibility = GONE
+        binding.ivEnlargedFlag.visibility = VISIBLE
+        binding.wvFlag.visibility = GONE
+        val uri: Uri = flag.toUri()
         GlideToVectorYou
             .init()
             .with(activity)
             .withListener(object : GlideToVectorYouListener {
-                override fun onLoadFailed() = showFlagInWebView()
-                private fun showFlagInWebView() {
-                    binding.apply {
-                        ivEnlargedFlag.visibility = GONE
-                        wvFlag.webViewClient = WebViewClient()
-                        wvFlag.visibility = VISIBLE
-                        wvFlag.setBackgroundColor(TRANSPARENT)
-                        wvFlag.loadData(
-                            getString(R.string.html_data_flag, countries[position].flag),
-                            getString(R.string.mime_type_txt_html),
-                            getString(R.string.encoding_utf_8)
-                        )
-                    }
-                }
+                override fun onLoadFailed() = showFlagInWebView(flag)
 
                 override fun onResourceReady() {
                     binding.ivEnlargedFlag.visibility = VISIBLE
                     binding.wvFlag.visibility = GONE
+                    binding.tvFlagFallback.visibility = GONE
                 }
             })
             .setPlaceHolder(R.drawable.anim_loading, R.drawable.ic_broken_image)
             .load(uri, binding.ivEnlargedFlag)
+    }
+
+    private fun showFlagInWebView(flag: String) {
+        binding.ivEnlargedFlag.visibility = GONE
+        binding.tvFlagFallback.visibility = GONE
+        binding.wvFlag.loadFlagFallback(flag)
     }
 
     private fun createInputStreamAndChangeImage(selectedImageUri: Uri, position: Int) {
